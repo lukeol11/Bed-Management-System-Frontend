@@ -1,89 +1,117 @@
 <template>
-    <div class="Sidebar">
-        <div class="Header">
-            <div class="BedManagementSystem">
-                Bed<br />Management<br />System
-            </div>
-            <hospital-bed-icon />
-        </div>
-        <div class="NavigationSection">
-            <a class="Home">Home</a>
-            <a class="ManageRequests">Manage Requests</a>
-        </div>
-        <div class="Footer">
-            <div class="LogOut">Log Out</div>
-            <logout-icon />
-        </div>
-    </div>
+    <cv-side-nav class="sideBar" id="side-nav" fixed expanded>
+        <cv-side-nav-items>
+            <cv-side-nav-menu-item class="header">
+                <p>Bed<br />Management<br />System</p>
+                <hospital-bed-icon />
+            </cv-side-nav-menu-item>
+            <cv-side-nav-link href="javascript:void(0)">
+                <template v-slot:nav-icon><home-icon /></template>
+                Home
+            </cv-side-nav-link>
+            <cv-side-nav-link href="javascript:void(0)">
+                <template v-slot:nav-icon><manage-requests-icon /></template>
+                Manage Requests
+            </cv-side-nav-link>
+            <cv-side-nav-menu-item class="footer">
+                <p>Logout</p>
+                <logout-icon />
+            </cv-side-nav-menu-item>
+        </cv-side-nav-items>
+    </cv-side-nav>
 </template>
 
 <script>
-import HospitalBedIcon from "@carbon/icons-vue/es/hospital-bed/32";
 import LogoutIcon from "@carbon/icons-vue/es/logout/32";
+import HospitalBedIcon from "@carbon/icons-vue/es/hospital-bed/32";
+import HomeIcon from "@carbon/icons-vue/es/home/32";
+import ManageRequestsIcon from "@carbon/icons-vue/lib/airline--manage-gates/32";
 
 export default {
     name: "SideBar",
     components: {
+        LogoutIcon,
         HospitalBedIcon,
-        LogoutIcon
+        HomeIcon,
+        ManageRequestsIcon
     }
 };
 </script>
 
 <style lang="scss">
-.Sidebar {
-    width: 20.6rem;
-    height: 100vh;
-    background: #2e3648;
-    position: absolute;
-    .Header {
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
+
+.cv-side-nav-items.bx--side-nav__items {
+    padding-top: 0px;
+}
+.sideBar.cv-side-nav.bx--side-nav.bx--side-nav__navigation.bx--side-nav--expanded {
+    top: 0rem;
+    height: 100%;
+    background: #323e58;
+    .bx--side-nav__link-text {
         color: #fff;
-        text-align: center;
-        .BedManagementSystem {
-            display: inline-block;
-            text-align: center;
-            font-family: Roboto;
-            font-size: 1.875rem;
-            font-style: normal;
-            font-weight: 500;
-            line-height: normal;
-            letter-spacing: 0.07rem;
-        }
-        svg {
-            display: inline-block;
-        }
-        padding-top: 1em;
-        padding-bottom: 1em;
     }
-    .NavigationSection {
-        width: 20.6rem;
-        height: 40rem;
-        background: #323e58;
-        display: inline-flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 3rem;
-        .Home,
-        .ManageRequests {
+    .header,
+    .footer {
+        background: #2e3648;
+    }
+    .header {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        text-overflow: initial;
+        .bx--side-nav__link-text p {
             color: #fff;
             text-align: center;
             font-family: Roboto;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-style: normal;
             font-weight: 500;
             line-height: normal;
             letter-spacing: 0.07813rem;
         }
     }
-    .Footer {
-        color: #fff;
-        text-align: center;
-        font-family: Roboto;
-        font-size: 2rem;
-        font-style: normal;
-        font-weight: 500;
-        line-height: normal;
-        letter-spacing: 0.07813rem;
+    .footer {
+        &:hover {
+            background: #30384d;
+        }
+        .bx--side-nav__link-text p {
+            color: #fff;
+            text-align: center;
+            font-family: Roboto;
+            font-size: 1rem;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            letter-spacing: 0.07813rem;
+        }
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        bottom: 0px;
+        position: absolute;
+        width: 16rem;
+    }
+    .bx--side-nav__item {
+        .bx--side-nav__icon.bx--side-nav__icon--small svg {
+            fill: #fff;
+        }
+        &:hover {
+            background: #30384d;
+        }
+        .bx--side-nav__link-text {
+            color: #fff;
+            text-align: center;
+            font-family: Roboto;
+            font-size: 1rem;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            letter-spacing: 0.07813rem;
+        }
+        padding-top: 1.5rem;
+        padding-bottom: 1.5rem;
+    }
+    .cv-side-nav-item-link.bx--side-nav__link:hover {
+        background-color: inherit;
     }
 }
 </style>

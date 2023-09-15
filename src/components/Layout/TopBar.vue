@@ -1,7 +1,14 @@
 <template>
-    <div class="TopBar">
-        <a class="HospitalName">{{ hospitalName }}</a>
-    </div>
+    <cv-header class="topBar" aria-label="Carbon header">
+        <cv-skip-to-content href="#main-content">
+            Skip to content
+        </cv-skip-to-content>
+        <cv-header-name href="javascript:void(0)">
+            <cv-select />
+        </cv-header-name>
+        <template v-slot:left-panels> </template>
+        <template v-slot:right-panels> </template>
+    </cv-header>
 </template>
 
 <script>
@@ -17,27 +24,9 @@ export default {
 </script>
 
 <style lang="scss">
-.TopBar {
-    width: auto;
-    height: 5.375rem;
+.bx--header.topBar {
+    left: 16rem;
     background: #fff;
-    position: absolute;
-    left: 20.6rem;
-    top: 0px;
-    .HospitalName {
-        display: flex;
-        width: 52.375rem;
-        height: 3.125rem;
-        flex-direction: column;
-        justify-content: center;
-        flex-shrink: 0;
-        color: #000;
-        font-family: Roboto;
-        font-size: 1.75rem;
-        font-style: normal;
-        font-weight: 500;
-        line-height: normal;
-        letter-spacing: 0.07813rem;
-    }
+    border-bottom: 0px;
 }
 </style>

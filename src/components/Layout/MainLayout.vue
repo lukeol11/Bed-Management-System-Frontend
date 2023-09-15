@@ -1,8 +1,8 @@
 <template>
     <div class="Layout">
+        <top-bar :hospital-name="hospitalName" />
+
         <side-bar />
-        <top-bar :hospitalName="hospitalName" />
-        <div class="main-content"></div>
     </div>
 </template>
 
