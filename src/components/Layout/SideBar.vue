@@ -13,7 +13,7 @@
                 <template v-slot:nav-icon><manage-requests-icon /></template>
                 Manage Requests
             </cv-side-nav-link>
-            <cv-side-nav-menu-item class="footer">
+            <cv-side-nav-menu-item class="footer" href="/logout">
                 <p>Logout</p>
                 <logout-icon />
             </cv-side-nav-menu-item>
