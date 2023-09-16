@@ -59,7 +59,9 @@ export default {
             const auth = getAuth();
             signInWithEmailAndPassword(auth, this.email, this.password)
                 .then((userCredential) => {
-                    console.info("Welcome " + userCredential.user.email);
+                    console.info(
+                        "Welcome " + userCredential.user.email.split("@")[0]
+                    );
                     this.$router.push("/");
                 })
                 .catch((error) => {
@@ -116,6 +118,14 @@ export default {
             &#helpButton {
                 background: #323e58;
                 height: 4.3rem;
+                color: #fff;
+                text-align: center;
+                font-family: Roboto, sans-serif;
+                font-size: 1.5rem;
+                font-style: normal;
+                font-weight: 500;
+                line-height: normal;
+                letter-spacing: 0.0625rem;
             }
         }
     }
