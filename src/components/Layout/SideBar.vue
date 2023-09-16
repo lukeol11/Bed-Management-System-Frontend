@@ -1,13 +1,13 @@
 <template>
     <cv-side-nav class="sideBar" id="side-nav" fixed expanded>
         <cv-side-nav-items>
-            <cv-side-nav-menu-item class="header">
+            <cv-side-nav-menu-item class="header" href="/">
                 <p>Bed<br />Management<br />System</p>
                 <hospital-bed-icon />
             </cv-side-nav-menu-item>
-            <cv-side-nav-link href="javascript:void(0)">
+            <cv-side-nav-link href="/">
                 <template v-slot:nav-icon><home-icon /></template>
-                Home
+                Dashboard
             </cv-side-nav-link>
             <cv-side-nav-link href="javascript:void(0)">
                 <template v-slot:nav-icon><manage-requests-icon /></template>
