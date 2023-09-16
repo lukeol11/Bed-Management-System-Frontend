@@ -53,7 +53,13 @@ export default {
     }
     .header,
     .footer {
+        display: inline-block;
         background: #2e3648;
+        width: 16rem;
+        svg,
+        p {
+            display: inline-block;
+        }
     }
     .header {
         padding-top: 2rem;
@@ -62,7 +68,7 @@ export default {
         .bx--side-nav__link-text p {
             color: #fff;
             text-align: center;
-            font-family: Roboto;
+            font-family: Roboto, sans-serif;
             font-size: 1.2rem;
             font-style: normal;
             font-weight: 500;
@@ -77,7 +83,7 @@ export default {
         .bx--side-nav__link-text p {
             color: #fff;
             text-align: center;
-            font-family: Roboto;
+            font-family: Roboto, sans-serif;
             font-size: 1rem;
             font-style: normal;
             font-weight: 500;
@@ -100,7 +106,7 @@ export default {
         .bx--side-nav__link-text {
             color: #fff;
             text-align: center;
-            font-family: Roboto;
+            font-family: Roboto, sans-serif;
             font-size: 1rem;
             font-style: normal;
             font-weight: 500;

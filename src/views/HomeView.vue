@@ -1,6 +1,6 @@
 <template>
     <div>
-        <main-layout hospitalName="Example Hospital Name" />
+        <main-layout hospitalName="Example Hospital Name"> </main-layout>
     </div>
 </template>
 
