@@ -50,7 +50,7 @@ export default {
             background: #fff;
             border-bottom: 0px;
             color: #000;
-            font-family: Roboto;
+            font-family: Roboto, sans-serif;
             font-size: 1.25rem;
             font-style: normal;
             font-weight: 500;
@@ -59,7 +59,7 @@ export default {
         }
         option.bx--select-option {
             color: #000;
-            font-family: Roboto;
+            font-family: Roboto, sans-serif;
             font-size: 1.25rem;
             font-style: normal;
             font-weight: 500;
