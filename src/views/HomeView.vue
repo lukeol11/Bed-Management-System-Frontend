@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import MainLayout from "@/components/Layout/MainLayout.vue"; // @ is an alias to /src
+import MainLayout from "@/components/Layout/MainLayout.vue";
 
 export default {
     name: "HomeView",
