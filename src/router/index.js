@@ -3,6 +3,8 @@ import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/auth/LoginView.vue";
 import SignupView from "../views/auth/SignupView.vue";
+import DashboardView from "../views/DashboardView.vue";
+import RequestsView from "../views/RequestsView.vue";
 import { getAuth } from "firebase/auth";
 Vue.use(VueRouter);
 
@@ -11,9 +13,22 @@ const routes = [
         path: "/",
         name: "home",
         component: HomeView,
+        redirect: "/dashboard",
         meta: {
             requiresAuth: true
-        }
+        },
+        children: [
+            {
+                path: "dashboard",
+                name: "dashboard",
+                component: DashboardView
+            },
+            {
+                path: "requests",
+                name: "requests",
+                component: RequestsView
+            }
+        ]
     },
     {
         path: "/login",

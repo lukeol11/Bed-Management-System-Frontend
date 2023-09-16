@@ -1,15 +1,15 @@
 <template>
     <cv-side-nav class="sideBar" id="side-nav" fixed expanded>
         <cv-side-nav-items>
-            <cv-side-nav-menu-item class="header" href="/">
+            <cv-side-nav-menu-item class="header">
                 <p>Bed<br />Management<br />System</p>
                 <hospital-bed-icon />
             </cv-side-nav-menu-item>
-            <cv-side-nav-link href="/">
+            <cv-side-nav-link to="/dashboard">
                 <template v-slot:nav-icon><home-icon /></template>
                 Dashboard
             </cv-side-nav-link>
-            <cv-side-nav-link href="javascript:void(0)">
+            <cv-side-nav-link to="/requests">
                 <template v-slot:nav-icon><manage-requests-icon /></template>
                 Manage Requests
             </cv-side-nav-link>
@@ -97,6 +97,16 @@ export default {
         width: 16rem;
     }
     .bx--side-nav__item {
+        a.bx--side-nav__link[aria-current="page"]::before,
+        a.bx--side-nav__link--current::before {
+            background-color: #0099ff;
+        }
+        a.bx--side-nav__link[aria-current="page"],
+        a.bx--side-nav__link--current {
+            background: #323e58;
+            background: inherit;
+            transition: none;
+        }
         .bx--side-nav__icon.bx--side-nav__icon--small svg {
             fill: #fff;
         }
@@ -113,8 +123,10 @@ export default {
             line-height: normal;
             letter-spacing: 0.07813rem;
         }
-        padding-top: 1.5rem;
-        padding-bottom: 1.5rem;
+        a {
+            padding-top: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
     }
     .cv-side-nav-item-link.bx--side-nav__link:hover {
         background-color: inherit;
