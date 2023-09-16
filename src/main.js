@@ -2,19 +2,17 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-
-Vue.config.productionTip = false;
-
+import firebaseConfig from "./firebaseConfig";
 import "carbon-components/css/carbon-components.css";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import CarbonComponentsVue from "@carbon/vue";
+
+Vue.config.productionTip = false;
 Vue.use(CarbonComponentsVue);
 
-let app = "";
-import firebaseConfig from "./firebaseConfig";
+let app = undefined;
 initializeApp(firebaseConfig);
-
 getAuth().onAuthStateChanged(() => {
     if (!app) {
         app = new Vue({

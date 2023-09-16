@@ -41,10 +41,8 @@ const router = new VueRouter({
     routes
 });
 
-// eslint-disable-next-line no-unused-vars
 router.beforeEach(async (to, from, next) => {
     const currentUser = getAuth().currentUser;
-    console.log(currentUser);
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
     if (requiresAuth && !currentUser) {
         next("login");
