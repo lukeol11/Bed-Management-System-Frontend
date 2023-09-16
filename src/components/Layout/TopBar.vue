@@ -5,11 +5,14 @@
         </cv-skip-to-content>
         <cv-header-name href="javascript:void(0)">
             <cv-select
-                :items="hospitalList"
-                :selected="hospitalName"
+                :items="hospitalsList"
+                :selected="selectedHospital"
+                label=""
                 @change="changeHospital"
             >
-                <cv-select-option selected>{{ hospitalName }}</cv-select-option>
+                <cv-select-option selected>{{
+                    selectedHospital
+                }}</cv-select-option>
                 <cv-select-option
                     v-for="hospital in hospitalsList"
                     :key="hospital"
@@ -27,13 +30,18 @@
 export default {
     name: "TopBar",
     props: {
-        hospitalName: {
+        selectedHospital: {
             type: String,
             required: true
         },
         hospitalsList: {
             type: Array,
             required: true
+        }
+    },
+    methods: {
+        changeHospital(hospital) {
+            console.log(hospital);
         }
     }
 };

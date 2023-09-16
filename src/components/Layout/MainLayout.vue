@@ -1,6 +1,9 @@
 <template>
     <div class="Layout">
-        <top-bar :hospital-name="hospitalName" />
+        <top-bar
+            :selectedHospital="selectedHospital"
+            :hospitalsList="hospitalsList"
+        />
         <side-bar />
 
         <div class="content">
@@ -19,8 +22,18 @@ export default {
         SideBar,
         TopBar
     },
+    data() {
+        return {
+            hospitalsList: [
+                "Hospital 1",
+                "Hospital 2",
+                "Hospital 3",
+                "Hospital 4"
+            ]
+        };
+    },
     props: {
-        hospitalName: {
+        selectedHospital: {
             type: String,
             required: true
         }
