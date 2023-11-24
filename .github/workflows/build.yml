@@ -21,6 +21,9 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            - name: Create mock firebase config
+              run: cp firebaseConfig.example.js firebaseConfig.js
+
             - name: Run build
               run: npm run build
 
