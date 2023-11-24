@@ -4,6 +4,7 @@ module.exports = {
     collectCoverageFrom: [
         "src/**/*.{js,vue}",
         "!src/firebaseConfig.js",
-        "!src/main.js"
+        "!src/main.js",
+        "!tests/**/*.spec.js"
     ]
 };
