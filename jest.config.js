@@ -1,5 +1,9 @@
 module.exports = {
     preset: "@vue/cli-plugin-unit-jest",
     collectCoverage: true,
-    collectCoverageFrom: ["src/*.{js,vue}"]
+    collectCoverageFrom: [
+        "src/**/*.{js,vue}",
+        "!src/firebaseConfig.js",
+        "!src/main.js"
+    ]
 };
