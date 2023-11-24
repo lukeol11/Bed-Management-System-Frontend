@@ -6,5 +6,6 @@ module.exports = {
         "!src/firebaseConfig.js",
         "!src/main.js",
         "!tests/**/*.spec.js"
-    ]
+    ],
+    coverageReporters: ["lcov"]
 };
