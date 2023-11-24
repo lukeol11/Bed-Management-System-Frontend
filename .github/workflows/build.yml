@@ -22,7 +22,7 @@ jobs:
               run: npm ci
 
             - name: Create mock firebase config
-              run: cp firebaseConfig.example.js firebaseConfig.js
+              run: cp firebaseConfig.template.js firebaseConfig.js
 
             - name: Run build
               run: npm run build
