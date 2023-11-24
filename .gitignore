@@ -129,5 +129,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# firebase
-src/firebaseConfig.js
+# Authentication Secrets
+firebaseConfig.js
