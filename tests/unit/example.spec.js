@@ -1,12 +1,11 @@
-import { shallowMount } from '@vue/test-utils'
-import HelloWorld from '@/components/HelloWorld.vue'
+import { shallowMount } from "@vue/test-utils";
+import TopBar from "@/components/Layout/TopBar.vue";
 
-describe('HelloWorld.vue', () => {
-  it('renders props.msg when passed', () => {
-    const msg = 'new message'
-    const wrapper = shallowMount(HelloWorld, {
-      propsData: { msg }
-    })
-    expect(wrapper.text()).toMatch(msg)
-  })
-})
+describe("TopBar.vue", () => {
+    it("renders props.msg when passed", () => {
+        const wrapper = shallowMount(TopBar, {
+            propsData: { hospitalName: "test", hospitalList: ["Test", "Test2"] }
+        });
+        expect(wrapper.text()).toContain("test");
+    });
+});
