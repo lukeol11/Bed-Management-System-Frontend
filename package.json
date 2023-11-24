@@ -6,8 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint",
-    "test": "jest"
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@carbon/vue": "^2.45.1",
