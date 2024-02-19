@@ -131,3 +131,5 @@ dist
 
 # Authentication Secrets
 firebaseConfig.js
+
+*.code-workspace
