@@ -1,6 +1,8 @@
 <template>
     <div>
-        <main-layout hospitalName="Example Hospital Name"> </main-layout>
+        <main-layout selectedHospital="Example Hospital Name">
+            <router-view />
+        </main-layout>
     </div>
 </template>
 
