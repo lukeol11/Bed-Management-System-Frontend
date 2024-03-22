@@ -23,6 +23,11 @@
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-button>View Bed</cv-button>
+                        <cv-button
+                            kind="secondary"
+                            :disabled="!result.patientName"
+                            >Transfer</cv-button
+                        >
                     </cv-data-table-cell>
                 </cv-data-table-row>
             </template>
@@ -54,8 +59,6 @@ export default {
                 {
                     ward: "A",
                     bedId: 2,
-                    patientName: "Jane Doe",
-                    dateOfBirth: "01/01/1970",
                     treatmentLevel: "Low"
                 },
                 {
@@ -68,6 +71,8 @@ export default {
                 {
                     ward: "B",
                     bedId: 4,
+                    dateOfBirth: "01/01/1970",
+                    patientName: "Jane Doe",
                     treatmentLevel: "High"
                 }
             ]
