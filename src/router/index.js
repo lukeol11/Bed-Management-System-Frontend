@@ -6,6 +6,7 @@ import SignupView from "../views/auth/SignupView.vue";
 import DashboardView from "../views/DashboardView.vue";
 import RequestsView from "../views/RequestsView.vue";
 import CreateView from "../views/CreateView.vue";
+import SearchView from "../views/SearchView.vue";
 import { getAuth } from "firebase/auth";
 Vue.use(VueRouter);
 
@@ -33,6 +34,11 @@ const routes = [
                 path: "create",
                 name: "create",
                 component: CreateView
+            },
+            {
+                path: "search",
+                name: "search",
+                component: SearchView
             }
         ]
     },

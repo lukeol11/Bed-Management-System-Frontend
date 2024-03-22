@@ -5,7 +5,9 @@
             <HospitalAvailability />
         </div>
         <div class="navigation">
-            <cv-tile kind="clickable"><SearchIcon />Search </cv-tile>
+            <cv-tile @click="open('search')" kind="clickable"
+                ><SearchIcon />Search
+            </cv-tile>
             <cv-tile @click="open('create')" kind="clickable"
                 ><RequestQuoteIcon />Create
             </cv-tile>
