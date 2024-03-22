@@ -5,6 +5,7 @@ import LoginView from "../views/auth/LoginView.vue";
 import SignupView from "../views/auth/SignupView.vue";
 import DashboardView from "../views/DashboardView.vue";
 import RequestsView from "../views/RequestsView.vue";
+import CreateView from "../views/CreateView.vue";
 import { getAuth } from "firebase/auth";
 Vue.use(VueRouter);
 
@@ -27,6 +28,11 @@ const routes = [
                 path: "requests",
                 name: "requests",
                 component: RequestsView
+            },
+            {
+                path: "create",
+                name: "create",
+                component: CreateView
             }
         ]
     },
