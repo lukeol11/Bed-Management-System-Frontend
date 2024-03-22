@@ -15,6 +15,16 @@
                 {{ treatment }}
             </cv-dropdown-item>
         </cv-dropdown>
+        <cv-dropdown label="Gender" v-model="selectedGender">
+            <cv-dropdown-item
+                v-for="gender in genders"
+                :key="gender"
+                :value="gender"
+            >
+                {{ gender }}
+            </cv-dropdown-item>
+        </cv-dropdown>
+
         <cv-button @click="searchForm">Search</cv-button>
     </div>
 </template>
@@ -28,13 +38,15 @@ export default {
             lastName: "",
             dateOfBirth: null,
             selectedTreatment: null,
+            selectedGender: null,
             treatments: [
                 "Medication",
                 "Surgery",
                 "Physiotherapy",
                 "Counselling",
                 "Other"
-            ]
+            ],
+            genders: ["Male", "Female"]
         };
     },
     methods: {
@@ -43,7 +55,8 @@ export default {
                 firstName: this.firstName,
                 lastName: this.lastName,
                 dateOfBirth: this.dateOfBirth,
-                treatment: this.selectedTreatment
+                treatment: this.selectedTreatment,
+                gender: this.selectedGender
             };
             console.log(patientDetails);
             this.$emit("search", patientDetails);
@@ -60,5 +73,8 @@ export default {
     justify-content: center;
     width: 50%;
     border-right: 0.1em solid #000;
+}
+#addPatient div {
+    margin: 1em;
 }
 </style>
