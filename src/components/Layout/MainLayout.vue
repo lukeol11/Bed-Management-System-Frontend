@@ -1,10 +1,6 @@
 <template>
     <div class="Layout">
-        <top-bar
-            v-if="usersHospitalId"
-            :selectedHospital="selectedHospital"
-            :hospitalsList="hospitalsList"
-        />
+        <top-bar v-if="usersHospitalId" />
         <side-bar />
 
         <div class="content">
@@ -24,30 +20,8 @@ export default {
         TopBar
     },
     computed: {
-        hospitalsList() {
-            return this.$store.getters.allHospitals.map(
-                (hospital) => hospital.description
-            );
-        },
         usersHospitalId() {
             return this.$store.getters.getUserDetails.hospital_id;
-        }
-    },
-    data() {
-        return {
-            selectedHospital: undefined
-        };
-    },
-    methods: {
-        findSelectedHospital() {
-            this.selectedHospital = this.$store.getters.getHospitalById(
-                this.usersHospitalId
-            ).description;
-        }
-    },
-    watch: {
-        usersHospitalId() {
-            this.findSelectedHospital();
         }
     },
     created() {

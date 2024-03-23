@@ -81,7 +81,6 @@ export default {
                 );
                 const wards = await response.json();
                 this.chartData.labels = wards.map((ward) => ward.description);
-                console.log(wards.map((ward) => ward.description));
                 const bedsDataPromises = wards.map((ward) =>
                     this.getBeds(ward.id)
                 );
