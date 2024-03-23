@@ -22,15 +22,12 @@ export default {
         SideBar,
         TopBar
     },
-    data() {
-        return {
-            hospitalsList: [
-                "Hospital 1",
-                "Hospital 2",
-                "Hospital 3",
-                "Hospital 4"
-            ]
-        };
+    computed: {
+        hospitalsList() {
+            return this.$store.getters.allHospitals.map(
+                (hospital) => hospital.description
+            );
+        }
     },
     props: {
         selectedHospital: {

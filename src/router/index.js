@@ -1,4 +1,5 @@
 import Vue from "vue";
+import store from "../store";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/auth/LoginView.vue";
@@ -83,6 +84,7 @@ const router = new VueRouter({
 
 router.beforeEach(async (to, from, next) => {
     const currentUser = getAuth().currentUser;
+    store.commit("SET_USER_EMAIL", currentUser.email);
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
     if (requiresAuth && !currentUser) {
         next("login");
