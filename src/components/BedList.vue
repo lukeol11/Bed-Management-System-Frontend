@@ -10,7 +10,7 @@
                         bed.description
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button>Assign</cv-button>
+                        <cv-button>{{ action }}</cv-button>
                     </cv-data-table-cell>
                 </cv-data-table-row>
             </template>
@@ -21,6 +21,12 @@
 <script>
 export default {
     name: "BedList",
+    props: {
+        action: {
+            type: String,
+            required: true
+        }
+    },
     data() {
         return {
             columns: ["Ward", "Bed Id", "Desription", "Action"],
@@ -51,13 +57,4 @@ export default {
 };
 </script>
 
-<style scoped>
-#bedList {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 50%;
-    border-left: 0.1em solid #000;
-}
-</style>
+<style scoped></style>

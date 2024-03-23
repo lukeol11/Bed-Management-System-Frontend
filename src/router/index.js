@@ -8,6 +8,8 @@ import RequestsView from "../views/RequestsView.vue";
 import CreateView from "../views/CreateView.vue";
 import SearchView from "../views/SearchView.vue";
 import AdminView from "../views/AdminView.vue";
+import TransferView from "@/views/TransferView.vue";
+
 import { getAuth } from "firebase/auth";
 Vue.use(VueRouter);
 
@@ -45,6 +47,11 @@ const routes = [
                 path: "admin",
                 name: "admin",
                 component: AdminView
+            },
+            {
+                path: "transfer",
+                name: "transfer",
+                component: TransferView
             }
         ]
     },

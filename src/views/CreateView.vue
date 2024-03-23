@@ -1,7 +1,7 @@
 <template>
     <div class="create">
         <AddPatient />
-        <BedList />
+        <BedList action="Assign" />
     </div>
 </template>
 
@@ -25,5 +25,13 @@ export default {
     justify-content: space-around;
     align-items: center;
     width: 100%;
+}
+.create #bedList {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    border-left: 0.1em solid #000;
 }
 </style>
