@@ -10,9 +10,6 @@
                 label=""
                 @change="changeHospital"
             >
-                <cv-select-option selected>{{
-                    selectedHospital
-                }}</cv-select-option>
                 <cv-select-option
                     v-for="hospital in hospitalsList"
                     :key="hospital"
@@ -31,7 +28,6 @@ export default {
     name: "TopBar",
     props: {
         selectedHospital: {
-            type: String,
             required: true
         },
         hospitalsList: {
@@ -39,9 +35,17 @@ export default {
             required: true
         }
     },
+    computed: {
+        hospitals() {
+            return this.$store.getters.allHospitals;
+        }
+    },
     methods: {
-        changeHospital(hospital) {
-            console.log(hospital);
+        changeHospital(selectedHospital) {
+            const chosenHospital = this.hospitals.find(
+                (hospital) => hospital.description === selectedHospital
+            );
+            this.$store.commit("SET_SELECTED_HOSPITAL", chosenHospital);
         }
     }
 };

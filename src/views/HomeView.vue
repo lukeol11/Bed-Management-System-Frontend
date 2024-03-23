@@ -1,6 +1,6 @@
 <template>
     <div>
-        <main-layout :selectedHospital="usersHospitalName">
+        <main-layout>
             <router-view />
         </main-layout>
     </div>
@@ -14,19 +14,8 @@ export default {
     components: {
         MainLayout
     },
-    mounted() {
+    created() {
         this.$store.dispatch("fetchHospitals");
-        this.$store.dispatch("fetchUserDetails");
-    },
-    computed: {
-        usersHospitalName() {
-            console.log(this.$store.getters.getUserEmail);
-            const usersHospitalId =
-                this.$store.getters.getUserDetails.hospital_id;
-            console.log(usersHospitalId);
-            return this.$store.getters.getHospitalById(usersHospitalId)
-                .description;
-        }
     }
 };
 </script>

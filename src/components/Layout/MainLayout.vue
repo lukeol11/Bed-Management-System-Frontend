@@ -1,6 +1,7 @@
 <template>
     <div class="Layout">
         <top-bar
+            v-if="usersHospitalId"
             :selectedHospital="selectedHospital"
             :hospitalsList="hospitalsList"
         />
@@ -27,13 +28,30 @@ export default {
             return this.$store.getters.allHospitals.map(
                 (hospital) => hospital.description
             );
+        },
+        usersHospitalId() {
+            return this.$store.getters.getUserDetails.hospital_id;
         }
     },
-    props: {
-        selectedHospital: {
-            type: String,
-            required: true
+    data() {
+        return {
+            selectedHospital: undefined
+        };
+    },
+    methods: {
+        findSelectedHospital() {
+            this.selectedHospital = this.$store.getters.getHospitalById(
+                this.usersHospitalId
+            ).description;
         }
+    },
+    watch: {
+        usersHospitalId() {
+            this.findSelectedHospital();
+        }
+    },
+    created() {
+        this.$store.dispatch("fetchUserDetails");
     }
 };
 </script>

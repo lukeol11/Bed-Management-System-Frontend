@@ -8,11 +8,13 @@ export default new Vuex.Store({
     state: {
         hospitals: [],
         email: "",
-        userDetails: {}
+        userDetails: {},
+        selectedHospital: {}
     },
     getters: {
         allHospitals: (state) => state.hospitals,
         getUserEmail: (state) => state.email,
+        getSelectedHospital: (state) => state.selectedHospital,
         getUserDetails: (state) => state.userDetails,
         getHospitalById: (state) => (id) => {
             return state.hospitals.find((hospital) => hospital.id === id);
@@ -27,6 +29,9 @@ export default new Vuex.Store({
         },
         SET_USER_DETAILS(state, userDetails) {
             state.userDetails = userDetails;
+        },
+        SET_SELECTED_HOSPITAL(state, hospital) {
+            state.selectedHospital = hospital;
         }
     },
     actions: {
