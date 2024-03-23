@@ -1,6 +1,6 @@
 <template>
     <div>
-        <main-layout selectedHospital="Example Hospital Name">
+        <main-layout>
             <router-view />
         </main-layout>
     </div>
@@ -13,6 +13,9 @@ export default {
     name: "HomeView",
     components: {
         MainLayout
+    },
+    created() {
+        this.$store.dispatch("fetchHospitals");
     }
 };
 </script>

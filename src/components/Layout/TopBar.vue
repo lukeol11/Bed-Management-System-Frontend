@@ -4,20 +4,15 @@
             Skip to content
         </cv-skip-to-content>
         <cv-header-name href="javascript:void(0)">
-            <cv-select
-                :items="hospitalsList"
-                :selected="selectedHospital"
-                label=""
-                @change="changeHospital"
-            >
-                <cv-select-option selected>{{
-                    selectedHospital
-                }}</cv-select-option>
+            <cv-select label="" @change="changeHospital">
+                <cv-select-option selected>
+                    {{ selectedHospital }}
+                </cv-select-option>
                 <cv-select-option
-                    v-for="hospital in hospitalsList"
-                    :key="hospital"
+                    v-for="hospital in filteredHospitals"
+                    :key="hospital.id"
                 >
-                    {{ hospital }}
+                    {{ hospital.description }}
                 </cv-select-option>
             </cv-select>
         </cv-header-name>
@@ -29,20 +24,38 @@
 <script>
 export default {
     name: "TopBar",
-    props: {
-        selectedHospital: {
-            type: String,
-            required: true
+    data() {
+        return {
+            selectedHospital: undefined
+        };
+    },
+    computed: {
+        hospitals() {
+            return this.$store.getters.allHospitals;
         },
-        hospitalsList: {
-            type: Array,
-            required: true
+        userHospitalId() {
+            return this.$store.getters.getUserDetails.hospital_id;
+        },
+        filteredHospitals() {
+            return this.hospitals.filter(
+                (hospital) => hospital.id !== this.userHospitalId
+            );
         }
     },
     methods: {
-        changeHospital(hospital) {
-            console.log(hospital);
+        changeHospital(selectedHospital) {
+            const chosenHospital = this.hospitals.find(
+                (hospital) => hospital.description === selectedHospital
+            );
+            this.$store.commit("SET_SELECTED_HOSPITAL", chosenHospital);
         }
+    },
+    mounted() {
+        const userHospital = this.hospitals.find(
+            (hospital) => hospital.id === this.userHospitalId
+        );
+        this.selectedHospital = userHospital.description;
+        this.$store.commit("SET_SELECTED_HOSPITAL", userHospital);
     }
 };
 </script>

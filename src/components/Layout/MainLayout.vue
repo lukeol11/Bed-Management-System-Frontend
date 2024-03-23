@@ -1,9 +1,6 @@
 <template>
     <div class="Layout">
-        <top-bar
-            :selectedHospital="selectedHospital"
-            :hospitalsList="hospitalsList"
-        />
+        <top-bar v-if="usersHospitalId" />
         <side-bar />
 
         <div class="content">
@@ -22,21 +19,13 @@ export default {
         SideBar,
         TopBar
     },
-    data() {
-        return {
-            hospitalsList: [
-                "Hospital 1",
-                "Hospital 2",
-                "Hospital 3",
-                "Hospital 4"
-            ]
-        };
-    },
-    props: {
-        selectedHospital: {
-            type: String,
-            required: true
+    computed: {
+        usersHospitalId() {
+            return this.$store.getters.getUserDetails.hospital_id;
         }
+    },
+    created() {
+        this.$store.dispatch("fetchUserDetails");
     }
 };
 </script>

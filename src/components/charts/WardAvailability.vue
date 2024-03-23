@@ -1,6 +1,11 @@
 <template>
     <cv-tile id="wardAvailability">
-        <Bar id="stackedBarChart" :options="chartOptions" :data="chartData" />
+        <Bar
+            v-if="dataAvailable"
+            id="stackedBarChart"
+            :options="chartOptions"
+            :data="chartData"
+        />
     </cv-tile>
 </template>
 
@@ -30,46 +35,6 @@ export default {
     components: { Bar },
     data() {
         return {
-            chartData: {
-                labels: [
-                    "Ward 1",
-                    "Ward 2",
-                    "Ward 3",
-                    "Ward 4",
-                    "Ward 5",
-                    "Ward 6",
-                    "Ward 7",
-                    "Ward 8",
-                    "Ward 9",
-                    "Ward 10"
-                ],
-                datasets: [
-                    {
-                        label: "Available Beds",
-                        data: [
-                            1, 4, 20, 19, 10, 7, 5, 3, 6, 12, 11, 2, 9, 8, 16,
-                            14, 18, 13, 15, 17
-                        ],
-                        backgroundColor: "rgba(0,255,0, 0.75)"
-                    },
-                    {
-                        label: "Cleaning Required",
-                        data: [
-                            19, 12, 15, 4, 11, 13, 3, 10, 20, 8, 18, 5, 9, 14,
-                            17, 2, 6, 1, 16, 7
-                        ],
-                        backgroundColor: "rgba(255,255,0,0.75)"
-                    },
-                    {
-                        label: "Occupied Beds",
-                        data: [
-                            2, 5, 17, 12, 18, 14, 4, 10, 15, 1, 16, 13, 3, 19,
-                            11, 20, 6, 8, 9, 7
-                        ],
-                        backgroundColor: "rgba(255,0,0,0.75)"
-                    }
-                ]
-            },
             chartOptions: {
                 responsive: true,
                 maintainAspectRatio: false,
@@ -81,8 +46,97 @@ export default {
                         stacked: true
                     }
                 }
+            },
+            chartData: {
+                labels: [],
+                datasets: [
+                    {
+                        label: "Available Beds",
+                        data: [],
+                        backgroundColor: "rgba(0,255,0, 0.75)"
+                    },
+                    {
+                        label: "Cleaning Required",
+                        data: [],
+                        backgroundColor: "rgba(255,255,0,0.75)"
+                    },
+                    {
+                        label: "Occupied Beds",
+                        data: [],
+                        backgroundColor: "rgba(255,0,0,0.75)"
+                    }
+                ]
             }
         };
+    },
+    methods: {
+        async getWards() {
+            this.chartData.labels = [];
+            this.chartData.datasets[0].data = [];
+            this.chartData.datasets[1].data = [];
+            this.chartData.datasets[2].data = [];
+            try {
+                const response = await fetch(
+                    `/api/wards/all?hospital_id=${this.$store.getters.getSelectedHospital.id}`
+                );
+                const wards = await response.json();
+                this.chartData.labels = wards.map((ward) => ward.description);
+                const bedsDataPromises = wards.map((ward) =>
+                    this.getBeds(ward.id)
+                );
+                const bedsDataResults = await Promise.all(bedsDataPromises);
+                bedsDataResults.forEach(([available, cleaning, occupied]) => {
+                    this.chartData.datasets[0].data.push(available);
+                    this.chartData.datasets[1].data.push(cleaning);
+                    this.chartData.datasets[2].data.push(occupied);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        },
+
+        async getBeds(wardId) {
+            try {
+                const response = await fetch(`/api/beds/status/${wardId}`);
+                const beds = await response.json();
+                if (beds.length !== 0) {
+                    const available = beds.filter(
+                        (bed) => !bed.disabled && !bed.occupied
+                    ).length;
+                    const cleaning = beds.filter((bed) => bed.disabled).length;
+                    const occupied = beds.filter((bed) => bed.occupied).length;
+                    return [available, cleaning, occupied];
+                } else {
+                    return [0, 0, 0];
+                }
+            } catch (err) {
+                console.error(err);
+                return [0, 0, 0];
+            }
+        }
+    },
+    computed: {
+        selectedHospital() {
+            return this.$store.getters.getSelectedHospital;
+        },
+        dataAvailable() {
+            return (
+                this.chartData.datasets[0].data.length ===
+                    this.chartData.labels.length &&
+                this.chartData.datasets[1].data.length ===
+                    this.chartData.labels.length &&
+                this.chartData.datasets[2].data.length ===
+                    this.chartData.labels.length
+            );
+        }
+    },
+    watch: {
+        selectedHospital() {
+            this.getWards();
+        },
+        chartData() {
+            console.log(this.chartData);
+        }
     }
 };
 </script>

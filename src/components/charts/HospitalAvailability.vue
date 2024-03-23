@@ -1,12 +1,16 @@
 <template>
     <cv-tile id="wardAvailability">
-        <Pie :options="chartOptions" :data="chartData" :id="chartId" />
+        <Pie
+            v-if="dataAvailable"
+            :options="chartOptions"
+            :data="chartData"
+            :id="chartId"
+        />
     </cv-tile>
 </template>
 
 <script>
 import { Pie } from "vue-chartjs";
-
 import {
     Chart as ChartJS,
     Title,
@@ -35,7 +39,7 @@ export default {
                             "rgba(255,255,0,0.75)",
                             "rgba(255,0,0,0.75)"
                         ],
-                        data: [5, 10, 50]
+                        data: []
                     }
                 ]
             },
@@ -44,6 +48,64 @@ export default {
                 maintainAspectRatio: false
             }
         };
+    },
+    computed: {
+        selectedHospital() {
+            return this.$store.getters.getSelectedHospital;
+        },
+        dataAvailable() {
+            return this.chartData.datasets[0].data.some((value) => value > 0);
+        }
+    },
+    methods: {
+        async fetchWardBeds() {
+            try {
+                const response = await fetch(
+                    `/api/wards/all?hospital_id=${this.selectedHospital.id}`
+                );
+                const wards = await response.json();
+                const bedsDataPromises = wards.map((ward) =>
+                    this.fetchBedStatus(ward.id)
+                );
+                const bedsDataResults = await Promise.all(bedsDataPromises);
+                this.processBedData(bedsDataResults);
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        async fetchBedStatus(wardId) {
+            try {
+                const response = await fetch(`/api/beds/status/${wardId}`);
+                const beds = await response.json();
+                let counts = [0, 0, 0];
+                beds.forEach((bed) => {
+                    if (!bed.disabled && !bed.occupied) counts[0]++;
+                    else if (bed.disabled) counts[1]++;
+                    else if (bed.occupied) counts[2]++;
+                });
+                return counts;
+            } catch (err) {
+                console.error(err);
+                return [0, 0, 0];
+            }
+        },
+        processBedData(bedsData) {
+            let totals = [0, 0, 0];
+            bedsData.forEach((bed) => {
+                totals[0] += bed[0];
+                totals[1] += bed[1];
+                totals[2] += bed[2];
+            });
+            this.chartData.datasets[0].data = totals;
+        }
+    },
+    watch: {
+        selectedHospital() {
+            this.fetchWardBeds();
+        }
+    },
+    mounted() {
+        this.fetchWardBeds();
     }
 };
 </script>
