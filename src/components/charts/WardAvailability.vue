@@ -90,6 +90,7 @@ export default {
                     this.chartData.datasets[1].data.push(cleaning);
                     this.chartData.datasets[2].data.push(occupied);
                 });
+                console.log(this.chartData);
             } catch (err) {
                 console.error(err);
             }

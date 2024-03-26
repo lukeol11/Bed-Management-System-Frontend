@@ -9,27 +9,25 @@
                 >
                     <cv-data-table-cell>{{ result.ward }}</cv-data-table-cell>
                     <cv-data-table-cell>{{ result.bedId }}</cv-data-table-cell>
-                    <cv-data-table-cell v-if="!bedsOnly"
+                    <cv-data-table-cell
                         ><div v-if="result.patientName">
                             {{ result.patientName }}
                         </div>
                         <cv-tag v-else label="Available" kind="green" />
                     </cv-data-table-cell>
-                    <cv-data-table-cell v-if="!bedsOnly">{{
+                    <cv-data-table-cell>{{
                         result.dateOfBirth
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>{{
                         result.treatmentLevel
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button v-if="viewBedAction">View Bed</cv-button>
+                        <cv-button>View Bed</cv-button>
                         <cv-button
-                            v-if="transferAction"
                             kind="secondary"
                             :disabled="!result.patientName"
                             >Transfer</cv-button
                         >
-                        <cv-button v-if="selectAction">Select</cv-button>
                     </cv-data-table-cell>
                 </cv-data-table-row>
             </template>
@@ -42,62 +40,31 @@ export default {
     name: "SearchTable",
     data() {
         return {
-            fullResults: [
-                {
-                    ward: "A",
-                    bedId: 1,
-                    patientName: "John Doe",
-                    dateOfBirth: "01/01/1970",
-                    treatmentLevel: "High"
-                },
-                {
-                    ward: "A",
-                    bedId: 2,
-                    treatmentLevel: "Low"
-                },
-                {
-                    ward: "B",
-                    bedId: 3,
-                    patientName: "John Smith",
-                    dateOfBirth: "01/01/1970",
-                    treatmentLevel: "Medium"
-                },
-                {
-                    ward: "B",
-                    dateOfBirth: "01/01/1970",
-                    bedId: 4,
-                    patientName: "Jane Doe",
-                    treatmentLevel: "High"
-                }
+            fullResults: this.data,
+            columns: [
+                "Ward",
+                "Bed ID",
+                "Patient Name",
+                "Date of Birth",
+                "Treatment Level",
+                "Actions"
             ]
         };
     },
+    props: {
+        data: {
+            type: Array,
+            required: true
+        }
+    },
     computed: {
         results() {
-            return this.fullResults.filter((result) => {
+            return this.data.filter((result) => {
                 if (this.patientsOnly) {
                     return result.patientName;
                 }
                 return true;
             });
-        }
-    },
-    props: {
-        viewBedAction: {
-            type: Boolean,
-            default: true
-        },
-        transferAction: {
-            type: Boolean,
-            default: true
-        },
-        selectAction: {
-            type: Boolean,
-            default: false
-        },
-        patientsOnly: {
-            type: Boolean,
-            default: false
         }
     }
 };
