@@ -1,10 +1,11 @@
 <template>
     <div>
-        <cv-search></cv-search>
+        <!-- Bind the input event of cv-search to the handleSearch method -->
+        <cv-search @input="handleSearch"></cv-search>
         <cv-data-table :columns="columns" :zebra="true">
             <template slot="data">
                 <cv-data-table-row
-                    v-for="(result, index) in results"
+                    v-for="(result, index) in filteredResults"
                     :key="index"
                 >
                     <cv-data-table-cell>{{ result.ward }}</cv-data-table-cell>
@@ -41,6 +42,7 @@ export default {
     data() {
         return {
             fullResults: this.data,
+            searchQuery: "",
             columns: [
                 "Ward",
                 "Bed ID",
@@ -58,13 +60,26 @@ export default {
         }
     },
     computed: {
-        results() {
-            return this.data.filter((result) => {
-                if (this.patientsOnly) {
-                    return result.patientName;
-                }
-                return true;
+        filteredResults() {
+            if (!this.searchQuery) {
+                return this.fullResults;
+            }
+            return this.fullResults.filter((result) => {
+                return Object.values(result).some((value) => {
+                    if (value === null || value === undefined) {
+                        return false;
+                    }
+                    return value
+                        .toString()
+                        .toLowerCase()
+                        .includes(this.searchQuery.toLowerCase());
+                });
             });
+        }
+    },
+    methods: {
+        handleSearch(value) {
+            this.searchQuery = value;
         }
     }
 };
