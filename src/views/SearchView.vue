@@ -1,6 +1,6 @@
 <template>
     <div class="searchView">
-        <SearchTable :data="results" :bedsOnly="false" />
+        <SearchTable v-if="resultsReady" :data="results" :bedsOnly="false" />
     </div>
 </template>
 
@@ -13,7 +13,8 @@ export default {
     },
     data() {
         return {
-            results: []
+            results: [],
+            resultsReady: false
         };
     },
     computed: {
@@ -75,6 +76,7 @@ export default {
             }
         },
         async findMatching() {
+            this.resultsReady = false;
             const wards = await this.getWards();
             const bedsPromises = wards.map((ward) => this.getBeds(ward.id));
             const beds = (await Promise.all(bedsPromises)).flat();
@@ -99,6 +101,7 @@ export default {
                 };
             });
             this.results = results;
+            this.resultsReady = true;
         }
     },
     watch: {
