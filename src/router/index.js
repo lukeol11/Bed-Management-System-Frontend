@@ -10,6 +10,9 @@ import CreateView from "../views/CreateView.vue";
 import SearchView from "../views/SearchView.vue";
 import AdminView from "../views/AdminView.vue";
 import TransferView from "@/views/TransferView.vue";
+import WardManagementView from "@/views/WardManagementView.vue";
+import UserManagementView from "@/views/UserManagementView.vue";
+import BedsList from "@/components/admin/BedsList.vue";
 
 import { getAuth } from "firebase/auth";
 Vue.use(VueRouter);
@@ -47,12 +50,35 @@ const routes = [
             {
                 path: "admin",
                 name: "admin",
-                component: AdminView
+                component: AdminView,
+                children: [
+                    {
+                        path: "wards",
+                        name: "wards",
+                        component: WardManagementView,
+                        children: [
+                            {
+                                path: ":wardId",
+                                component: BedsList
+                            }
+                        ]
+                    },
+                    {
+                        path: "users",
+                        name: "users",
+                        component: UserManagementView
+                    }
+                ]
             },
             {
                 path: "transfer",
                 name: "transfer",
                 component: TransferView
+            },
+            {
+                path: "/signup",
+                name: "signup",
+                component: SignupView
             }
         ]
     },
@@ -60,11 +86,6 @@ const routes = [
         path: "/login",
         name: "login",
         component: LoginView
-    },
-    {
-        path: "/signup",
-        name: "signup",
-        component: SignupView
     },
     {
         path: "/logout",

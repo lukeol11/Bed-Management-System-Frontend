@@ -1,18 +1,27 @@
 <template>
     <div class="adminView">
-        <cv-tile kind="clickable"><hospital-bed-icon />Manage Beds</cv-tile>
-        <cv-tile kind="clickable"><users-icon />Manage Users</cv-tile>
+        <div class="tilesContainer">
+            <cv-tile kind="clickable" @click="open('wards')">
+                Manage Beds</cv-tile
+            >
+            <cv-tile kind="clickable" @click="open('users')">
+                Manage Users</cv-tile
+            >
+        </div>
+        <router-view id="managementView"></router-view>
     </div>
 </template>
 
 <script>
-import HospitalBedIcon from "@carbon/icons-vue/es/hospital-bed/32";
-import UsersIcon from "@carbon/icons-vue/es/user/32";
 export default {
     name: "AdminView",
-    components: {
-        HospitalBedIcon,
-        UsersIcon
+    components: {},
+    methods: {
+        open(route) {
+            if (this.$route.name !== route) {
+                this.$router.push({ name: route });
+            }
+        }
     }
 };
 </script>
@@ -22,11 +31,19 @@ export default {
     width: 100%;
     height: 100vh;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
 }
+
+.tilesContainer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 .cv-tile {
-    width: 50%;
-    height: 60%;
+    width: calc(50% - 4rem);
+    height: 20%;
     font-size: 2rem;
     font-weight: 500;
     font-family: Roboto, sans-serif;
@@ -34,12 +51,8 @@ export default {
     margin: 2rem;
 }
 
-.adminView .cv-tile svg {
-    margin-left: 30%;
-    margin-right: 30%;
-    margin-top: 20%;
-    margin-bottom: 10%;
-    width: 40%;
-    height: 40%;
+#managementView {
+    width: 100%;
+    margin-top: 1rem;
 }
 </style>
