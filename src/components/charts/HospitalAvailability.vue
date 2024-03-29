@@ -1,5 +1,5 @@
 <template>
-    <cv-tile id="wardAvailability">
+    <cv-tile id="hospitalAvailability">
         <Pie
             v-if="dataAvailable"
             :options="chartOptions"
