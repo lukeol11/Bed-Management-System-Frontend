@@ -3,6 +3,7 @@
         <div class="charts">
             <WardAvailability />
             <HospitalAvailability />
+            <BusyTimes />
         </div>
         <div class="navigation">
             <cv-tile @click="open('search')" kind="clickable"
@@ -21,6 +22,7 @@
 <script>
 import WardAvailability from "@/components/charts/WardAvailability.vue";
 import HospitalAvailability from "@/components/charts/HospitalAvailability.vue";
+import BusyTimes from "@/components/charts/BusyTimes.vue";
 import MovementIcon from "@carbon/icons-vue/es/movement/32";
 import RequestQuoteIcon from "@carbon/icons-vue/es/request-quote/32";
 import SearchIcon from "@carbon/icons-vue/es/search/32";
@@ -30,6 +32,7 @@ export default {
     components: {
         WardAvailability,
         HospitalAvailability,
+        BusyTimes,
         MovementIcon,
         RequestQuoteIcon,
         SearchIcon
@@ -44,7 +47,12 @@ export default {
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
-.charts .cv-tile {
+.charts .cv-tile#hospitalAvailability,
+.charts .cv-tile#busyTimes {
+    height: 90%;
+    width: 19%;
+}
+.charts .cv-tile#wardAvailability {
     height: 90%;
     width: 40%;
 }
