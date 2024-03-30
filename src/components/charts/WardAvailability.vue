@@ -138,6 +138,9 @@ export default {
         chartData() {
             console.log(this.chartData);
         }
+    },
+    mounted() {
+        this.getWards();
     }
 };
 </script>
