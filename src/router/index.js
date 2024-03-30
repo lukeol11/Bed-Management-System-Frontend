@@ -13,6 +13,7 @@ import TransferView from "@/views/TransferView.vue";
 import WardManagementView from "@/views/WardManagementView.vue";
 import UserManagementView from "@/views/UserManagementView.vue";
 import BedsList from "@/components/admin/BedsList.vue";
+import BedView from "@/views/BedView.vue";
 
 import { getAuth } from "firebase/auth";
 Vue.use(VueRouter);
@@ -79,6 +80,11 @@ const routes = [
                 path: "/signup",
                 name: "signup",
                 component: SignupView
+            },
+            {
+                path: "bed/:bedId",
+                name: "bed",
+                component: BedView
             }
         ]
     },
