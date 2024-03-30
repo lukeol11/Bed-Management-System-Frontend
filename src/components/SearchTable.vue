@@ -23,7 +23,9 @@
                         result.treatmentLevel
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button>View Bed</cv-button>
+                        <cv-button @click="openBed(result.bedId)"
+                            >View Bed</cv-button
+                        >
                         <cv-button
                             kind="secondary"
                             :disabled="!result.patientName"
@@ -80,6 +82,9 @@ export default {
     methods: {
         handleSearch(value) {
             this.searchQuery = value;
+        },
+        openBed(bedId) {
+            this.$router.push(`/bed/${bedId}`);
         }
     }
 };
