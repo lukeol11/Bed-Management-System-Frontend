@@ -16,6 +16,9 @@
                 ><MovementIcon />Transfer</cv-tile
             >
         </div>
+        <div class="wardCharts">
+            <WardsTile><LineChart /></WardsTile>
+        </div>
     </div>
 </template>
 
@@ -23,6 +26,8 @@
 import WardAvailability from "@/components/charts/WardAvailability.vue";
 import HospitalAvailability from "@/components/charts/HospitalAvailability.vue";
 import BusyTimes from "@/components/charts/BusyTimes.vue";
+import WardsTile from "@/components/charts/WardsTile.vue";
+import LineChart from "@/components/charts/LineChart.vue";
 import MovementIcon from "@carbon/icons-vue/es/movement/32";
 import RequestQuoteIcon from "@carbon/icons-vue/es/request-quote/32";
 import SearchIcon from "@carbon/icons-vue/es/search/32";
@@ -33,6 +38,8 @@ export default {
         WardAvailability,
         HospitalAvailability,
         BusyTimes,
+        WardsTile,
+        LineChart,
         MovementIcon,
         RequestQuoteIcon,
         SearchIcon
@@ -52,21 +59,35 @@ export default {
     height: 90%;
     width: 19%;
 }
+.navigation {
+    width: 30%;
+    height: 50%;
+    flex-direction: column;
+}
+.wardCharts {
+    width: 66%;
+    height: 40%;
+    padding-left: 1em;
+}
 .charts .cv-tile#wardAvailability {
     height: 90%;
     width: 40%;
 }
+.wardCharts .cv-tile#wardSelectorTile {
+    height: 90%;
+    width: 60%;
+}
 .navigation .cv-tile {
-    height: 80%;
-    width: 26%;
+    height: 20%;
+    width: 100%;
     text-align: center;
     font-family: Roboto, sans-serif;
 }
 .navigation .cv-tile svg {
-    margin-left: 30%;
-    margin-right: 30%;
-    margin-top: 20%;
-    margin-bottom: 10%;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 5%;
+    margin-bottom: 5%;
     width: 40%;
     height: 40%;
 }
@@ -75,18 +96,21 @@ export default {
 }
 .dashboard {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
     height: 100vh;
     align-items: flex-start;
     width: 100%;
 }
 .charts,
-.navigation {
-    width: 100%;
-    height: 50%;
+.navigation,
+.wardCharts {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
+}
+.charts {
+    width: 100%;
+    height: 50%;
 }
 </style>

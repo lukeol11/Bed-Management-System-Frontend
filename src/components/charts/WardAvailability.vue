@@ -134,9 +134,6 @@ export default {
     watch: {
         selectedHospital() {
             this.getWards();
-        },
-        chartData() {
-            console.log(this.chartData);
         }
     },
     mounted() {
