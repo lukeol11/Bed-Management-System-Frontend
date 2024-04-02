@@ -67,7 +67,7 @@ export default {
                 plugins: {
                     title: {
                         display: true,
-                        text: "Busy Times"
+                        text: "Busy Times (Past 72h)"
                     }
                 },
                 scales: {

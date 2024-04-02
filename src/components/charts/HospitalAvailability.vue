@@ -31,7 +31,7 @@ export default {
         return {
             chartId: "Total Availability",
             chartData: {
-                labels: ["Available", "Cleaning Required", "Unavailable"],
+                labels: ["Available", "Cleaning Required", "Occupied"],
                 datasets: [
                     {
                         backgroundColor: [
@@ -109,5 +109,3 @@ export default {
     }
 };
 </script>
-
-<style scoped></style>
