@@ -51,9 +51,9 @@ export default {
                 labels: [],
                 datasets: [
                     {
-                        label: "Available Beds",
+                        label: "Occupied Beds",
                         data: [],
-                        backgroundColor: "rgba(0,255,0, 0.75)"
+                        backgroundColor: "rgba(255,0,0,0.75)"
                     },
                     {
                         label: "Cleaning Required",
@@ -61,9 +61,9 @@ export default {
                         backgroundColor: "rgba(255,255,0,0.75)"
                     },
                     {
-                        label: "Occupied Beds",
+                        label: "Available Beds",
                         data: [],
-                        backgroundColor: "rgba(255,0,0,0.75)"
+                        backgroundColor: "rgba(0,255,0, 0.75)"
                     }
                 ]
             }
@@ -86,9 +86,9 @@ export default {
                 );
                 const bedsDataResults = await Promise.all(bedsDataPromises);
                 bedsDataResults.forEach(([available, cleaning, occupied]) => {
-                    this.chartData.datasets[0].data.push(available);
+                    this.chartData.datasets[2].data.push(available);
                     this.chartData.datasets[1].data.push(cleaning);
-                    this.chartData.datasets[2].data.push(occupied);
+                    this.chartData.datasets[0].data.push(occupied);
                 });
                 console.log(this.chartData);
             } catch (err) {
@@ -144,5 +144,3 @@ export default {
     }
 };
 </script>
-
-<style scoped></style>
