@@ -22,8 +22,7 @@ export default {
     name: "WardSelectorTile",
     data() {
         return {
-            wards: [],
-            chart: "discharges"
+            wards: []
         };
     },
     methods: {
@@ -46,11 +45,6 @@ export default {
         },
         emitSelectedWard(ward) {
             this.$emit("ward", ward);
-        },
-        emitChart() {
-            this.chart =
-                this.chart === "discharges" ? "availability" : "discharges";
-            this.$emit("chart", this.chart);
         }
     },
     watch: {
