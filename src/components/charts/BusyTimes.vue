@@ -67,12 +67,18 @@ export default {
                 plugins: {
                     title: {
                         display: true,
-                        text: "Busy Times (Past 72h)"
+                        text: "Busy Times (Average over Past 72h)"
                     }
                 },
                 scales: {
                     x: {
-                        display: false
+                        display: true
+                    },
+                    y: {
+                        title: {
+                            text: "Time",
+                            display: true
+                        }
                     }
                 }
             }

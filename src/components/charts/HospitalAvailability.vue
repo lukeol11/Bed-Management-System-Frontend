@@ -45,7 +45,13 @@ export default {
             },
             chartOptions: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Hospital Availability"
+                    }
+                }
             }
         };
     },
