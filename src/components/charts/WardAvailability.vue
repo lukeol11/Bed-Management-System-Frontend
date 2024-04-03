@@ -45,6 +45,12 @@ export default {
                     y: {
                         stacked: true
                     }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Ward Availability"
+                    }
                 }
             },
             chartData: {
@@ -90,7 +96,6 @@ export default {
                     this.chartData.datasets[1].data.push(cleaning);
                     this.chartData.datasets[0].data.push(occupied);
                 });
-                console.log(this.chartData);
             } catch (err) {
                 console.error(err);
             }

@@ -1,5 +1,7 @@
 <template>
-    <LineGraph :data="data" :options="options" />
+    <div id="chartContainer">
+        <LineGraph id="lineGraph" :data="data" :options="options" />
+    </div>
 </template>
 
 <script>
@@ -49,7 +51,21 @@ export default {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Ward Trend"
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            text: "Date",
+                            display: true
+                        }
+                    }
+                }
             }
         };
     },
@@ -58,7 +74,7 @@ export default {
             let results = [];
             for (let i = 0; i < 7; i++) {
                 const date = new Date();
-                date.setDate(date.getDate() - i);
+                date.setDate(date.getDate() - i - 1);
                 results.push(date.toISOString().split("T")[0].slice(5));
             }
             this.data.labels = results.toReversed();

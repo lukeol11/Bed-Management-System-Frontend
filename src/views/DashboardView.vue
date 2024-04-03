@@ -75,7 +75,7 @@ export default {
 }
 .wardCharts .cv-tile#wardSelectorTile {
     height: 90%;
-    width: 60%;
+    width: 78%;
 }
 .navigation .cv-tile {
     height: 20%;
@@ -84,10 +84,10 @@ export default {
     font-family: Roboto, sans-serif;
 }
 .navigation .cv-tile svg {
-    margin-left: 5%;
-    margin-right: 5%;
-    margin-top: 5%;
-    margin-bottom: 5%;
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 1%;
+    margin-bottom: 1%;
     width: 40%;
     height: 40%;
 }
@@ -112,5 +112,9 @@ export default {
 .charts {
     width: 100%;
     height: 50%;
+}
+
+div.wardCharts div#wardSelectorTile div#chartContainer {
+    height: 80%;
 }
 </style>

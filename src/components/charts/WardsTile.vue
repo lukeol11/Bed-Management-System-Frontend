@@ -11,10 +11,7 @@
                     {{ ward.description }}
                 </cv-dropdown-item>
             </cv-dropdown>
-            <cv-toggle value="test" label="Chart" @change="emitChart()">
-                <template slot="text-left">Discharges</template>
-                <template slot="text-right">Availability</template>
-            </cv-toggle>
+            <div id="UpdateDisclaimer">Updated Daily at 00:00</div>
         </div>
         <slot></slot>
     </cv-tile>
@@ -73,18 +70,26 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
 #wardSelectorTile {
     width: 100%;
     height: 100%;
 }
-div.bx--form-item
-    label.bx--toggle-input__label
-    span.bx--toggle__switch
-    .bx--toggle__switch::before {
-    background-color: #f00;
-}
 .selectors {
     display: flex;
     flex-direction: row;
+}
+.selectors .bx--form-item {
+    max-width: 40em;
+    width: 40em;
+}
+
+#UpdateDisclaimer {
+    font-style: italic;
+    font-family: "Roboto", sans-serif;
+    color: #666;
+    font-size: 0.9em;
+    text-align: right;
+    width: 100%;
 }
 </style>
