@@ -25,10 +25,12 @@
                         <Cv-tag label="Auto" kind="cyan" />
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-text-input></cv-text-input>
+                        <cv-text-input
+                            v-model="newBed.description"
+                        ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button>Create</cv-button>
+                        <cv-button @click="createBed">Create</cv-button>
                     </cv-data-table-cell>
                 </cv-data-table-row>
             </template>
@@ -43,7 +45,10 @@ export default {
     data() {
         return {
             beds: [],
-            columns: ["ID", "Description", "Action"]
+            columns: ["ID", "Description", "Action"],
+            newBed: {
+                description: ""
+            }
         };
     },
     methods: {
@@ -61,6 +66,36 @@ export default {
                 await fetch(`/api/beds/delete/${bedId}`, {
                     method: "DELETE"
                 });
+                this.getBeds();
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        async createBed() {
+            const date = new Date().toISOString();
+            const bedData = {
+                ...this.newBed,
+                ward_id: this.wardId,
+                disabled: false,
+                created_at: date,
+                updated_at: date
+            };
+            console.info("Creating bed:", bedData);
+            try {
+                const response = await fetch("/api/beds/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(bedData)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to create ward");
+                }
+                this.newbed = {
+                    description: ""
+                };
                 this.getBeds();
             } catch (err) {
                 console.error(err);
