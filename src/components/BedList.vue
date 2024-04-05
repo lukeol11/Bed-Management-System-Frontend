@@ -69,11 +69,12 @@ export default {
                 let activeBeds = [];
                 const response = await fetch(`/api/beds/all/${wardId}`);
                 const beds = await response.json();
-                beds.forEach((bed) => {
-                    if (this.isBedActive(bed.id)) {
+                const bedsPromises = beds.map(async (bed) => {
+                    if (!(await this.isBedActive(bed.id))) {
                         activeBeds.push(bed);
                     }
                 });
+                await Promise.all(bedsPromises);
                 return activeBeds;
             } catch (err) {
                 console.error(err);
@@ -95,7 +96,7 @@ export default {
             try {
                 const response = await fetch(`/api/beds/active/${bedId}`);
                 const bedDetails = await response.json();
-                return bedDetails.length > 0;
+                return bedDetails[0]?.id ? true : false;
             } catch (err) {
                 console.error(err);
             }

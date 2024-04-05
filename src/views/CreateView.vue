@@ -69,6 +69,9 @@ export default {
                 console.error(err);
             }
         },
+        openBed(bedId) {
+            this.$router.push(`/bed/${bedId}`);
+        },
         async assignBed(bedId) {
             const response = await this.createPatient();
             const patient = await response.json();
@@ -88,6 +91,7 @@ export default {
                     })
                 });
                 this.triggerUpdate++;
+                this.openBed(bedId);
             } catch (err) {
                 console.error(err);
             }
