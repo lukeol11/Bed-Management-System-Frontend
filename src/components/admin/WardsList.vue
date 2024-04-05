@@ -27,7 +27,9 @@
                     >
                     <cv-data-table-cell>
                         <cv-button @click="open(result.id)">Open</cv-button>
-                        <cv-button kind="danger">Delete</cv-button>
+                        <cv-button kind="danger" @click="delete result.id"
+                            >Delete</cv-button
+                        >
                     </cv-data-table-cell>
                 </cv-data-table-row>
                 <cv-data-table-row>
@@ -108,6 +110,22 @@ export default {
                 this.lastSelected = route;
                 this.$router.push(`/admin/wards/${route}`);
             }
+        },
+        async delete(bedId) {
+            try {
+                await fetch(`/api/beds/delete/${bedId}`, {
+                    method: "DELETE"
+                }).then((response) => {
+                    if (response.ok) {
+                        this.refreshData();
+                    }
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        refreshData() {
+            this.getWards();
         }
     },
     computed: {
