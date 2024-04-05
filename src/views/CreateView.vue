@@ -1,7 +1,14 @@
 <template>
     <div class="create">
-        <AddPatient />
-        <BedList action="Assign" />
+        <AddPatient @patientDetails="handlePatientDetails" />
+        <BedList
+            :age="patientAge"
+            :treatmentLevel="Number(patientDetails.treatment)"
+            :gender="patientDetails.gender"
+            :hospitalId="selectedHospital.id"
+            :triggerUpdate="triggerUpdate"
+            @assignBed="assignBed"
+        />
     </div>
 </template>
 
@@ -11,9 +18,84 @@ import BedList from "@/components/BedList.vue";
 
 export default {
     name: "CreateView",
+    data() {
+        return {
+            patientDetails: {},
+            patientAge: 0,
+            triggerUpdate: 0
+        };
+    },
     components: {
         AddPatient,
         BedList
+    },
+    computed: {
+        selectedHospital() {
+            return this.$store.getters.getSelectedHospital;
+        },
+        userId() {
+            return this.$store.getters.getUserDetails.id;
+        }
+    },
+    methods: {
+        handlePatientDetails(patientDetails) {
+            this.patientAge = this.findPatientAge(patientDetails.dateOfBirth);
+            this.patientDetails = patientDetails;
+        },
+        findPatientAge(dateOfBirth) {
+            const dob = new Date(dateOfBirth.split("/").reverse().join("-"));
+            const diff_ms = Date.now() - dob.getTime();
+            const age_dt = new Date(diff_ms);
+            return Math.abs(age_dt.getUTCFullYear() - 1970);
+        },
+        async createPatient() {
+            try {
+                return await fetch("/api/patients/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        first_name: this.patientDetails.firstName,
+                        last_name: this.patientDetails.lastName,
+                        date_of_birth: this.patientDetails.dateOfBirth,
+                        in_transit: false,
+                        created_by: this.userId,
+                        created_at: new Date().toISOString(),
+                        treatment_level_id: this.patientDetails.treatment
+                    })
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        openBed(bedId) {
+            this.$router.push(`/bed/${bedId}`);
+        },
+        async assignBed(bedId) {
+            const response = await this.createPatient();
+            const patient = await response.json();
+            console.log("Patient Created", patient);
+            try {
+                fetch("/api/beds/occupancy", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        patient_id: patient.id,
+                        bed_id: bedId,
+                        time_booked: new Date().toISOString(),
+                        created_by: 0,
+                        created_at: new Date().toISOString()
+                    })
+                });
+                this.triggerUpdate++;
+                this.openBed(bedId);
+            } catch (err) {
+                console.error(err);
+            }
+        }
     }
 };
 </script>

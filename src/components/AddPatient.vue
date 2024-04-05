@@ -8,18 +8,18 @@
         ></cv-date-picker>
         <cv-dropdown label="Treatment" v-model="selectedTreatment">
             <cv-dropdown-item
-                v-for="treatment in treatments"
-                :key="treatment"
-                :value="treatment"
+                v-for="treatment in treatmentLevels"
+                :key="treatment.id"
+                :value="String(treatment.id)"
             >
-                {{ treatment }}
+                {{ treatment.name }}
             </cv-dropdown-item>
         </cv-dropdown>
         <cv-dropdown label="Gender" v-model="selectedGender">
             <cv-dropdown-item
                 v-for="gender in genders"
                 :key="gender"
-                :value="gender"
+                :value="String(gender)"
             >
                 {{ gender }}
             </cv-dropdown-item>
@@ -39,13 +39,7 @@ export default {
             dateOfBirth: null,
             selectedTreatment: null,
             selectedGender: null,
-            treatments: [
-                "Medication",
-                "Surgery",
-                "Physiotherapy",
-                "Counselling",
-                "Other"
-            ],
+            treatmentLevels: [],
             genders: ["Male", "Female"]
         };
     },
@@ -59,8 +53,20 @@ export default {
                 gender: this.selectedGender
             };
             console.log(patientDetails);
-            this.$emit("search", patientDetails);
+            this.$emit("patientDetails", patientDetails);
+        },
+        async getTreatmentLevels() {
+            try {
+                const response = await fetch(`/api/wards/treatment_levels`);
+                const treatmentLevels = await response.json();
+                this.treatmentLevels = treatmentLevels;
+            } catch (err) {
+                console.error(err);
+            }
         }
+    },
+    created() {
+        this.getTreatmentLevels();
     }
 };
 </script>
