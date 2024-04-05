@@ -15,12 +15,14 @@
                         result.description
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button kind="danger">Delete</cv-button>
+                        <cv-button kind="danger" @click="deleteBed(result.id)"
+                            >Delete</cv-button
+                        >
                     </cv-data-table-cell>
                 </cv-data-table-row>
                 <cv-data-table-row>
                     <cv-data-table-cell>
-                        <cv-number-input></cv-number-input>
+                        <Cv-tag label="Auto" kind="cyan" />
                     </cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-text-input></cv-text-input>
@@ -50,6 +52,16 @@ export default {
                 const response = await fetch(`/api/beds/all/${this.wardId}`);
                 const beds = await response.json();
                 this.beds = beds;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        async deleteBed(bedId) {
+            try {
+                await fetch(`/api/beds/delete/${bedId}`, {
+                    method: "DELETE"
+                });
+                this.getBeds();
             } catch (err) {
                 console.error(err);
             }
