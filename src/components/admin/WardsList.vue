@@ -30,26 +30,32 @@
                     >
                     <cv-data-table-cell>
                         <cv-button @click="open(result.id)">Open</cv-button>
-                        <cv-button kind="danger" @click="delete result.id"
+                        <cv-button kind="danger" @click="deleteWard(result.id)"
                             >Delete</cv-button
                         >
                     </cv-data-table-cell>
                 </cv-data-table-row>
                 <cv-data-table-row>
                     <cv-data-table-cell>
-                        {{ highestId + 1 }}
+                        <Cv-tag label="Auto" kind="cyan" />
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-text-input></cv-text-input>
+                        <cv-text-input
+                            v-model="newWard.description"
+                        ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-number-input></cv-number-input>
+                        <cv-number-input
+                            v-model.number="newWard.min_patient_age"
+                        ></cv-number-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-number-input></cv-number-input>
+                        <cv-number-input
+                            v-model.number="newWard.max_patient_age"
+                        ></cv-number-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-dropdown>
+                        <cv-dropdown v-model="newWard.treatment_level">
                             <cv-dropdown-item
                                 v-for="treatmentLevel in treatmentLevels"
                                 :key="treatmentLevel.name"
@@ -60,10 +66,12 @@
                         </cv-dropdown>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-text-input></cv-text-input>
+                        <cv-text-input
+                            v-model="newWard.location"
+                        ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-dropdown>
+                        <cv-dropdown v-model="newWard.gender">
                             <cv-dropdown-item
                                 v-for="gender in genders"
                                 :key="gender"
@@ -74,7 +82,7 @@
                         </cv-dropdown>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button>Create</cv-button>
+                        <cv-button @click="createWard">Create</cv-button>
                     </cv-data-table-cell>
                 </cv-data-table-row>
             </template>
@@ -102,7 +110,15 @@ export default {
             ],
             genders: ["All", "Male", "Female"],
             lastSelected: undefined,
-            treatmentLevels: []
+            treatmentLevels: [],
+            newWard: {
+                description: "",
+                min_patient_age: 0,
+                max_patient_age: 0,
+                treatment_level: 0,
+                location: "",
+                gender: ""
+            }
         };
     },
     methods: {
@@ -137,29 +153,57 @@ export default {
                 this.$router.push(`/admin/wards/${route}`);
             }
         },
-        async delete(bedId) {
+        async deleteWard(wardId) {
             try {
-                await fetch(`/api/beds/delete/${bedId}`, {
+                await fetch(`/api/wards/delete/${wardId}`, {
                     method: "DELETE"
-                }).then((response) => {
-                    if (response.ok) {
-                        this.refreshData();
-                    }
                 });
+                this.refreshData();
             } catch (err) {
                 console.error(err);
             }
         },
         refreshData() {
             this.getWards();
+        },
+        async createWard() {
+            const wardData = {
+                ...this.newWard,
+                hospital_id: this.selectedHospital.id
+            };
+            console.info("Creating ward:", wardData);
+            try {
+                const response = await fetch("/api/wards/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(wardData)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to create ward");
+                }
+                this.newWard = {
+                    description: "",
+                    min_patient_age: 0,
+                    max_patient_age: 0,
+                    treatment_level: 0,
+                    location: "",
+                    gender: ""
+                };
+                this.refreshData();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    },
+    watch: {
+        newWard() {
+            console.log(this.newWard);
         }
     },
     computed: {
-        highestId() {
-            return this.wards.reduce((acc, ward) => {
-                return ward.id > acc ? ward.id : acc;
-            }, 0);
-        },
         selectedHospital() {
             return this.$store.getters.getSelectedHospital;
         },
