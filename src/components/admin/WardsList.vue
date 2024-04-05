@@ -16,7 +16,10 @@
                     <cv-data-table-cell>{{
                         result.max_patient_age
                     }}</cv-data-table-cell>
-                    <cv-data-table-cell>{{
+                    <cv-data-table-cell v-if="treatmentLevels.length">{{
+                        getTreatmentLevelName(result.treatment_level)
+                    }}</cv-data-table-cell>
+                    <cv-data-table-cell v-else>{{
                         result.treatment_level
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>{{
@@ -34,7 +37,7 @@
                 </cv-data-table-row>
                 <cv-data-table-row>
                     <cv-data-table-cell>
-                        <cv-number-input></cv-number-input>
+                        {{ highestId + 1 }}
                     </cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-text-input></cv-text-input>
@@ -46,7 +49,15 @@
                         <cv-number-input></cv-number-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-dropdown></cv-dropdown>
+                        <cv-dropdown>
+                            <cv-dropdown-item
+                                v-for="treatmentLevel in treatmentLevels"
+                                :key="treatmentLevel.name"
+                                :value="String(treatmentLevel.id)"
+                            >
+                                {{ treatmentLevel.name }}
+                            </cv-dropdown-item>
+                        </cv-dropdown>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-text-input></cv-text-input>
@@ -90,7 +101,8 @@ export default {
                 "Action"
             ],
             genders: ["All", "Male", "Female"],
-            lastSelected: undefined
+            lastSelected: undefined,
+            treatmentLevels: []
         };
     },
     methods: {
@@ -104,6 +116,20 @@ export default {
             } catch (err) {
                 console.error(err);
             }
+        },
+        async getTreatmentLevels() {
+            try {
+                const response = await fetch(`/api/wards/treatment_levels`);
+                const treatmentLevels = await response.json();
+                this.treatmentLevels = treatmentLevels;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        getTreatmentLevelName(id) {
+            return this.treatmentLevels.find(
+                (treatmentLevel) => treatmentLevel.id === id
+            ).name;
         },
         open(route) {
             if (this.lastSelected !== route) {
@@ -129,6 +155,11 @@ export default {
         }
     },
     computed: {
+        highestId() {
+            return this.wards.reduce((acc, ward) => {
+                return ward.id > acc ? ward.id : acc;
+            }, 0);
+        },
         selectedHospital() {
             return this.$store.getters.getSelectedHospital;
         },
@@ -140,9 +171,8 @@ export default {
         }
     },
     mounted() {
-        this.getWards().then((wards) => {
-            console.log(wards);
-        });
+        this.getTreatmentLevels();
+        this.getWards();
     }
 };
 </script>
