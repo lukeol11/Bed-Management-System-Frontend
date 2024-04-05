@@ -19,7 +19,11 @@
                     <p>Last Name: {{ patientInfo.last_name }}</p>
                     <p>DOB: {{ patientInfo.date_of_birth }}</p>
                     <p>Time Assigned: {{ patientInfo.timeBooked }}</p>
-                    <cv-button kind="danger">Checkout</cv-button>
+                    <cv-button
+                        kind="danger"
+                        @click="checkoutPatient(patientInfo.id, bedInfo.id)"
+                        >Checkout</cv-button
+                    >
                 </div>
                 <div v-else>
                     <cv-button kind="secondary">Assign Patient</cv-button>
@@ -87,6 +91,26 @@ export default {
                         bedActiveResponse[0].time_booked
                     ).toUTCString();
                 }
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async checkoutPatient(patientId, bedId) {
+            try {
+                await fetch(
+                    `/api/beds/checkout?patient_id=${patientId}&bed_id=${bedId}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            checkout_time: new Date().toISOString()
+                        })
+                    }
+                );
+
+                this.$router.go();
             } catch (error) {
                 console.error(error);
             }
