@@ -16,7 +16,10 @@
                     <cv-data-table-cell>{{
                         result.max_patient_age
                     }}</cv-data-table-cell>
-                    <cv-data-table-cell>{{
+                    <cv-data-table-cell v-if="treatmentLevels.length">{{
+                        getTreatmentLevelName(result.treatment_level)
+                    }}</cv-data-table-cell>
+                    <cv-data-table-cell v-else>{{
                         result.treatment_level
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>{{
@@ -27,30 +30,48 @@
                     >
                     <cv-data-table-cell>
                         <cv-button @click="open(result.id)">Open</cv-button>
-                        <cv-button kind="danger">Delete</cv-button>
+                        <cv-button kind="danger" @click="deleteWard(result.id)"
+                            >Delete</cv-button
+                        >
                     </cv-data-table-cell>
                 </cv-data-table-row>
                 <cv-data-table-row>
                     <cv-data-table-cell>
-                        <cv-number-input></cv-number-input>
+                        <Cv-tag label="Auto" kind="cyan" />
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-text-input></cv-text-input>
+                        <cv-text-input
+                            v-model="newWard.description"
+                        ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-number-input></cv-number-input>
+                        <cv-number-input
+                            v-model.number="newWard.min_patient_age"
+                        ></cv-number-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-number-input></cv-number-input>
+                        <cv-number-input
+                            v-model.number="newWard.max_patient_age"
+                        ></cv-number-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-dropdown></cv-dropdown>
+                        <cv-dropdown v-model="newWard.treatment_level">
+                            <cv-dropdown-item
+                                v-for="treatmentLevel in treatmentLevels"
+                                :key="treatmentLevel.name"
+                                :value="String(treatmentLevel.id)"
+                            >
+                                {{ treatmentLevel.name }}
+                            </cv-dropdown-item>
+                        </cv-dropdown>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-text-input></cv-text-input>
+                        <cv-text-input
+                            v-model="newWard.location"
+                        ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-dropdown>
+                        <cv-dropdown v-model="newWard.gender">
                             <cv-dropdown-item
                                 v-for="gender in genders"
                                 :key="gender"
@@ -61,7 +82,7 @@
                         </cv-dropdown>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button>Create</cv-button>
+                        <cv-button @click="createWard">Create</cv-button>
                     </cv-data-table-cell>
                 </cv-data-table-row>
             </template>
@@ -88,7 +109,16 @@ export default {
                 "Action"
             ],
             genders: ["All", "Male", "Female"],
-            lastSelected: undefined
+            lastSelected: undefined,
+            treatmentLevels: [],
+            newWard: {
+                description: "",
+                min_patient_age: 0,
+                max_patient_age: 0,
+                treatment_level: 0,
+                location: "",
+                gender: ""
+            }
         };
     },
     methods: {
@@ -103,11 +133,74 @@ export default {
                 console.error(err);
             }
         },
+        async getTreatmentLevels() {
+            try {
+                const response = await fetch(`/api/wards/treatment_levels`);
+                const treatmentLevels = await response.json();
+                this.treatmentLevels = treatmentLevels;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        getTreatmentLevelName(id) {
+            return this.treatmentLevels.find(
+                (treatmentLevel) => treatmentLevel.id === id
+            ).name;
+        },
         open(route) {
             if (this.lastSelected !== route) {
                 this.lastSelected = route;
                 this.$router.push(`/admin/wards/${route}`);
             }
+        },
+        async deleteWard(wardId) {
+            try {
+                await fetch(`/api/wards/delete/${wardId}`, {
+                    method: "DELETE"
+                });
+                this.refreshData();
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        refreshData() {
+            this.getWards();
+        },
+        async createWard() {
+            const wardData = {
+                ...this.newWard,
+                hospital_id: this.selectedHospital.id
+            };
+            console.info("Creating ward:", wardData);
+            try {
+                const response = await fetch("/api/wards/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(wardData)
+                });
+
+                if (!response.ok) {
+                    throw new Error("Failed to create ward");
+                }
+                this.newWard = {
+                    description: "",
+                    min_patient_age: 0,
+                    max_patient_age: 0,
+                    treatment_level: 0,
+                    location: "",
+                    gender: ""
+                };
+                this.refreshData();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    },
+    watch: {
+        newWard() {
+            console.log(this.newWard);
         }
     },
     computed: {
@@ -122,9 +215,8 @@ export default {
         }
     },
     mounted() {
-        this.getWards().then((wards) => {
-            console.log(wards);
-        });
+        this.getTreatmentLevels();
+        this.getWards();
     }
 };
 </script>
