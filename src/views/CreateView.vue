@@ -1,7 +1,12 @@
 <template>
     <div class="create">
-        <AddPatient />
-        <BedList action="Assign" />
+        <AddPatient @patientDetails="handlePatientDetails" />
+        <BedList
+            :age="patientAge"
+            :treatmentLevel="Number(patientDetails.treatment)"
+            :gender="patientDetails.gender"
+            @assignBed="assignBed"
+        />
     </div>
 </template>
 
@@ -11,9 +16,38 @@ import BedList from "@/components/BedList.vue";
 
 export default {
     name: "CreateView",
+    data() {
+        return {
+            patientDetails: {},
+            patientAge: 0
+        };
+    },
     components: {
         AddPatient,
         BedList
+    },
+    methods: {
+        handlePatientDetails(patientDetails) {
+            this.patientAge = this.findPatientAge(patientDetails.dateOfBirth);
+            this.patientDetails = patientDetails;
+        },
+        findPatientAge(dateOfBirth) {
+            const dob = new Date(dateOfBirth.split("/").reverse().join("-"));
+            const diff_ms = Date.now() - dob.getTime();
+            const age_dt = new Date(diff_ms);
+            return Math.abs(age_dt.getUTCFullYear() - 1970);
+        },
+        assignBed(bedId) {
+            console.log("Bed assigned", bedId, this.patientDetails);
+            // post /api/beds/occupancy
+            // {
+            //   "patient_id": 0,
+            //   "bed_id": 0,
+            //   "time_booked": "2024-04-05T15:12:01.247Z",
+            //   "created_by": 0,
+            //   "created_at": "2024-04-05T15:12:01.247Z"
+            // }
+        }
     }
 };
 </script>
