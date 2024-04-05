@@ -6,6 +6,7 @@
             :treatmentLevel="Number(patientDetails.treatment)"
             :gender="patientDetails.gender"
             :hospitalId="selectedHospital.id"
+            :triggerUpdate="triggerUpdate"
             @assignBed="assignBed"
         />
     </div>
@@ -20,7 +21,8 @@ export default {
     data() {
         return {
             patientDetails: {},
-            patientAge: 0
+            patientAge: 0,
+            triggerUpdate: 0
         };
     },
     components: {
@@ -85,6 +87,7 @@ export default {
                         created_at: new Date().toISOString()
                     })
                 });
+                this.triggerUpdate++;
             } catch (err) {
                 console.error(err);
             }

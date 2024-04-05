@@ -39,6 +39,10 @@ export default {
         hospitalId: {
             type: Number,
             required: false
+        },
+        triggerUpdate: {
+            type: Number,
+            required: false
         }
     },
     data() {
@@ -50,6 +54,9 @@ export default {
     },
     watch: {
         treatmentLevel() {
+            this.getAllMatchingBeds(this.age, this.treatmentLevel, this.gender);
+        },
+        triggerUpdate() {
             this.getAllMatchingBeds(this.age, this.treatmentLevel, this.gender);
         }
     },
