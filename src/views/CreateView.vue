@@ -5,6 +5,7 @@
             :age="patientAge"
             :treatmentLevel="Number(patientDetails.treatment)"
             :gender="patientDetails.gender"
+            :hospitalId="selectedHospital.id"
             @assignBed="assignBed"
         />
     </div>
@@ -25,6 +26,11 @@ export default {
     components: {
         AddPatient,
         BedList
+    },
+    computed: {
+        selectedHospital() {
+            return this.$store.getters.getSelectedHospital;
+        }
     },
     methods: {
         handlePatientDetails(patientDetails) {

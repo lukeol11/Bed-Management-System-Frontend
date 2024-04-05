@@ -33,6 +33,10 @@ export default {
         gender: {
             type: String,
             required: false
+        },
+        hospitalId: {
+            type: Number,
+            required: false
         }
     },
     data() {
@@ -69,7 +73,7 @@ export default {
         async getWards() {
             try {
                 const response = await fetch(
-                    `/api/wards/all?hospital_id=${this.selectedHospital.id}`
+                    `/api/wards/all?hospital_id=${this.hospitalId}`
                 );
                 const wards = await response.json();
                 return wards;
@@ -100,11 +104,6 @@ export default {
             );
             const beds = (await Promise.all(bedPromises)).flat();
             this.beds = beds;
-        }
-    },
-    computed: {
-        selectedHospital() {
-            return this.$store.getters.getSelectedHospital;
         }
     }
 };
