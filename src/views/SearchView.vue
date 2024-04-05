@@ -88,7 +88,7 @@ export default {
                 const patient = patients[index][0];
                 const ward = wards.find((ward) => ward.id === bed.ward_id);
                 const treatmentLevel = treatmentLevels.find(
-                    (level) => level.id === ward.treatment_level_id
+                    (level) => level.id === ward.treatment_level
                 );
                 return {
                     ward: ward.description,
