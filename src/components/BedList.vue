@@ -65,7 +65,6 @@ export default {
                 beds.forEach((bed) => {
                     if (this.isBedActive(bed.id)) {
                         activeBeds.push(bed);
-                        console.log(bed);
                     }
                 });
                 return activeBeds;
