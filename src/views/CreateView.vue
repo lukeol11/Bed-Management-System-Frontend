@@ -30,6 +30,9 @@ export default {
     computed: {
         selectedHospital() {
             return this.$store.getters.getSelectedHospital;
+        },
+        userId() {
+            return this.$store.getters.getUserDetails.id;
         }
     },
     methods: {
@@ -43,16 +46,48 @@ export default {
             const age_dt = new Date(diff_ms);
             return Math.abs(age_dt.getUTCFullYear() - 1970);
         },
-        assignBed(bedId) {
-            console.log("Bed assigned", bedId, this.patientDetails);
-            // post /api/beds/occupancy
-            // {
-            //   "patient_id": 0,
-            //   "bed_id": 0,
-            //   "time_booked": "2024-04-05T15:12:01.247Z",
-            //   "created_by": 0,
-            //   "created_at": "2024-04-05T15:12:01.247Z"
-            // }
+        async createPatient() {
+            try {
+                return await fetch("/api/patients/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        first_name: this.patientDetails.firstName,
+                        last_name: this.patientDetails.lastName,
+                        date_of_birth: this.patientDetails.dateOfBirth,
+                        in_transit: false,
+                        created_by: this.userId,
+                        created_at: new Date().toISOString(),
+                        treatment_level_id: this.patientDetails.treatment
+                    })
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        async assignBed(bedId) {
+            const response = await this.createPatient();
+            const patient = await response.json();
+            console.log("Patient Created", patient);
+            try {
+                fetch("/api/beds/occupancy", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        patient_id: patient.id,
+                        bed_id: bedId,
+                        time_booked: new Date().toISOString(),
+                        created_by: 0,
+                        created_at: new Date().toISOString()
+                    })
+                });
+            } catch (err) {
+                console.error(err);
+            }
         }
     }
 };

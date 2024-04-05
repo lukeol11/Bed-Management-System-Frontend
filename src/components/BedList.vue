@@ -4,7 +4,9 @@
         <cv-data-table :columns="columns" :zebra="true">
             <template slot="data">
                 <cv-data-table-row v-for="bed in beds" :key="bed.bedId">
-                    <cv-data-table-cell>{{ bed.ward }}</cv-data-table-cell>
+                    <cv-data-table-cell>{{
+                        findWard(bed.ward_id).description
+                    }}</cv-data-table-cell>
                     <cv-data-table-cell>{{ bed.id }}</cv-data-table-cell>
                     <cv-data-table-cell>{{
                         bed.description
@@ -42,6 +44,7 @@ export default {
     data() {
         return {
             columns: ["Ward", "Bed Id", "Description", "Action"],
+            wards: [],
             beds: []
         };
     },
@@ -76,6 +79,7 @@ export default {
                     `/api/wards/all?hospital_id=${this.hospitalId}`
                 );
                 const wards = await response.json();
+                this.wards = wards;
                 return wards;
             } catch (err) {
                 console.error(err);
@@ -104,6 +108,9 @@ export default {
             );
             const beds = (await Promise.all(bedPromises)).flat();
             this.beds = beds;
+        },
+        findWard(wardId) {
+            return this.wards.find((ward) => ward.id === wardId);
         }
     }
 };
