@@ -24,6 +24,9 @@
                         @click="checkoutPatient(patientInfo.id, bedInfo.id)"
                         >Checkout</cv-button
                     >
+                    <cv-button kind="secondary" @click="openTransfer(bedId)"
+                        >Transfer</cv-button
+                    >
                 </div>
                 <div v-else>
                     <cv-button kind="secondary">Assign Patient</cv-button>
@@ -59,6 +62,9 @@ export default {
         }
     },
     methods: {
+        openTransfer(bedId) {
+            this.$router.push(`/transfer/${bedId}`);
+        },
         downloadQrCode() {
             const canvas = document.querySelector("canvas");
             const image = canvas
