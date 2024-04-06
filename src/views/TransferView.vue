@@ -23,15 +23,28 @@
                         {{ hospital.description }}
                     </cv-dropdown-item>
                 </cv-dropdown>
+                <BedList
+                    v-if="selectedHospital"
+                    :age="findPatientAge(patientInfo.date_of_birth)"
+                    :treatmentLevel="Number(patientInfo.treatment_level_id)"
+                    :gender="patientInfo.gender"
+                    :hospitalId="Number(selectedHospital)"
+                    action="Request Transfer"
+                    @assignBed="transferPatient"
+                />
             </cv-tile>
         </div>
     </div>
 </template>
 
 <script>
+import BedList from "@/components/BedList.vue";
+
 export default {
     name: "TransferView",
-    components: {},
+    components: {
+        BedList
+    },
     data() {
         return {
             bedInfo: {},
@@ -51,6 +64,15 @@ export default {
         }
     },
     methods: {
+        findPatientAge(dateOfBirth) {
+            const dob = new Date(dateOfBirth.split("/").reverse().join("-"));
+            const diff_ms = Date.now() - dob.getTime();
+            const age_dt = new Date(diff_ms);
+            return Math.abs(age_dt.getUTCFullYear() - 1970);
+        },
+        transferPatient(bedId) {
+            console.log("transfer to", bedId);
+        },
         async getBedInfo() {
             try {
                 const response = await fetch(`/api/beds/find/${this.bedId}`);

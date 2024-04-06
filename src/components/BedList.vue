@@ -19,6 +19,17 @@
                 </cv-data-table-row>
             </template>
         </cv-data-table>
+        <cv-toast-notification
+            v-if="!treatmentLevel || !age || !gender || !hospitalId"
+            id="fill-info-notification"
+            title="Fill available fields for list of beds"
+        ></cv-toast-notification>
+        <cv-toast-notification
+            v-else-if="!beds.length"
+            id="fill-info-notification"
+            kind="error"
+            title="No beds available for the given criteria"
+        ></cv-toast-notification>
     </div>
 </template>
 
@@ -64,6 +75,9 @@ export default {
         },
         triggerUpdate() {
             this.getAllMatchingBeds(this.age, this.treatmentLevel, this.gender);
+        },
+        hospitalId() {
+            this.getAllMatchingBeds(this.age, this.treatmentLevel, this.gender);
         }
     },
     methods: {
@@ -108,6 +122,15 @@ export default {
             }
         },
         async getAllMatchingBeds(age, treatmentLevel, gender) {
+            console.log(
+                "Checking for beds with the following criteria",
+                "age:",
+                age,
+                "treatmentLevel:",
+                treatmentLevel,
+                "gender:",
+                gender
+            );
             const wards = await this.getWards();
             const filteredWards = wards.filter(
                 (ward) =>
@@ -116,6 +139,11 @@ export default {
                     ward.max_patient_age >= age &&
                     (gender === ward.gender || ward.gender == "All")
             );
+            if (filteredWards.length === 0) {
+                this.beds = [];
+                this.wards = [];
+                return;
+            }
             const bedPromises = filteredWards.map((ward) =>
                 this.getBeds(ward.id)
             );
@@ -125,6 +153,24 @@ export default {
         findWard(wardId) {
             return this.wards.find((ward) => ward.id === wardId);
         }
+    },
+    mounted() {
+        if (this.treatmentLevel && this.age && this.gender && this.hospitalId) {
+            this.getAllMatchingBeds(this.age, this.treatmentLevel, this.gender);
+        }
     }
 };
 </script>
+
+<style lang="scss">
+div#fill-info-notification.cv-notification.bx--toast-notification {
+    height: min-content;
+    button.bx--toast-notification__close-button {
+        display: none;
+        visibility: hidden;
+    }
+    .bx--toast-notification__details {
+        height: min-content;
+    }
+}
+</style>
