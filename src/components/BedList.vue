@@ -19,6 +19,17 @@
                 </cv-data-table-row>
             </template>
         </cv-data-table>
+        <cv-toast-notification
+            v-if="!treatmentLevel || !age || !gender || !hospitalId"
+            id="fill-info-notification"
+            title="Fill available fields for list of beds"
+        ></cv-toast-notification>
+        <cv-toast-notification
+            v-else-if="!beds.length"
+            id="fill-info-notification"
+            kind="error"
+            title="No beds available for the given criteria"
+        ></cv-toast-notification>
     </div>
 </template>
 
@@ -150,3 +161,16 @@ export default {
     }
 };
 </script>
+
+<style lang="scss">
+div#fill-info-notification.cv-notification.bx--toast-notification {
+    height: min-content;
+    button.bx--toast-notification__close-button {
+        display: none;
+        visibility: hidden;
+    }
+    .bx--toast-notification__details {
+        height: min-content;
+    }
+}
+</style>
