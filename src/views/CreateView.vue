@@ -60,6 +60,7 @@ export default {
                         first_name: this.patientDetails.firstName,
                         last_name: this.patientDetails.lastName,
                         date_of_birth: this.patientDetails.dateOfBirth,
+                        gender: this.patientDetails.gender,
                         in_transit: false,
                         created_by: this.userId,
                         created_at: new Date().toISOString(),
