@@ -15,7 +15,7 @@ import UserManagementView from "@/views/UserManagementView.vue";
 import BedsList from "@/components/admin/BedsList.vue";
 import BedView from "@/views/BedView.vue";
 
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 Vue.use(VueRouter);
 
 const routes = [
@@ -109,9 +109,25 @@ const router = new VueRouter({
     routes
 });
 
+function waitForAuthState() {
+    return new Promise((resolve, reject) => {
+        const auth = getAuth();
+        onAuthStateChanged(
+            auth,
+            (user) => {
+                resolve(user);
+            },
+            reject
+        );
+    });
+}
+
 router.beforeEach(async (to, from, next) => {
-    const currentUser = getAuth().currentUser;
-    store.commit("SET_USER_EMAIL", currentUser.email);
+    const currentUser = await waitForAuthState();
+    if (currentUser) {
+        store.commit("SET_USER_EMAIL", currentUser.email);
+    }
+
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
     if (requiresAuth && !currentUser) {
         next("login");
