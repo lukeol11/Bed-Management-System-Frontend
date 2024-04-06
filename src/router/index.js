@@ -72,7 +72,7 @@ const routes = [
                 ]
             },
             {
-                path: "transfer",
+                path: "transfer/:bedId",
                 name: "transfer",
                 component: TransferView
             },
