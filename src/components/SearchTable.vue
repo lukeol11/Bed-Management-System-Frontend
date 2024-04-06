@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- Bind the input event of cv-search to the handleSearch method -->
         <cv-search @input="handleSearch"></cv-search>
         <cv-data-table :columns="columns" :zebra="true">
             <template slot="data">
@@ -29,6 +28,7 @@
                         <cv-button
                             kind="secondary"
                             :disabled="!result.patientName"
+                            @click="openTransfer(result.bedId)"
                             >Transfer</cv-button
                         >
                     </cv-data-table-cell>
@@ -85,6 +85,9 @@ export default {
         },
         openBed(bedId) {
             this.$router.push(`/bed/${bedId}`);
+        },
+        openTransfer(bedId) {
+            this.$router.push(`/transfer/${bedId}`);
         }
     }
 };
