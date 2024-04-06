@@ -9,11 +9,11 @@
                 <template v-slot:nav-icon><home-icon /></template>
                 Dashboard
             </cv-side-nav-link>
-            <cv-side-nav-link to="/requests">
+            <cv-side-nav-link to="/requests" v-if="bedManager">
                 <template v-slot:nav-icon><manage-requests-icon /></template>
                 Manage Requests
             </cv-side-nav-link>
-            <cv-side-nav-link to="/admin">
+            <cv-side-nav-link to="/admin" v-if="admin">
                 <template v-slot:nav-icon><network-admin-control /></template>
                 Admin
             </cv-side-nav-link>
@@ -40,6 +40,14 @@ export default {
         HomeIcon,
         ManageRequestsIcon,
         NetworkAdminControl
+    },
+    computed: {
+        admin() {
+            return this.$store.getters.getUserDetails.can_administrate;
+        },
+        bedManager() {
+            return this.$store.getters.getUserDetails.can_approve_requests;
+        }
     }
 };
 </script>

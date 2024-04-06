@@ -134,6 +134,17 @@ router.beforeEach(async (to, from, next) => {
     } else {
         next();
     }
+
+    if (
+        to.name === "requests" &&
+        !store.getters.getUserDetails.can_approve_requests
+    ) {
+        next("dashboard");
+    }
+
+    if (to.name === "admin" && !store.getters.getUserDetails.can_administrate) {
+        next("dashboard");
+    }
 });
 
 export default router;
