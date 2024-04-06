@@ -12,7 +12,9 @@
                         bed.description
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button @click="assignBed(bed.id)">Assign</cv-button>
+                        <cv-button @click="assignBed(bed.id)">{{
+                            action
+                        }}</cv-button>
                     </cv-data-table-cell>
                 </cv-data-table-row>
             </template>
@@ -42,6 +44,10 @@ export default {
         },
         triggerUpdate: {
             type: Number,
+            required: false
+        },
+        action: {
+            type: String,
             required: false
         }
     },

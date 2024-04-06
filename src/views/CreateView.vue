@@ -7,6 +7,7 @@
             :gender="patientDetails.gender"
             :hospitalId="selectedHospital.id"
             :triggerUpdate="triggerUpdate"
+            action="Assign"
             @assignBed="assignBed"
         />
     </div>
