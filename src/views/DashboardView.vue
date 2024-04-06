@@ -12,7 +12,7 @@
             <cv-tile @click="open('create')" kind="clickable"
                 ><RequestQuoteIcon />Create
             </cv-tile>
-            <cv-tile @click="open('transfer')" kind="clickable"
+            <cv-tile @click="open('search')" kind="clickable"
                 ><MovementIcon />Transfer</cv-tile
             >
         </div>
