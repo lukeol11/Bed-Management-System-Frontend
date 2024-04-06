@@ -64,6 +64,9 @@ export default {
         },
         triggerUpdate() {
             this.getAllMatchingBeds(this.age, this.treatmentLevel, this.gender);
+        },
+        hospitalId() {
+            this.getAllMatchingBeds(this.age, this.treatmentLevel, this.gender);
         }
     },
     methods: {
@@ -108,6 +111,15 @@ export default {
             }
         },
         async getAllMatchingBeds(age, treatmentLevel, gender) {
+            console.log(
+                "Checking for beds with the following criteria",
+                "age:",
+                age,
+                "treatmentLevel:",
+                treatmentLevel,
+                "gender:",
+                gender
+            );
             const wards = await this.getWards();
             const filteredWards = wards.filter(
                 (ward) =>
@@ -116,6 +128,11 @@ export default {
                     ward.max_patient_age >= age &&
                     (gender === ward.gender || ward.gender == "All")
             );
+            if (filteredWards.length === 0) {
+                this.beds = [];
+                this.wards = [];
+                return;
+            }
             const bedPromises = filteredWards.map((ward) =>
                 this.getBeds(ward.id)
             );
@@ -124,6 +141,11 @@ export default {
         },
         findWard(wardId) {
             return this.wards.find((ward) => ward.id === wardId);
+        }
+    },
+    mounted() {
+        if (this.treatmentLevel && this.age && this.gender && this.hospitalId) {
+            this.getAllMatchingBeds(this.age, this.treatmentLevel, this.gender);
         }
     }
 };
