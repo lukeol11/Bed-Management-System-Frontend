@@ -3,7 +3,6 @@ import store from "../store";
 import VueRouter from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/auth/LoginView.vue";
-import SignupView from "../views/auth/SignupView.vue";
 import DashboardView from "../views/DashboardView.vue";
 import RequestsView from "../views/RequestsView.vue";
 import CreateView from "../views/CreateView.vue";
@@ -75,11 +74,6 @@ const routes = [
                 path: "transfer/:bedId",
                 name: "transfer",
                 component: TransferView
-            },
-            {
-                path: "/signup",
-                name: "signup",
-                component: SignupView
             },
             {
                 path: "bed/:bedId",
