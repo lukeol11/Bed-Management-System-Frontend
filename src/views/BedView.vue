@@ -2,6 +2,7 @@
     <div class="bedView">
         <div class="tilesContainer">
             <cv-tile>
+                <hospital-bed-icon />
                 <h1>Bed Info</h1>
                 <p>Bed ID: {{ bedInfo.id }}</p>
                 <p>Description: {{ bedInfo.description }}</p>
@@ -15,14 +16,24 @@
                 <p v-else>
                     Status: <cv-tag label="Available" kind="green"></cv-tag>
                 </p>
+                <cv-button @click="enabledBed" id="green" v-if="isDisabled"
+                    >Make as Cleaned</cv-button
+                >
+
+                <qrcode id="bedQrCodeUrl" :value="currentRoute" />
             </cv-tile>
             <cv-tile id="patient">
+                <user-icon />
                 <h1 v-if="patientInfo.first_name">Current Patient Info</h1>
                 <h1 v-else>No Patient Currently Assigned</h1>
                 <div v-if="patientInfo.first_name">
                     <p>First Name: {{ patientInfo.first_name }}</p>
                     <p>Last Name: {{ patientInfo.last_name }}</p>
-                    <p>DOB: {{ patientInfo.date_of_birth }}</p>
+                    <p>
+                        DOB: {{ patientInfo.date_of_birth }} ({{
+                            findPatientAge(patientInfo.date_of_birth)
+                        }})
+                    </p>
                     <p>Time Assigned: {{ patientInfo.timeBooked }}</p>
                     <cv-button
                         kind="danger"
@@ -34,10 +45,7 @@
                     >
                 </div>
                 <div v-else>
-                    <cv-button @click="enabledBed" id="green" v-if="isDisabled"
-                        >Make as Cleaned</cv-button
-                    >
-                    <cv-button-set v-else>
+                    <div v-if="!isDisabled">
                         <cv-button
                             kind="primary"
                             @click="routerRedirect('create')"
@@ -48,24 +56,27 @@
                             @click="routerRedirect('search')"
                             >Transfer current patient</cv-button
                         >
-                    </cv-button-set>
+                    </div>
                 </div>
             </cv-tile>
         </div>
         <cv-button id="qrDownloadButton" @click="downloadQrCode"
             >Download QR Code</cv-button
         >
-        <qrcode id="bedQrCodeUrl" :value="currentRoute" />
     </div>
 </template>
 
 <script>
 import Qrcode from "qrcode.vue";
+import HospitalBedIcon from "@carbon/icons-vue/es/hospital-bed/32";
+import UserIcon from "@carbon/icons-vue/es/user/32";
 
 export default {
     name: "BedView",
     components: {
-        Qrcode
+        Qrcode,
+        HospitalBedIcon,
+        UserIcon
     },
     data() {
         return {
@@ -83,6 +94,12 @@ export default {
         }
     },
     methods: {
+        findPatientAge(dateOfBirth) {
+            const dob = new Date(dateOfBirth.split("/").reverse().join("-"));
+            const diff_ms = Date.now() - dob.getTime();
+            const age_dt = new Date(diff_ms);
+            return Math.abs(age_dt.getUTCFullYear() - 1970);
+        },
         async enabledBed() {
             await fetch(`/api/beds/enable/${this.bedId}`, {
                 method: "PATCH"
@@ -203,10 +220,12 @@ export default {
         height: 60vh;
         display: flex;
         justify-content: center;
+        svg {
+            width: 2em;
+            height: 2em;
+        }
     }
-    #bedQrCodeUrl {
-        visibility: hidden;
-    }
+
     .cv-button-set {
         .cv-button.bx--btn--primary#green {
             background-color: green;
@@ -237,7 +256,8 @@ export default {
             height: fit-content;
         }
     }
-    #qrDownloadButton {
+    #qrDownloadButton,
+    #bedQrCodeUrl {
         visibility: hidden;
     }
 }
