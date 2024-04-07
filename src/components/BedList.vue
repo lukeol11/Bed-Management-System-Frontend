@@ -135,7 +135,7 @@ export default {
             const wards = await this.getWards();
             const filteredWards = wards.filter(
                 (ward) =>
-                    ward.treatment_level === treatmentLevel &&
+                    // ward.treatment_level === treatmentLevel &&
                     ward.min_patient_age <= age &&
                     ward.max_patient_age >= age &&
                     (gender === ward.gender || ward.gender == "All")
