@@ -40,8 +40,9 @@ export default {
 @media (max-width: 768px) {
     div.Layout div.content {
         margin-left: 0.2rem;
+        margin-right: 0.2rem;
         margin-top: 0.2rem;
-        margin: 0.2rem;
+        margin-bottom: 0.2rem;
     }
     nav.sideBar,
     header.topBar {
