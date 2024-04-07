@@ -1,6 +1,6 @@
 <template>
     <div id="usersList">
-        <cv-modal :visible="askPassword">
+        <cv-modal :visible="askPassword" :auto-hide-off="true">
             <template slot="title"> Password </template>
             <template slot="content">
                 <cv-text-input
