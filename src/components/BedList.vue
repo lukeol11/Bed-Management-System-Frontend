@@ -90,7 +90,7 @@ export default {
                 const response = await fetch(`/api/beds/all/${wardId}`);
                 const beds = await response.json();
                 const bedsPromises = beds.map(async (bed) => {
-                    if (!(await this.isBedActive(bed.id))) {
+                    if (await this.isBedActive(bed.id, wardId)) {
                         activeBeds.push(bed);
                     }
                 });
@@ -112,11 +112,12 @@ export default {
                 console.error(err);
             }
         },
-        async isBedActive(bedId) {
+        async isBedActive(bedId, wardId) {
             try {
-                const response = await fetch(`/api/beds/active/${bedId}`);
-                const bedDetails = await response.json();
-                return bedDetails[0]?.id ? true : false;
+                const response = await fetch(`/api/beds/status/${wardId}`);
+                const bedsDetails = await response.json();
+                const bedDetails = bedsDetails.find((bed) => bed.id === bedId);
+                return !(bedDetails.disabled || bedDetails.occupied);
             } catch (err) {
                 console.error(err);
             }

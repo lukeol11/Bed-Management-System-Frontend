@@ -9,11 +9,20 @@
                 >
                     <cv-data-table-cell>{{ result.ward }}</cv-data-table-cell>
                     <cv-data-table-cell>{{ result.bedId }}</cv-data-table-cell>
-                    <cv-data-table-cell
-                        ><div v-if="result.patientName">
+                    <cv-data-table-cell>
+                        <cv-tag
+                            v-if="result.cleaning"
+                            label="Cleaning Required"
+                            kind="blue"
+                        />
+                        <cv-tag
+                            v-else-if="!result.occupied"
+                            label="Available"
+                            kind="green"
+                        />
+                        <div v-else>
                             {{ result.patientName }}
                         </div>
-                        <cv-tag v-else label="Available" kind="green" />
                     </cv-data-table-cell>
                     <cv-data-table-cell>{{
                         result.dateOfBirth
@@ -27,7 +36,7 @@
                         >
                         <cv-button
                             kind="secondary"
-                            :disabled="!result.patientName"
+                            :disabled="!result.occupied || result.cleaning"
                             @click="openTransfer(result.bedId)"
                             >Transfer</cv-button
                         >

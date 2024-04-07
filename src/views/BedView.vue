@@ -5,15 +5,20 @@
                 <h1>Bed Info</h1>
                 <p>Bed ID: {{ bedInfo.id }}</p>
                 <p>Description: {{ bedInfo.description }}</p>
-                <p v-if="bedInfo.disabled_reason_id || patientInfo.first_name">
-                    Available: <cv-tag label="False" kind="red"></cv-tag>
+                <p v-if="patientInfo.first_name">
+                    Status: <cv-tag label="Occupied" kind="red"></cv-tag>
+                </p>
+                <p v-else-if="isDisabled">
+                    Status:
+                    <cv-tag label="Cleaning Required" kind="blue"></cv-tag>
                 </p>
                 <p v-else>
-                    Available: <cv-tag label="True" kind="green"></cv-tag>
+                    Status: <cv-tag label="Available" kind="green"></cv-tag>
                 </p>
             </cv-tile>
             <cv-tile id="patient">
-                <h1>Current Patient Info</h1>
+                <h1 v-if="patientInfo.first_name">Current Patient Info</h1>
+                <h1 v-else>No Patient Currently Assigned</h1>
                 <div v-if="patientInfo.first_name">
                     <p>First Name: {{ patientInfo.first_name }}</p>
                     <p>Last Name: {{ patientInfo.last_name }}</p>
@@ -29,12 +34,27 @@
                     >
                 </div>
                 <div v-else>
-                    <cv-button kind="secondary">Assign Patient</cv-button>
-                    <cv-button id="green">Make as available</cv-button>
+                    <cv-button @click="enabledBed" id="green" v-if="isDisabled"
+                        >Make as Cleaned</cv-button
+                    >
+                    <cv-button-set v-else>
+                        <cv-button
+                            kind="primary"
+                            @click="routerRedirect('create')"
+                            >Assign New Patient</cv-button
+                        >
+                        <cv-button
+                            kind="secondary"
+                            @click="routerRedirect('search')"
+                            >Transfer current patient</cv-button
+                        >
+                    </cv-button-set>
                 </div>
             </cv-tile>
         </div>
-        <cv-button @click="downloadQrCode">Download QR Code</cv-button>
+        <cv-button id="qrDownloadButton" @click="downloadQrCode"
+            >Download QR Code</cv-button
+        >
         <qrcode id="bedQrCodeUrl" :value="currentRoute" />
     </div>
 </template>
@@ -50,7 +70,8 @@ export default {
     data() {
         return {
             bedInfo: {},
-            patientInfo: {}
+            patientInfo: {},
+            isDisabled: true
         };
     },
     computed: {
@@ -58,12 +79,27 @@ export default {
             return this.$route.params.bedId;
         },
         currentRoute() {
-            return "localhost:8080" + this.$route.path;
+            return "http://localhost:8080" + this.$route.path;
         }
     },
     methods: {
+        async enabledBed() {
+            await fetch(`/api/beds/enable/${this.bedId}`, {
+                method: "PATCH"
+            });
+            this.$router.go();
+        },
+        async disabledBed() {
+            await fetch(`/api/beds/disable/${this.bedId}`, {
+                method: "PATCH"
+            });
+            this.$router.go();
+        },
         openTransfer(bedId) {
             this.$router.push(`/transfer/${bedId}`);
+        },
+        routerRedirect(route) {
+            this.$router.push(`/${route}/`);
         },
         downloadQrCode() {
             const canvas = document.querySelector("canvas");
@@ -78,7 +114,22 @@ export default {
         async getBedInfo() {
             try {
                 const response = await fetch(`/api/beds/find/${this.bedId}`);
-                this.bedInfo = await response.json();
+                const bedInfo = await response.json();
+                this.bedInfo = bedInfo;
+                this.isDisabled = await this.getBedStatus(
+                    bedInfo.ward_id,
+                    bedInfo.id
+                );
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async getBedStatus(wardId, bedId) {
+            try {
+                const response = await fetch(`/api/beds/status/${wardId}`);
+                const bedsDetails = await response.json();
+                const bedDetails = bedsDetails.find((bed) => bed.id === bedId);
+                return bedDetails.disabled;
             } catch (error) {
                 console.error(error);
             }
@@ -115,8 +166,7 @@ export default {
                         })
                     }
                 );
-
-                this.$router.go();
+                await this.disabledBed();
             } catch (error) {
                 console.error(error);
             }
@@ -164,6 +214,31 @@ export default {
         .cv-button.bx--btn--primary#yellow {
             background-color: rgb(122, 122, 0);
         }
+    }
+}
+
+@media (max-width: 768px) {
+    .bedView {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        .tilesContainer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .cv-tile {
+            width: 90%;
+            margin: auto;
+            height: fit-content;
+        }
+    }
+    #qrDownloadButton {
+        visibility: hidden;
     }
 }
 </style>
