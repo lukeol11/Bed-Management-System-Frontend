@@ -6,13 +6,13 @@
             <BusyTimes />
         </div>
         <div class="navigation">
-            <cv-tile @click="open('search')" kind="clickable"
+            <cv-tile @click="open('search')" kind="clickable" id="search"
                 ><SearchIcon />Search
             </cv-tile>
-            <cv-tile @click="open('create')" kind="clickable"
+            <cv-tile @click="open('create')" kind="clickable" id="create"
                 ><RequestQuoteIcon />Create
             </cv-tile>
-            <cv-tile @click="open('search')" kind="clickable"
+            <cv-tile @click="open('search')" kind="clickable" id="transfer"
                 ><MovementIcon />Transfer</cv-tile
             >
         </div>
@@ -52,7 +52,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap");
 .charts .cv-tile#hospitalAvailability,
 .charts .cv-tile#busyTimes {
@@ -116,5 +116,20 @@ export default {
 
 div.wardCharts div#wardSelectorTile div#chartContainer {
     height: 80%;
+}
+
+@media (max-width: 768px) {
+    .charts,
+    .wardCharts {
+        display: none;
+    }
+    .navigation {
+        width: 100%;
+        height: 100%;
+        #create,
+        #transfer {
+            display: none;
+        }
+    }
 }
 </style>

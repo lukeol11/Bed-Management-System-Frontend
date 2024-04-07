@@ -36,4 +36,16 @@ export default {
     margin-left: 16rem;
     margin-top: 3rem;
 }
+
+@media (max-width: 768px) {
+    div.Layout div.content {
+        margin-left: 0.2rem;
+        margin-top: 0.2rem;
+        margin: 0.2rem;
+    }
+    nav.sideBar,
+    header.topBar {
+        display: none;
+    }
+}
 </style>
