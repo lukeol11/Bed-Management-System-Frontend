@@ -5,11 +5,15 @@
                 <h1>Bed Info</h1>
                 <p>Bed ID: {{ bedInfo.id }}</p>
                 <p>Description: {{ bedInfo.description }}</p>
-                <p v-if="bedInfo.disabled_reason_id || patientInfo.first_name">
-                    Available: <cv-tag label="False" kind="red"></cv-tag>
+                <p v-if="patientInfo.first_name">
+                    Status: <cv-tag label="Occupied" kind="red"></cv-tag>
+                </p>
+                <p v-else-if="isDisabled">
+                    Status:
+                    <cv-tag label="Cleaning Required" kind="blue"></cv-tag>
                 </p>
                 <p v-else>
-                    Available: <cv-tag label="True" kind="green"></cv-tag>
+                    Status: <cv-tag label="Available" kind="green"></cv-tag>
                 </p>
             </cv-tile>
             <cv-tile id="patient">
@@ -29,8 +33,12 @@
                     >
                 </div>
                 <div v-else>
-                    <cv-button kind="secondary">Assign Patient</cv-button>
-                    <cv-button id="green">Make as available</cv-button>
+                    <cv-button id="green" v-if="isDisabled"
+                        >Make as Cleaned</cv-button
+                    >
+                    <cv-button kind="secondary" v-else
+                        >Assign Patient</cv-button
+                    >
                 </div>
             </cv-tile>
         </div>
@@ -50,7 +58,8 @@ export default {
     data() {
         return {
             bedInfo: {},
-            patientInfo: {}
+            patientInfo: {},
+            isDisabled: true
         };
     },
     computed: {
@@ -78,7 +87,22 @@ export default {
         async getBedInfo() {
             try {
                 const response = await fetch(`/api/beds/find/${this.bedId}`);
-                this.bedInfo = await response.json();
+                const bedInfo = await response.json();
+                this.bedInfo = bedInfo;
+                this.isDisabled = await this.getBedStatus(
+                    bedInfo.ward_id,
+                    bedInfo.id
+                );
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async getBedStatus(wardId, bedId) {
+            try {
+                const response = await fetch(`/api/beds/status/${wardId}`);
+                const bedsDetails = await response.json();
+                const bedDetails = bedsDetails.find((bed) => bed.id === bedId);
+                return bedDetails.disabled;
             } catch (error) {
                 console.error(error);
             }
