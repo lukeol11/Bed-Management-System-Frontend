@@ -129,14 +129,20 @@ router.beforeEach(async (to, from, next) => {
         next();
     }
 
+    const userDetails = store.getters.getUserDetails;
+    const selectedHospital = store.getters.getSelectedHospital;
+
     if (
-        to.name === "requests" &&
-        !store.getters.getUserDetails.can_approve_requests
+        (to.name === "requests" && !userDetails.can_approve_requests) ||
+        userDetails.hospital_id !== selectedHospital.id
     ) {
         next("dashboard");
     }
 
-    if (to.name === "admin" && !store.getters.getUserDetails.can_administrate) {
+    if (
+        (to.name === "admin" && !userDetails.can_administrate) ||
+        userDetails.hospital_id !== selectedHospital.id
+    ) {
         next("dashboard");
     }
 });
