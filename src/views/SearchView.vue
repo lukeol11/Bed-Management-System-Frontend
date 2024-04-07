@@ -75,6 +75,15 @@ export default {
                 console.error(err);
             }
         },
+        async getBedStatuses(wardId) {
+            try {
+                const response = await fetch(`/api/beds/status/${wardId}`);
+                const bedStatuses = await response.json();
+                return bedStatuses;
+            } catch (err) {
+                console.error(err);
+            }
+        },
         async findMatching() {
             this.resultsReady = false;
             const wards = await this.getWards();
@@ -83,6 +92,11 @@ export default {
             const patients = await Promise.all(
                 beds.map((bed) => this.getPatients(bed.id))
             );
+            const bedStatusesPromises = wards.map((ward) =>
+                this.getBedStatuses(ward.id)
+            );
+            const bedStatuses = (await Promise.all(bedStatusesPromises)).flat();
+
             const treatmentLevels = await this.getTreatmentLevels();
             const results = beds.map((bed, index) => {
                 const patient = patients[index][0];
@@ -90,6 +104,10 @@ export default {
                 const treatmentLevel = treatmentLevels.find(
                     (level) => level.id === ward.treatment_level
                 );
+                const bedStatus = bedStatuses.find(
+                    (status) => status.id === bed.id
+                );
+
                 return {
                     ward: ward.description,
                     bedId: bed.id,
@@ -97,7 +115,9 @@ export default {
                         ? `${patient.first_name} ${patient.last_name}`
                         : null,
                     dateOfBirth: patient ? patient.date_of_birth : null,
-                    treatmentLevel: ward ? treatmentLevel.name : null
+                    treatmentLevel: ward ? treatmentLevel.name : null,
+                    cleaning: bedStatus.disabled,
+                    occupied: bedStatus.occupied
                 };
             });
             this.results = results;
