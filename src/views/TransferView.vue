@@ -1,5 +1,16 @@
 <template>
     <div class="transferView">
+        <cv-modal
+            :visible="showModal"
+            :auto-hide-off="true"
+            @primary-click="openDashboard"
+        >
+            <template slot="title">Success</template>
+            <template slot="content">
+                Transfer request has been sent successfully.
+            </template>
+            <template slot="primary-button">Continue</template>
+        </cv-modal>
         <div class="tilesContainer">
             <cv-tile>
                 <h1>Current Info</h1>
@@ -49,7 +60,8 @@ export default {
         return {
             bedInfo: {},
             patientInfo: {},
-            selectedHospital: undefined
+            selectedHospital: undefined,
+            showModal: false
         };
     },
     computed: {
@@ -64,6 +76,9 @@ export default {
         }
     },
     methods: {
+        openDashboard() {
+            this.$router.push("/dashboard");
+        },
         findPatientAge(dateOfBirth) {
             const dob = new Date(dateOfBirth.split("/").reverse().join("-"));
             const diff_ms = Date.now() - dob.getTime();
@@ -71,6 +86,7 @@ export default {
             return Math.abs(age_dt.getUTCFullYear() - 1970);
         },
         transferPatient(bedId) {
+            this.showModal = true;
             console.log("transfer to", bedId);
         },
         async getBedInfo() {
