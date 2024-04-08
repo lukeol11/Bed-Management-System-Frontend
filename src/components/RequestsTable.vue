@@ -37,8 +37,21 @@
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-button-set>
-                            <cv-button kind="primary">Approve</cv-button>
-                            <cv-button kind="danger">Delete</cv-button>
+                            <cv-button
+                                kind="primary"
+                                @click="
+                                    postApproveRequest(
+                                        result.id,
+                                        result.requestedBedId
+                                    )
+                                "
+                                >Approve</cv-button
+                            >
+                            <cv-button
+                                kind="danger"
+                                @click="deleteRequest(result.id)"
+                                >Delete</cv-button
+                            >
                         </cv-button-set>
                     </cv-data-table-cell>
                 </cv-data-table-row>
@@ -65,39 +78,149 @@ export default {
                 "Request Made At",
                 "Action"
             ],
-            results: [
-                {
-                    id: 1,
-                    patientName: "John Doe",
-                    hospital: "University Hospital",
-                    currentWard: "CDU",
-                    currentBed: "Bed 1",
-                    requestedWard: "CDU",
-                    requestedBed: "Bed 2",
-                    requestBy: "Doctor 1",
-                    requestTime: "2021-01-01 12:00:00"
-                },
-                {
-                    id: 2,
-                    patientName: "Jane Doe",
-                    hospital: "University Maternity Hospital",
-                    currentWard: "Maternity",
-                    currentBed: "Bed 2",
-                    requestedWard: "POCU",
-                    requestedBed: "Bed 3",
-                    requestBy: "Doctor 2",
-                    requestTime: "2021-01-01 12:00:00"
-                }
-            ]
+            results: []
         };
     },
-    methods: {},
+    methods: {
+        async getRequests() {
+            try {
+                const response = await fetch(
+                    `/api/transfers/all?hospital_id=${this.selectedHospital.id}`
+                );
+                const data = await response.json();
+                return data;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        async findHospital(id) {
+            try {
+                const response = await fetch(`/api/hospitals/find?id=${id}`);
+                const data = await response.json();
+                return data;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        async findPatient(id) {
+            try {
+                const response = await fetch(`/api/patients/find?id=${id}`);
+                const data = await response.json();
+                return data;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        async findWard(id) {
+            try {
+                const response = await fetch(`/api/wards/find?id=${id}`);
+                const data = await response.json();
+                return data;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        async findUser(id) {
+            try {
+                const response = await fetch(`/api/users/find?id=${id}`);
+                const data = await response.json();
+                return data;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        async findBed(id) {
+            try {
+                const response = await fetch(`/api/beds/find/${id}`);
+                const data = await response.json();
+                return data;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        async getResults() {
+            const requests = await this.getRequests();
+            const results = [];
+            requests.forEach(async (request) => {
+                if (!request.bedApproved) {
+                    const patient = await this.findPatient(request.patientId);
+                    const user = await this.findUser(request.createdBy);
+                    const hospital = await this.findHospital(
+                        request.hospitalId
+                    );
+                    const bedRequested = await this.findBed(
+                        request.bedRequested
+                    );
+                    const wardRequested = await this.findWard(
+                        bedRequested.ward_id
+                    );
+                    const currentBed = await this.findBed(request.currentBed);
+                    const currentWard = await this.findWard(currentBed.ward_id);
+                    results.push({
+                        id: request.id,
+                        patientName: `${patient.first_name} ${patient.last_name}`,
+                        hospital: hospital.description,
+                        currentWard: currentWard.description,
+                        currentBed: currentBed.description,
+                        requestedWard: wardRequested.description,
+                        requestedBed: bedRequested.description,
+                        requestedBedId: bedRequested.id,
+                        requestBy: `${user.first_name} ${user.last_name}`,
+                        requestTime: new Date(
+                            request.createdAt
+                        ).toLocaleString()
+                    });
+                }
+            });
+            console.log(results);
+            this.results = results;
+        },
+        async deleteRequest(id) {
+            try {
+                const response = await fetch(`/api/transfers/delete/${id}`, {
+                    method: "DELETE"
+                });
+                if (response.status === 200) {
+                    this.getResults();
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        async postApproveRequest(requestId, bedId) {
+            try {
+                const response = await fetch(`/api/transfers/approve`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        id: requestId,
+                        approvedAt: new Date().toISOString(),
+                        approvedBy: this.userDetails.id,
+                        bedApproved: bedId
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                console.log(response.status);
+                if (response.status === 201) {
+                    this.getResults();
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    },
     computed: {
         selectedHospital() {
             return this.$store.getters.getSelectedHospital;
+        },
+        userDetails() {
+            return this.$store.getters.getUserDetails;
         }
     },
-    mounted() {},
+    mounted() {
+        this.getResults();
+    },
     watch: {}
 };
 </script>
