@@ -9,11 +9,17 @@
                 <template v-slot:nav-icon><home-icon /></template>
                 Dashboard
             </cv-side-nav-link>
-            <cv-side-nav-link to="/requests" v-if="bedManager">
+            <cv-side-nav-link
+                to="/requests"
+                v-if="bedManager && userHospitalId === currentHospitalId"
+            >
                 <template v-slot:nav-icon><manage-requests-icon /></template>
                 Manage Requests
             </cv-side-nav-link>
-            <cv-side-nav-link to="/admin" v-if="admin">
+            <cv-side-nav-link
+                to="/admin"
+                v-if="admin && userHospitalId === currentHospitalId"
+            >
                 <template v-slot:nav-icon><network-admin-control /></template>
                 Admin
             </cv-side-nav-link>
@@ -47,6 +53,12 @@ export default {
         },
         bedManager() {
             return this.$store.getters.getUserDetails.can_approve_requests;
+        },
+        userHospitalId() {
+            return this.$store.getters.getUserDetails.hospital_id;
+        },
+        currentHospitalId() {
+            return this.$store.getters.getSelectedHospital.id;
         }
     }
 };

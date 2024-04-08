@@ -198,11 +198,6 @@ export default {
             }
         }
     },
-    watch: {
-        newWard() {
-            console.log(this.newWard);
-        }
-    },
     computed: {
         selectedHospital() {
             return this.$store.getters.getSelectedHospital;

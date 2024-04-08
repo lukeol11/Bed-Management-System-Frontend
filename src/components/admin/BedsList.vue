@@ -113,11 +113,6 @@ export default {
             return this.$route.params.wardId;
         }
     },
-    mounted() {
-        this.getBeds().then((beds) => {
-            console.log(beds);
-        });
-    },
     watch: {
         wardId() {
             this.getBeds();
