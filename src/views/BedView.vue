@@ -17,7 +17,7 @@
                     Status: <cv-tag label="Available" kind="green"></cv-tag>
                 </p>
                 <cv-button @click="enabledBed" id="green" v-if="isDisabled"
-                    >Make as Cleaned</cv-button
+                    >Mark as Cleaned</cv-button
                 >
 
                 <qrcode id="bedQrCodeUrl" :value="currentRoute" />
