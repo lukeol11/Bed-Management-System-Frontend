@@ -6,7 +6,7 @@
             dateLabel="Date of Birth"
             v-model="dateOfBirth"
         ></cv-date-picker>
-        <cv-dropdown label="Treatment" v-model="selectedTreatment">
+        <!-- <cv-dropdown label="Treatment" v-model="selectedTreatment">
             <cv-dropdown-item
                 v-for="treatment in treatmentLevels"
                 :key="treatment.id"
@@ -14,7 +14,7 @@
             >
                 {{ treatment.name }}
             </cv-dropdown-item>
-        </cv-dropdown>
+        </cv-dropdown> -->
         <cv-dropdown label="Gender" v-model="selectedGender">
             <cv-dropdown-item
                 v-for="gender in genders"
@@ -37,7 +37,7 @@ export default {
             firstName: "",
             lastName: "",
             dateOfBirth: null,
-            selectedTreatment: null,
+            selectedTreatment: 5,
             selectedGender: null,
             treatmentLevels: [],
             genders: ["Male", "Female"]
