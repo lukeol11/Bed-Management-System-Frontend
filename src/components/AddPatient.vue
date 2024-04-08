@@ -52,7 +52,6 @@ export default {
                 treatment: this.selectedTreatment,
                 gender: this.selectedGender
             };
-            console.log(patientDetails);
             this.$emit("patientDetails", patientDetails);
         },
         async getTreatmentLevels() {

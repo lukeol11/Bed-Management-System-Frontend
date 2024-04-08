@@ -127,8 +127,6 @@ export default {
                 "Checking for beds with the following criteria",
                 "age:",
                 age,
-                "treatmentLevel:",
-                treatmentLevel,
                 "gender:",
                 gender
             );

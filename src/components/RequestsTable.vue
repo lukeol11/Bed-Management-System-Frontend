@@ -177,7 +177,6 @@ export default {
                     });
                 }
             });
-            console.log(results);
             this.results = results;
         },
         async deleteRequest(id) {

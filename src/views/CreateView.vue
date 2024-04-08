@@ -77,7 +77,6 @@ export default {
         async assignBed(bedId) {
             const response = await this.createPatient();
             const patient = await response.json();
-            console.log("Patient Created", patient);
             try {
                 fetch("/api/beds/occupancy", {
                     method: "POST",
