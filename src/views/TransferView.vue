@@ -73,6 +73,12 @@ export default {
         },
         hospitals() {
             return this.$store.getters.allHospitals;
+        },
+        userDetails() {
+            return this.$store.getters.getUserDetails;
+        },
+        currentHospital() {
+            return this.$store.getters.getSelectedHospital;
         }
     },
     methods: {
@@ -85,9 +91,31 @@ export default {
             const age_dt = new Date(diff_ms);
             return Math.abs(age_dt.getUTCFullYear() - 1970);
         },
-        transferPatient(bedId) {
-            this.showModal = true;
-            console.log("transfer to", bedId);
+        async transferPatient(bedId) {
+            const transferResponse = await this.postTransferRequest(bedId);
+            if (transferResponse.status === 201) {
+                this.showModal = true;
+            }
+        },
+        async postTransferRequest(bedId) {
+            try {
+                const response = await fetch("/api/transfers/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        createdAt: new Date().toISOString(),
+                        createdBy: this.userDetails.id,
+                        bedRequested: bedId,
+                        hospitalId: this.currentHospital.id,
+                        patientId: this.patientInfo.id
+                    })
+                });
+                return response;
+            } catch (error) {
+                console.error(error);
+            }
         },
         async getBedInfo() {
             try {
