@@ -40,9 +40,12 @@
                             <cv-button
                                 kind="primary"
                                 @click="
-                                    postApproveRequest(
+                                    approveRequest(
+                                        result.requestedBedId,
+                                        result.patientId,
                                         result.id,
-                                        result.requestedBedId
+                                        userDetails.id,
+                                        result.currentBedId
                                     )
                                 "
                                 >Approve</cv-button
@@ -159,9 +162,11 @@ export default {
                     results.push({
                         id: request.id,
                         patientName: `${patient.first_name} ${patient.last_name}`,
+                        patientId: patient.id,
                         hospital: hospital.description,
                         currentWard: currentWard.description,
                         currentBed: currentBed.description,
+                        currentBedId: currentBed.id,
                         requestedWard: wardRequested.description,
                         requestedBed: bedRequested.description,
                         requestedBedId: bedRequested.id,
@@ -187,6 +192,17 @@ export default {
                 console.error(err);
             }
         },
+        async approveRequest(
+            requestedBedId,
+            patientId,
+            requestId,
+            createdBy,
+            currentBedId
+        ) {
+            this.postApproveRequest(requestId, requestedBedId);
+            this.checkoutPatient(patientId, currentBedId);
+            this.assignBed(requestedBedId, patientId, createdBy);
+        },
         async postApproveRequest(requestId, bedId) {
             try {
                 const response = await fetch(`/api/transfers/approve`, {
@@ -201,10 +217,49 @@ export default {
                         "Content-Type": "application/json"
                     }
                 });
-                console.log(response.status);
                 if (response.status === 201) {
                     this.getResults();
                 }
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        async checkoutPatient(patientId, bedId) {
+            try {
+                await fetch(
+                    `/api/beds/checkout?patient_id=${patientId}&bed_id=${bedId}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            checkout_time: new Date().toISOString()
+                        })
+                    }
+                );
+                await fetch(`/api/beds/disable/${bedId}`, {
+                    method: "PATCH"
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async assignBed(bedId, patientId, createdBy) {
+            try {
+                fetch("/api/beds/occupancy", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        patient_id: patientId,
+                        bed_id: bedId,
+                        time_booked: new Date().toISOString(),
+                        created_by: createdBy,
+                        created_at: new Date().toISOString()
+                    })
+                });
             } catch (err) {
                 console.error(err);
             }
