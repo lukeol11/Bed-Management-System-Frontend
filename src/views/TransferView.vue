@@ -76,9 +76,6 @@ export default {
         },
         userDetails() {
             return this.$store.getters.getUserDetails;
-        },
-        currentHospital() {
-            return this.$store.getters.getSelectedHospital;
         }
     },
     methods: {
@@ -108,7 +105,8 @@ export default {
                         createdAt: new Date().toISOString(),
                         createdBy: this.userDetails.id,
                         bedRequested: bedId,
-                        hospitalId: this.currentHospital.id,
+                        currentBed: this.bedInfo.id,
+                        hospitalId: this.selectedHospital,
                         patientId: this.patientInfo.id
                     })
                 });
