@@ -1,5 +1,11 @@
 <template>
     <div id="loginBox">
+        <cv-modal :visible="showModal">
+            <template slot="title">Login Support</template>
+            <template slot="content">
+                Please contact your system administrator for login support.
+            </template>
+        </cv-modal>
         <div id="title">
             <p>Bed<br />Management<br />System</p>
             <hospital-bed-icon />
@@ -22,7 +28,7 @@
             <button style="visibility: hidden"></button>
         </cv-form>
         <cv-button-set>
-            <cv-button id="helpButton" @click="openModal()">
+            <cv-button id="helpButton" @click="openModal">
                 Help
                 <help-icon />
             </cv-button>
@@ -46,7 +52,8 @@ export default {
         return {
             password: "",
             email: "",
-            errorMessage: ""
+            errorMessage: "",
+            showModal: false
         };
     },
     components: {
@@ -69,7 +76,7 @@ export default {
                 });
         },
         openModal() {
-            console.log("open modal");
+            this.showModal = true;
         }
     }
 };
