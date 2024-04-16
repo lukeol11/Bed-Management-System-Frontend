@@ -42,7 +42,10 @@
                         {{ result.phone_number }}</cv-data-table-cell
                     >
                     <cv-data-table-cell>
-                        <cv-button kind="danger" @click="deleteUser(result.id)"
+                        <cv-button
+                            kind="danger"
+                            @click="deleteUser(result.id)"
+                            :disabled="result.id === userDetails.id"
                             >Delete</cv-button
                         >
                     </cv-data-table-cell>
@@ -208,6 +211,9 @@ export default {
         },
         userHospitalId() {
             return this.$store.getters.getUserDetails.hospital_id;
+        },
+        userDetails() {
+            return this.$store.getters.getUserDetails;
         }
     },
     mounted() {
