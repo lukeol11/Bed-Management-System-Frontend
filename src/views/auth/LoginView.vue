@@ -88,7 +88,7 @@ export default {
     height: 35rem;
     margin: auto;
     padding-top: 5rem;
-    top: 10rem;
+    top: 5rem;
     position: relative;
     border-radius: 0.9375rem;
     background: #2e3648;

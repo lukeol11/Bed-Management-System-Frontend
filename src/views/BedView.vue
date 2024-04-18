@@ -208,7 +208,7 @@ export default {
             margin-bottom: 1em;
         }
         width: 40%;
-        height: 90%;
+        height: 100%;
         font-size: 2rem;
         font-weight: 500;
         font-family: Roboto, sans-serif;
@@ -233,6 +233,9 @@ export default {
         .cv-button.bx--btn--primary#yellow {
             background-color: rgb(122, 122, 0);
         }
+    }
+    #qrDownloadButton {
+        margin-top: 4em;
     }
 }
 
