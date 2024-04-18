@@ -17,7 +17,9 @@
             >
         </div>
         <div class="wardCharts">
-            <WardsTile><LineChart /></WardsTile>
+            <WardsTile @ward="setWard"
+                ><LineChart :ward="selectedWard"
+            /></WardsTile>
         </div>
     </div>
 </template>
@@ -44,9 +46,17 @@ export default {
         RequestQuoteIcon,
         SearchIcon
     },
+    data() {
+        return {
+            selectedWard: undefined
+        };
+    },
     methods: {
         open(route) {
             this.$router.push({ name: route });
+        },
+        setWard(ward) {
+            this.selectedWard = ward;
         }
     }
 };

@@ -1,12 +1,11 @@
 <template>
     <cv-tile id="wardSelectorTile">
         <div class="selectors">
-            <cv-dropdown label="Ward">
+            <cv-dropdown label="Ward" @change="emitSelectedWard">
                 <cv-dropdown-item
                     v-for="ward in wards"
                     :key="ward.id"
                     :value="ward.description"
-                    @change="emitSelectedWard(ward)"
                 >
                     {{ ward.description }}
                 </cv-dropdown-item>

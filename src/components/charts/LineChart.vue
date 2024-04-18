@@ -32,6 +32,12 @@ export default {
     components: {
         LineGraph: Line
     },
+    props: {
+        ward: {
+            type: String,
+            default: undefined
+        }
+    },
     data() {
         return {
             data: {
