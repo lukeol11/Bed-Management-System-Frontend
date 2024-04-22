@@ -101,16 +101,20 @@ export default {
             return Math.abs(age_dt.getUTCFullYear() - 1970);
         },
         async enabledBed() {
-            await fetch(`/api/beds/enable/${this.bedId}`, {
+            const response = await fetch(`/api/beds/enable/${this.bedId}`, {
                 method: "PATCH"
             });
-            this.$router.go();
+            if (response.ok) {
+                this.$router.go();
+            }
         },
         async disabledBed() {
-            await fetch(`/api/beds/disable/${this.bedId}`, {
+            const response = await fetch(`/api/beds/disable/${this.bedId}`, {
                 method: "PATCH"
             });
-            this.$router.go();
+            if (response.ok) {
+                this.$router.go();
+            }
         },
         openTransfer(bedId) {
             this.$router.push(`/transfer/${bedId}`);
@@ -171,7 +175,7 @@ export default {
         },
         async checkoutPatient(patientId, bedId) {
             try {
-                await fetch(
+                const response = await fetch(
                     `/api/beds/checkout?patient_id=${patientId}&bed_id=${bedId}`,
                     {
                         method: "POST",
@@ -183,7 +187,9 @@ export default {
                         })
                     }
                 );
-                await this.disabledBed();
+                if (response.ok) {
+                    await this.disabledBed();
+                }
             } catch (error) {
                 console.error(error);
             }

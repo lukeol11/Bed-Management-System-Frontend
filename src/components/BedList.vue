@@ -23,13 +23,18 @@
             v-if="!treatmentLevel || !age || !gender || !hospitalId"
             id="fill-info-notification"
             title="Fill available fields for list of beds"
-        ></cv-toast-notification>
+        />
+        <cv-data-table-skeleton
+            v-else-if="!resultsReady"
+            :rows="5"
+            :column="columns"
+        />
         <cv-toast-notification
             v-else-if="!beds.length"
             id="fill-info-notification"
             kind="error"
             title="No beds available for the given criteria"
-        ></cv-toast-notification>
+        />
     </div>
 </template>
 
@@ -66,7 +71,8 @@ export default {
         return {
             columns: ["Ward", "Bed Id", "Description", "Action"],
             wards: [],
-            beds: []
+            beds: [],
+            resultsReady: false
         };
     },
     watch: {
@@ -123,6 +129,7 @@ export default {
             }
         },
         async getAllMatchingBeds(age, treatmentLevel, gender) {
+            this.resultsReady = false;
             console.log(
                 "Checking for beds with the following criteria",
                 "age:",
@@ -141,6 +148,7 @@ export default {
             if (filteredWards.length === 0) {
                 this.beds = [];
                 this.wards = [];
+                this.resultsReady = true;
                 return;
             }
             const bedPromises = filteredWards.map((ward) =>
@@ -148,6 +156,7 @@ export default {
             );
             const beds = (await Promise.all(bedPromises)).flat();
             this.beds = beds;
+            this.resultsReady = true;
         },
         findWard(wardId) {
             return this.wards.find((ward) => ward.id === wardId);

@@ -1,6 +1,11 @@
 <template>
     <div class="searchView">
-        <SearchTable v-if="resultsReady" :data="results" :bedsOnly="false" />
+        <cv-data-table-skeleton
+            v-if="!resultsReady"
+            :rows="10"
+            :column="columns"
+        />
+        <SearchTable v-if="resultsReady" :data="results" />
     </div>
 </template>
 
@@ -14,7 +19,15 @@ export default {
     data() {
         return {
             results: [],
-            resultsReady: false
+            resultsReady: false,
+            columns: [
+                "Ward",
+                "Bed ID",
+                "Patient Name",
+                "Date of Birth",
+                "Treatment Level",
+                "Actions"
+            ]
         };
     },
     computed: {

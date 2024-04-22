@@ -78,7 +78,7 @@ export default {
             const response = await this.createPatient();
             const patient = await response.json();
             try {
-                fetch("/api/beds/occupancy", {
+                const occupancyResponse = await fetch("/api/beds/occupancy", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -91,6 +91,9 @@ export default {
                         created_at: new Date().toISOString()
                     })
                 });
+                if (!occupancyResponse.ok) {
+                    throw new Error("Failed to assign bed");
+                }
                 this.triggerUpdate++;
                 this.openBed(bedId);
             } catch (err) {
