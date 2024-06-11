@@ -48,6 +48,17 @@ This software, aims to address the critical challenge of optimising hospital res
 
 ### Features
 
+- [Real-time dashboard](#real-time-dashboard)
+- [Bed assignment](#bed-assignment)
+- [Bed status tracking](#bed-status-tracking)
+- [Patient transfers](#patient-transfers)
+- [User management](#user-management)
+- [Ward & bed management](#ward--bed-management)
+- [QR code navigation](#qr-code-navigation)
+- [Bed cleaning management](#bed-cleaning-management)
+- [Unique user roles](#unique-user-roles)
+- [Firebase authentication](#firebase-authentication)
+
 #### Real-time dashboard
 
 ![Dashboard](/docs/images/Dashboard.png)
