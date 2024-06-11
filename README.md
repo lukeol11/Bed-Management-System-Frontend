@@ -25,6 +25,25 @@
 [![SonarCloud](https://img.shields.io/badge/Sonar%20cloud-F3702A?style=for-the-badge&logo=sonarcloud&logoColor=white)](https://www.sonarsource.com/products/sonarcloud/)
 [![Prettier](https://img.shields.io/badge/prettier-1A2C34?style=for-the-badge&logo=prettier&logoColor=F7BA3E)](https://prettier.io/)
 
+## Table of Contects
+
+- [Description](#description)
+- [Project setup](#project-setup)
+  - [Install Project Dependencies](#install-project-dependencies)
+  - [Firebase Configuration](#firebase-configuration)
+  - [Backend](#backend)
+- [Development](#development)
+  - [Run development build](#run-development-build)
+- [Deployment](#deployment)
+  - [Build](#build)
+  - [Run Build](#run-build)
+- [Testing](#testing)
+  - [Run unit tests](#run-unit-tests)
+- [Contributors](#contributors)
+- [License](#license)
+
+## Description
+
 ## Project setup
 
 ### Install Project Dependencies
@@ -44,13 +63,13 @@ Add Firebase configuration to `src\firebaseConfig.js`. See [Firebase Documentati
 
 ```javascript
 export default {
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: "",
-    measurementId: ""
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: "",
+  measurementId: ""
 };
 ```
 
