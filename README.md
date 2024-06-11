@@ -1,10 +1,10 @@
 # [Bed Management System](https://github.com/lukeol11/Bed-Management-System-Frontend)
 
 [![build](https://github.com/lukeol11/Bed-Management-System-Frontend/actions/workflows/build.yml/badge.svg)](https://github.com/lukeol11/Bed-Management-System-Frontend/actions/workflows/build.yml)
-[![GitHub license](https://img.shields.io/github/license/lukeol11/Bed-Management-System-Frontend?color=blue)](https://github.com/lukeol11/Bed-Management-System-Frontend/blob/master/LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/lukeol11/Bed-Management-System-Frontend)](https://github.com/lukeol11/Bed-Management-System-Frontend/issues)
-![GitHub Created At](https://img.shields.io/github/created-at/lukeol11/Bed-Management-System-Frontend)
-![GitHub last commit](https://img.shields.io/github/last-commit/lukeol11/Bed-Management-System-Frontend)
+[![GitHub issues](https://img.shields.io/github/issues/lukeol11/Bed-Management-System-Frontend?logo=github)](https://github.com/lukeol11/Bed-Management-System-Frontend/issues)
+![GitHub Created At](https://img.shields.io/github/created-at/lukeol11/Bed-Management-System-Frontend?logo=github)
+![GitHub last commit](https://img.shields.io/github/last-commit/lukeol11/Bed-Management-System-Frontend?logo=github)
+[![GitHub license](https://img.shields.io/github/license/lukeol11/Bed-Management-System-Frontend?color=blue&logo=github)](https://github.com/lukeol11/Bed-Management-System-Frontend/blob/master/LICENSE)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=lukeol11_Bed-Management-System-Frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=lukeol11_Bed-Management-System-Frontend)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=lukeol11_Bed-Management-System-Frontend&metric=bugs)](https://sonarcloud.io/summary/new_code?id=lukeol11_Bed-Management-System-Frontend)
