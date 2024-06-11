@@ -10,7 +10,9 @@ app.use(express.static(path.join(__dirname, "./dist")));
 app.use(
     "/api",
     createProxyMiddleware({
-        target: "http://localhost:3000/api",
+        target: `http://${process.env.API_HOST || "localhost"}:${
+            process.env.API_PORT || "3000"
+        }/api`,
         changeOrigin: true
     })
 );
