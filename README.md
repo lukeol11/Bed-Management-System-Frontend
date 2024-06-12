@@ -21,9 +21,6 @@
   - [Technology Stack](#technology-stack)
   - [Features](#features)
 - [Project setup](#project-setup)
-  - [Install Project Dependencies](#install-project-dependencies)
-  - [Firebase Configuration](#firebase-configuration)
-  - [Backend](#backend)
 - [Development](#development)
 - [Deployment](#deployment)
 - [Testing](#testing)
@@ -133,26 +130,6 @@ Firebase Authentication is used to authenticate users. The system has three user
 ```bash
 nvm use
 npm install
-```
-
-### Firebase Configuration
-
-```bash
-cp src\firebaseConfig.template.js src\firebaseConfig.js
-```
-
-Add Firebase configuration to `src\firebaseConfig.js`. See [Firebase Documentation](https://firebase.google.com/docs/web/learn-more#config-object) for more information.
-
-```javascript
-export default {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: "",
-  measurementId: ""
-};
 ```
 
 ### Backend
