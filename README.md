@@ -143,6 +143,7 @@ This is **required** to run the application for both development and deployment 
 ### Run development build
 
 ```bash
+## Backend server and Database are required for full functionality on frontend
 npm run serve
 ```
 
@@ -172,6 +173,7 @@ npm run build
 
 ```bash
 cd build
+## Backend server and Database are required for full functionality on frontend
 npm start
 ```
 
