@@ -1,4 +1,4 @@
-# [Bed Management System](https://github.com/lukeol11/Bed-Management-System-Frontend)
+# [Bed Management System Frontend](https://github.com/lukeol11/Bed-Management-System-Frontend)
 
 [![build](https://github.com/lukeol11/Bed-Management-System-Frontend/actions/workflows/build.yml/badge.svg)](https://github.com/lukeol11/Bed-Management-System-Frontend/actions/workflows/build.yml)
 [![GitHub issues](https://img.shields.io/github/issues/lukeol11/Bed-Management-System-Frontend?logo=github)](https://github.com/lukeol11/Bed-Management-System-Frontend/issues)
