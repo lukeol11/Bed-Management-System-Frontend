@@ -4,6 +4,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/lukeol11/Bed-Management-System-Frontend?logo=github)](https://github.com/lukeol11/Bed-Management-System-Frontend/issues)
 ![GitHub Created At](https://img.shields.io/github/created-at/lukeol11/Bed-Management-System-Frontend?logo=github)
 ![GitHub last commit](https://img.shields.io/github/last-commit/lukeol11/Bed-Management-System-Frontend?logo=github)
+[![GitHub contributors](https://img.shields.io/github/contributors/lukeol11/Bed-Management-System-Frontend.svg?logo=github)](https://github.com/lukeol11/Bed-Management-System-Frontend/graphs/contributors/)
 [![GitHub license](https://img.shields.io/github/license/lukeol11/Bed-Management-System-Frontend?color=blue&logo=github)](https://github.com/lukeol11/Bed-Management-System-Frontend/blob/master/LICENSE)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=lukeol11_Bed-Management-System-Frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=lukeol11_Bed-Management-System-Frontend)
