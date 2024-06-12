@@ -21,7 +21,7 @@
 - [Description](#description)
   - [Technology Stack](#technology-stack)
   - [Features](#features)
-- [Project setup](#project-setup)
+- [Installation](#installation)
 - [Development](#development)
 - [Deployment](#deployment)
 - [Testing](#testing)
@@ -152,7 +152,7 @@ When a patient is discharged from a bed, the bed is marked as requiring cleaning
 
 Firebase Authentication is used to authenticate users. The system has three user roles: Doctors & Nurses, Bed Managers, and Administrators. Each user role has different permissions.
 
-## Project setup
+## Installation
 
 ### Install Project Dependencies
 
