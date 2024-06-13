@@ -26,6 +26,7 @@
 - [Installation](#installation)
 - [Development](#development)
 - [Deployment](#deployment)
+- [Run Docker Compose](#run-docker-compose)
 - [Testing](#testing)
 - [Contributors](#contributors)
 - [License](#license)
@@ -231,6 +232,33 @@ cd build
 ## Backend server and Database are required for full functionality on frontend
 npm start
 ```
+
+## Run Docker Compose
+
+1. Build the Application:
+   To build the application using Docker Compose, run the following command:
+
+   ```bash
+   docker-compose build
+   ```
+
+2. Create Network (if not already created):
+   If you have not already created the bms-network network, run:
+
+   ```bash
+   docker network create bms-network
+   ```
+
+3. Start the Backend & Database Docker Compose:
+
+   Start the Docker Compose for the Backend and Database as documented [here](https://github.com/alisonoc-ALTER/Bed-Management-System-Backend#run-docker-compose)
+
+4. Start the Application:
+   To start the application, run:
+
+   ```bash
+   docker-compose up
+   ```
 
 ## Testing
 
