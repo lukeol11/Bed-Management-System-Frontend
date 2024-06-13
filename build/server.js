@@ -1,6 +1,7 @@
 const express = require("express");
 const { createProxyMiddleware } = require("http-proxy-middleware");
 const path = require("path");
+require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -23,4 +24,9 @@ app.get("*", (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
+    console.log(
+        `Proxying API requests to http://${
+            process.env.API_HOST || "localhost"
+        }:${process.env.API_PORT || "3000"}/api`
+    );
 });
