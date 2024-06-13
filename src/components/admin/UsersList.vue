@@ -143,7 +143,12 @@ export default {
         async getUsers() {
             try {
                 const response = await fetch(
-                    `/api/users/all?hospital_id=${this.selectedHospital.id}`
+                    `/api/users/all?hospital_id=${this.selectedHospital.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
                 );
                 const users = await response.json();
                 this.users = users;
@@ -154,7 +159,10 @@ export default {
         async deleteUser(userId) {
             try {
                 await fetch(`/api/users/delete/${userId}`, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
                 });
                 this.refreshData();
             } catch (err) {
@@ -176,7 +184,8 @@ export default {
                 const response = await fetch("/api/users/create", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     },
                     body: JSON.stringify(userData)
                 });

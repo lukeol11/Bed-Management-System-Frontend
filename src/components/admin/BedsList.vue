@@ -54,7 +54,11 @@ export default {
     methods: {
         async getBeds() {
             try {
-                const response = await fetch(`/api/beds/all/${this.wardId}`);
+                const response = await fetch(`/api/beds/all/${this.wardId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const beds = await response.json();
                 this.beds = beds;
             } catch (err) {
@@ -64,7 +68,10 @@ export default {
         async deleteBed(bedId) {
             try {
                 await fetch(`/api/beds/delete/${bedId}`, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
                 });
                 this.getBeds();
             } catch (err) {
@@ -85,7 +92,8 @@ export default {
                 const response = await fetch("/api/beds/create", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     },
                     body: JSON.stringify(bedData)
                 });

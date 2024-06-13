@@ -127,6 +127,9 @@ router.beforeEach(async (to, from, next) => {
     const currentUser = await waitForAuthState();
     if (currentUser) {
         store.commit("SET_USER_EMAIL", currentUser.email);
+        store.commit("SET_AUTH_TOKEN", currentUser.accessToken);
+
+        await store.getters.getAuthToken;
     }
 
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
@@ -143,7 +146,8 @@ router.beforeEach(async (to, from, next) => {
             const response = await fetch("/api/routing-history/add", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                 },
                 body: JSON.stringify({
                     to: to.path,

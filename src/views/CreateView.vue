@@ -81,7 +81,8 @@ export default {
                 fetch("/api/beds/occupancy", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     },
                     body: JSON.stringify({
                         patient_id: patient.id,

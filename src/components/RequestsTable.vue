@@ -88,7 +88,12 @@ export default {
         async getRequests() {
             try {
                 const response = await fetch(
-                    `/api/transfers/all?hospital_id=${this.selectedHospital.id}`
+                    `/api/transfers/all?hospital_id=${this.selectedHospital.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
                 );
                 const data = await response.json();
                 return data;
@@ -98,7 +103,11 @@ export default {
         },
         async findHospital(id) {
             try {
-                const response = await fetch(`/api/hospitals/find?id=${id}`);
+                const response = await fetch(`/api/hospitals/find?id=${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const data = await response.json();
                 return data;
             } catch (err) {
@@ -107,7 +116,11 @@ export default {
         },
         async findPatient(id) {
             try {
-                const response = await fetch(`/api/patients/find?id=${id}`);
+                const response = await fetch(`/api/patients/find?id=${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const data = await response.json();
                 return data;
             } catch (err) {
@@ -116,7 +129,11 @@ export default {
         },
         async findWard(id) {
             try {
-                const response = await fetch(`/api/wards/find?id=${id}`);
+                const response = await fetch(`/api/wards/find?id=${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const data = await response.json();
                 return data;
             } catch (err) {
@@ -125,7 +142,11 @@ export default {
         },
         async findUser(id) {
             try {
-                const response = await fetch(`/api/users/find?id=${id}`);
+                const response = await fetch(`/api/users/find?id=${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const data = await response.json();
                 return data;
             } catch (err) {
@@ -134,7 +155,11 @@ export default {
         },
         async findBed(id) {
             try {
-                const response = await fetch(`/api/beds/find/${id}`);
+                const response = await fetch(`/api/beds/find/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const data = await response.json();
                 return data;
             } catch (err) {
@@ -182,7 +207,10 @@ export default {
         async deleteRequest(id) {
             try {
                 const response = await fetch(`/api/transfers/delete/${id}`, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
                 });
                 if (response.status === 200) {
                     this.getResults();
@@ -213,7 +241,8 @@ export default {
                         bedApproved: bedId
                     }),
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     }
                 });
                 if (response.status === 201) {
@@ -230,7 +259,8 @@ export default {
                     {
                         method: "POST",
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                         },
                         body: JSON.stringify({
                             checkout_time: new Date().toISOString()
@@ -238,7 +268,10 @@ export default {
                     }
                 );
                 await fetch(`/api/beds/disable/${bedId}`, {
-                    method: "PATCH"
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
                 });
             } catch (error) {
                 console.error(error);
@@ -249,7 +282,8 @@ export default {
                 fetch("/api/beds/occupancy", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     },
                     body: JSON.stringify({
                         patient_id: patientId,

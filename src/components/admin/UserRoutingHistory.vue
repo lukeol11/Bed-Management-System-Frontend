@@ -81,14 +81,23 @@ export default {
             );
         },
         async getUserDetails(id) {
-            const userDetails = await fetch(`/api/users/find?id=${id}`);
+            const userDetails = await fetch(`/api/users/find?id=${id}`, {
+                headers: {
+                    Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                }
+            });
             this.userDetails = await userDetails.json();
         },
         async getRoutingHistory(userId, from, to) {
             const result = await fetch(
                 `/api/routing-history/find?startDate=${this.stringToDate(
                     from
-                )}&endDate=${this.stringToDate(to)}&userId=${userId}`
+                )}&endDate=${this.stringToDate(to)}&userId=${userId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                }
             );
             this.userHistory = await result.json();
         },

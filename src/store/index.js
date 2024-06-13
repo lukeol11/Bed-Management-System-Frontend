@@ -9,7 +9,8 @@ export default new Vuex.Store({
         hospitals: [],
         email: "",
         userDetails: {},
-        selectedHospital: {}
+        selectedHospital: {},
+        authToken: ""
     },
     getters: {
         allHospitals: (state) => state.hospitals,
@@ -18,7 +19,8 @@ export default new Vuex.Store({
         getUserDetails: (state) => state.userDetails,
         getHospitalById: (state) => (id) => {
             return state.hospitals.find((hospital) => hospital.id === id);
-        }
+        },
+        getAuthToken: (state) => state.authToken
     },
     mutations: {
         SET_HOSPITALS(state, hospitals) {
@@ -32,13 +34,22 @@ export default new Vuex.Store({
         },
         SET_SELECTED_HOSPITAL(state, hospital) {
             state.selectedHospital = hospital;
+        },
+        SET_AUTH_TOKEN(state, token) {
+            state.authToken = token;
         }
     },
     actions: {
-        fetchHospitals({ commit }) {
+        fetchHospitals({ commit, state }) {
             axios
-                .get("/api/hospitals/all")
+                .get("/api/hospitals/all", {
+                    headers: {
+                        Authorization: `Bearer ${state.authToken}`,
+                        "Content-Type": "application/json"
+                    }
+                })
                 .then((response) => {
+                    console.log("hospitals", response.data);
                     commit("SET_HOSPITALS", response.data);
                 })
                 .catch((error) => console.error(error));
@@ -49,7 +60,12 @@ export default new Vuex.Store({
                 return;
             }
             axios
-                .get(`/api/users/find?email=${state.email}`)
+                .get(`/api/users/find?email=${state.email}`, {
+                    headers: {
+                        Authorization: `Bearer ${state.authToken}`,
+                        "Content-Type": "application/json"
+                    }
+                })
                 .then((response) => {
                     commit("SET_USER_DETAILS", response.data);
                 })
