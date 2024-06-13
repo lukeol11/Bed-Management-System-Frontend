@@ -1,20 +1,22 @@
-# [Bed Management System Frontend](https://github.com/lukeol11/Bed-Management-System-Frontend)
+# [Bed Management System Frontend](https://github.com/alisonoc-ALTER/Bed-Management-System-Frontend)
 
-[![build](https://github.com/lukeol11/Bed-Management-System-Frontend/actions/workflows/build.yml/badge.svg)](https://github.com/lukeol11/Bed-Management-System-Frontend/actions/workflows/build.yml)
-[![GitHub issues](https://img.shields.io/github/issues/lukeol11/Bed-Management-System-Frontend?logo=github)](https://github.com/lukeol11/Bed-Management-System-Frontend/issues)
-![GitHub Created At](https://img.shields.io/github/created-at/lukeol11/Bed-Management-System-Frontend?logo=github)
-![GitHub last commit](https://img.shields.io/github/last-commit/lukeol11/Bed-Management-System-Frontend?logo=github)
-[![GitHub contributors](https://img.shields.io/github/contributors/lukeol11/Bed-Management-System-Frontend.svg?logo=github)](https://github.com/lukeol11/Bed-Management-System-Frontend/graphs/contributors/)
-[![GitHub license](https://img.shields.io/github/license/lukeol11/Bed-Management-System-Frontend?color=blue&logo=github)](https://github.com/lukeol11/Bed-Management-System-Frontend/blob/master/LICENSE)
+[![build](https://github.com/alisonoc-ALTER/Bed-Management-System-Frontend/actions/workflows/build.yml/badge.svg)](https://github.com/alisonoc-ALTER/Bed-Management-System-Frontend/actions/workflows/build.yml)
+[![test](https://github.com/alisonoc-ALTER/Bed-Management-System-Frontend/actions/workflows/test.yml/badge.svg)](https://github.com/alisonoc-ALTER/Bed-Management-System-Frontend/actions/workflows/test.yml)
+[![analysis](https://github.com/alisonoc-ALTER/Bed-Management-System-Frontend/actions/workflows/analysis.yml/badge.svg)](https://github.com/alisonoc-ALTER/Bed-Management-System-Frontend/actions/workflows/analysis.yml)
+[![GitHub issues](https://img.shields.io/github/issues/alisonoc-ALTER/Bed-Management-System-Frontend?logo=github)](https://github.com/alisonoc-ALTER/Bed-Management-System-Frontend/issues)
+![GitHub Created At](https://img.shields.io/github/created-at/alisonoc-ALTER/Bed-Management-System-Frontend?logo=github)
+![GitHub last commit](https://img.shields.io/github/last-commit/alisonoc-ALTER/Bed-Management-System-Frontend?logo=github)
+[![GitHub contributors](https://img.shields.io/github/contributors/alisonoc-ALTER/Bed-Management-System-Frontend.svg?logo=github)](https://github.com/alisonoc-ALTER/Bed-Management-System-Frontend/graphs/contributors/)
+[![GitHub license](https://img.shields.io/github/license/alisonoc-ALTER/Bed-Management-System-Frontend?color=blue&logo=github)](https://github.com/alisonoc-ALTER/Bed-Management-System-Frontend/blob/master/LICENSE)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=lukeol11_Bed-Management-System-Frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=lukeol11_Bed-Management-System-Frontend)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=lukeol11_Bed-Management-System-Frontend&metric=bugs)](https://sonarcloud.io/summary/new_code?id=lukeol11_Bed-Management-System-Frontend)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=lukeol11_Bed-Management-System-Frontend&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=lukeol11_Bed-Management-System-Frontend)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=lukeol11_Bed-Management-System-Frontend&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=lukeol11_Bed-Management-System-Frontend)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=lukeol11_Bed-Management-System-Frontend&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=lukeol11_Bed-Management-System-Frontend)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=lukeol11_Bed-Management-System-Frontend&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=lukeol11_Bed-Management-System-Frontend)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=lukeol11_Bed-Management-System-Frontend&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=lukeol11_Bed-Management-System-Frontend)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=lukeol11_Bed-Management-System-Frontend&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=lukeol11_Bed-Management-System-Frontend)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=bugs)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
 
 ## Table of Contents
 
@@ -24,6 +26,7 @@
 - [Installation](#installation)
 - [Development](#development)
 - [Deployment](#deployment)
+- [Run Docker Compose](#run-docker-compose)
 - [Testing](#testing)
 - [Contributors](#contributors)
 - [License](#license)
@@ -163,7 +166,7 @@ npm install
 
 ### Backend
 
-The backend for this project can be found [here](https://github.com/lukeol11/Bed-Management-System-Backend)
+The backend for this project can be found [here](https://github.com/alisonoc-ALTER/Bed-Management-System-Backend)
 
 This is **required** to run the application for both development and deployment purposes
 
@@ -230,6 +233,33 @@ cd build
 npm start
 ```
 
+## Run Docker Compose
+
+1. Build the Application:
+   To build the application using Docker Compose, run the following command:
+
+   ```bash
+   docker-compose build
+   ```
+
+2. Create Network (if not already created):
+   If you have not already created the bms-network network, run:
+
+   ```bash
+   docker network create bms-network
+   ```
+
+3. Start the Backend & Database Docker Compose:
+
+   Start the Docker Compose for the Backend and Database as documented [here](https://github.com/alisonoc-ALTER/Bed-Management-System-Backend#run-docker-compose)
+
+4. Start the Application:
+   To start the application, run:
+
+   ```bash
+   docker-compose up
+   ```
+
 ## Testing
 
 ### Run unit tests
@@ -240,7 +270,7 @@ npm run test:unit
 
 ## Contributors
 
-![Contributors](https://contrib.rocks/image?repo=lukeol11/Bed-Management-System-Frontend)
+![Contributors](https://contrib.rocks/image?repo=alisonoc-ALTER/Bed-Management-System-Frontend)
 
 ## License
 
