@@ -1,4 +1,4 @@
-name: Docker Compose Test
+name: Docker Compose
 
 on:
     push:
@@ -15,9 +15,9 @@ jobs:
         services:
             docker:
                 image: docker:latest
-                options: --privileged # Necessary for Docker inside Docker
+                options: --privileged
                 ports:
-                    - 2375:2375 # Expose Docker daemon for the Docker service
+                    - 2375:2375
 
         steps:
             - name: Checkout repository
@@ -25,6 +25,9 @@ jobs:
 
             - name: Build Docker Compose
               run: docker-compose build
+
+            - name: Start BMS Network
+              run: docker network create bms-network
 
             - name: Start Docker Compose
               run: docker-compose up -d
@@ -34,7 +37,7 @@ jobs:
                   docker-compose exec -T bff-service bash -c 'while !</dev/tcp/localhost/8080; do sleep 1; done'
 
             - name: Test BFF service
-              run: curl -s http://localhost:8080 # Replace with your actual test command
+              run: curl -s http://localhost:8080
 
             - name: Stop Docker Compose
               run: docker-compose down
