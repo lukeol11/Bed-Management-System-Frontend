@@ -131,6 +131,27 @@ router.beforeEach(async (to, from, next) => {
 
     const userDetails = store.getters.getUserDetails;
     const selectedHospital = store.getters.getSelectedHospital;
+    if (userDetails.id) {
+        try {
+            const response = await fetch("/api/routing-history/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    to: to.path,
+                    from: from.path,
+                    user_id: userDetails.id
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to create routing history");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     if (
         (to.name === "requests" && !userDetails.can_approve_requests) ||
