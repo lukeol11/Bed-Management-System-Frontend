@@ -1,0 +1,40 @@
+name: Docker Compose Test
+
+on:
+    push:
+        branches:
+            - "**"
+    pull_request:
+        types: [opened, synchronize, reopened]
+
+jobs:
+    docker:
+        name: Docker Compose Test
+        runs-on: ubuntu-latest
+
+        services:
+            docker:
+                image: docker:latest
+                options: --privileged # Necessary for Docker inside Docker
+                ports:
+                    - 2375:2375 # Expose Docker daemon for the Docker service
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
+
+            - name: Build Docker Compose
+              run: docker-compose build
+
+            - name: Start Docker Compose
+              run: docker-compose up -d
+
+            - name: Wait for services to be ready
+              run: |
+                  docker-compose exec -T bff-service bash -c 'while !</dev/tcp/localhost/8080; do sleep 1; done'
+
+            - name: Test BFF service
+              run: curl -s http://localhost:8080 # Replace with your actual test command
+
+            - name: Stop Docker Compose
+              run: docker-compose down
