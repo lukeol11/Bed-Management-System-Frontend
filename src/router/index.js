@@ -13,6 +13,7 @@ import WardManagementView from "@/views/WardManagementView.vue";
 import UserManagementView from "@/views/UserManagementView.vue";
 import BedsList from "@/components/admin/BedsList.vue";
 import BedView from "@/views/BedView.vue";
+import UserRoutingHistory from "@/components/admin/UserRoutingHistory.vue";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 Vue.use(VueRouter);
@@ -66,7 +67,13 @@ const routes = [
                     {
                         path: "users",
                         name: "users",
-                        component: UserManagementView
+                        component: UserManagementView,
+                        children: [
+                            {
+                                path: ":userId",
+                                component: UserRoutingHistory
+                            }
+                        ]
                     }
                 ]
             },
