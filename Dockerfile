@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Set up the Node.js backend and serve the built files
-FROM node:16
+FROM node:18
 
 # Set the working directory
 WORKDIR /app
