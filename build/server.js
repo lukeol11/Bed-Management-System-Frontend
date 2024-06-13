@@ -14,7 +14,8 @@ app.use(
         target: `http://${process.env.API_HOST || "localhost"}:${
             process.env.API_PORT || "3000"
         }/api`,
-        changeOrigin: true
+        changeOrigin: true,
+        logger: console
     })
 );
 
