@@ -9,14 +9,14 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/alisonoc-ALTER/Bed-Management-System-Frontend.svg?logo=github)](https://github.com/alisonoc-ALTER/Bed-Management-System-Frontend/graphs/contributors/)
 [![GitHub license](https://img.shields.io/github/license/alisonoc-ALTER/Bed-Management-System-Frontend?color=blue&logo=github)](https://github.com/alisonoc-ALTER/Bed-Management-System-Frontend/blob/master/LICENSE)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=bugs)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-alter_Bed-Management-System-Frontend&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=alisonoc-alter_Bed-Management-System-Frontend)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-ALTER_Bed-Management-System-Frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=alisonoc-ALTER_Bed-Management-System-Frontend)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-ALTER_Bed-Management-System-Frontend&metric=bugs)](https://sonarcloud.io/summary/new_code?id=alisonoc-ALTER_Bed-Management-System-Frontend)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-ALTER_Bed-Management-System-Frontend&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=alisonoc-ALTER_Bed-Management-System-Frontend)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-ALTER_Bed-Management-System-Frontend&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=alisonoc-ALTER_Bed-Management-System-Frontend)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-ALTER_Bed-Management-System-Frontend&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=alisonoc-ALTER_Bed-Management-System-Frontend)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-ALTER_Bed-Management-System-Frontend&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=alisonoc-ALTER_Bed-Management-System-Frontend)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-ALTER_Bed-Management-System-Frontend&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=alisonoc-ALTER_Bed-Management-System-Frontend)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=alisonoc-ALTER_Bed-Management-System-Frontend&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=alisonoc-ALTER_Bed-Management-System-Frontend)
 
 ## Table of Contents
 
