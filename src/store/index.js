@@ -49,7 +49,6 @@ export default new Vuex.Store({
                     }
                 })
                 .then((response) => {
-                    console.log("hospitals", response.data);
                     commit("SET_HOSPITALS", response.data);
                 })
                 .catch((error) => console.error(error));
