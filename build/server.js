@@ -9,13 +9,15 @@ const port = process.env.PORT || 8080;
 const reqAuthentication =
     process.env.REQUIRE_AUTHENTICATION === "true" || false;
 
-admin.initializeApp({
-    credential: admin.credential.cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL
-    })
-});
+if (reqAuthentication) {
+    admin.initializeApp({
+        credential: admin.credential.cert({
+            projectId: process.env.FIREBASE_PROJECT_ID,
+            privateKey: process.env.FIREBASE_PRIVATE_KEY,
+            clientEmail: process.env.FIREBASE_CLIENT_EMAIL
+        })
+    });
+}
 
 const firebaseAuthMiddleware = async (req, res, next) => {
     if (!reqAuthentication) {
@@ -58,10 +60,17 @@ app.get("*", (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
-    console.log(
-        `Proxying API requests to http://${
+    console.info(`Server running on port ${port}`);
+    console.info(
+        `Proxying API requests to ${process.env.API_PROTOCOL || "http"}://${
             process.env.API_HOST || "localhost"
         }:${process.env.API_PORT || "3000"}/api`
     );
+    if (reqAuthentication) {
+        console.info("Authentication is enabled.");
+    } else {
+        console.warn(
+            "Warning: Authentication is disabled. This is not recommended for production environments."
+        );
+    }
 });
