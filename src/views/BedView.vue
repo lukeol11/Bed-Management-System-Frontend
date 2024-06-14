@@ -90,7 +90,7 @@ export default {
             return this.$route.params.bedId;
         },
         currentRoute() {
-            return "http://localhost:8080" + this.$route.path;
+            return window.location.origin + this.$route.path;
         }
     },
     methods: {
