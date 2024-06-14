@@ -8,6 +8,7 @@
         />
         <cv-data-table
             :title="`${userDetails.first_name} ${userDetails.last_name}'s Browsing History`"
+            helperText="Select a date range to view routing history"
             :columns="columns"
             :zebra="true"
             @sort="sortTable"
@@ -77,13 +78,7 @@ export default {
         userId() {
             this.getUserDetails(this.userId);
             this.selectedDates = {};
-            this.userHistory = [
-                {
-                    to: "Select a date range to view routing history",
-                    from: "",
-                    timestamp: ""
-                }
-            ];
+            this.userHistory = [];
         }
     },
     methods: {
