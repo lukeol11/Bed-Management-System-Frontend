@@ -42,12 +42,20 @@
                         {{ result.phone_number }}</cv-data-table-cell
                     >
                     <cv-data-table-cell>
-                        <cv-button
-                            kind="danger"
-                            @click="deleteUser(result.id)"
-                            :disabled="result.id === userDetails.id"
-                            >Delete</cv-button
-                        >
+                        <cv-button-set>
+                            <cv-icon-button
+                                label="Browsing History"
+                                @click="open(result.id)"
+                            >
+                                <template slot="icon"><HistoryIcon /></template>
+                            </cv-icon-button>
+                            <cv-button
+                                kind="danger"
+                                @click="deleteUser(result.id)"
+                                :disabled="result.id === userDetails.id"
+                                >Delete</cv-button
+                            >
+                        </cv-button-set>
                     </cv-data-table-cell>
                 </cv-data-table-row>
                 <cv-data-table-row>
@@ -98,12 +106,14 @@
 
 <script>
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import HistoryIcon from "@carbon/icons-vue/es/recently-viewed/32";
 
 export default {
     name: "UsersList",
     data() {
         return {
             users: [],
+            lastSelected: undefined,
             password: "",
             columns: [
                 "ID",
@@ -126,11 +136,19 @@ export default {
             askPassword: false
         };
     },
+    components: {
+        HistoryIcon
+    },
     methods: {
         async getUsers() {
             try {
                 const response = await fetch(
-                    `/api/users/all?hospital_id=${this.selectedHospital.id}`
+                    `/api/users/all?hospital_id=${this.selectedHospital.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
                 );
                 const users = await response.json();
                 this.users = users;
@@ -141,7 +159,10 @@ export default {
         async deleteUser(userId) {
             try {
                 await fetch(`/api/users/delete/${userId}`, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
                 });
                 this.refreshData();
             } catch (err) {
@@ -163,7 +184,8 @@ export default {
                 const response = await fetch("/api/users/create", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     },
                     body: JSON.stringify(userData)
                 });
@@ -199,6 +221,12 @@ export default {
                 .catch((error) => {
                     alert(error.message);
                 });
+        },
+        open(route) {
+            if (this.lastSelected !== route) {
+                this.lastSelected = route;
+                this.$router.push(`/admin/users/${route}`);
+            }
         }
     },
     watch: {},
@@ -221,3 +249,9 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.bx--btn-set .bx--btn {
+    width: auto;
+}
+</style>

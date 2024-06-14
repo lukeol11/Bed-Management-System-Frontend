@@ -125,7 +125,12 @@ export default {
         async getWards() {
             try {
                 const response = await fetch(
-                    `/api/wards/all?hospital_id=${this.selectedHospital.id}`
+                    `/api/wards/all?hospital_id=${this.selectedHospital.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
                 );
                 const wards = await response.json();
                 this.wards = wards;
@@ -135,7 +140,11 @@ export default {
         },
         async getTreatmentLevels() {
             try {
-                const response = await fetch(`/api/wards/treatment_levels`);
+                const response = await fetch(`/api/wards/treatment_levels`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const treatmentLevels = await response.json();
                 this.treatmentLevels = treatmentLevels;
             } catch (err) {
@@ -156,7 +165,10 @@ export default {
         async deleteWard(wardId) {
             try {
                 await fetch(`/api/wards/delete/${wardId}`, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
                 });
                 this.refreshData();
             } catch (err) {
@@ -176,7 +188,10 @@ export default {
                 const response = await fetch("/api/wards/create", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
                     },
                     body: JSON.stringify(wardData)
                 });

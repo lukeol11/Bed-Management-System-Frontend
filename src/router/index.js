@@ -13,6 +13,7 @@ import WardManagementView from "@/views/WardManagementView.vue";
 import UserManagementView from "@/views/UserManagementView.vue";
 import BedsList from "@/components/admin/BedsList.vue";
 import BedView from "@/views/BedView.vue";
+import UserRoutingHistory from "@/components/admin/UserRoutingHistory.vue";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 Vue.use(VueRouter);
@@ -66,7 +67,13 @@ const routes = [
                     {
                         path: "users",
                         name: "users",
-                        component: UserManagementView
+                        component: UserManagementView,
+                        children: [
+                            {
+                                path: ":userId",
+                                component: UserRoutingHistory
+                            }
+                        ]
                     }
                 ]
             },
@@ -120,6 +127,7 @@ router.beforeEach(async (to, from, next) => {
     const currentUser = await waitForAuthState();
     if (currentUser) {
         store.commit("SET_USER_EMAIL", currentUser.email);
+        store.commit("SET_AUTH_TOKEN", currentUser.accessToken);
     }
 
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
@@ -129,8 +137,31 @@ router.beforeEach(async (to, from, next) => {
         next();
     }
 
-    const userDetails = store.getters.getUserDetails;
-    const selectedHospital = store.getters.getSelectedHospital;
+    const userDetails = store.getters.getUserDetails || {};
+    const selectedHospital = store.getters.getSelectedHospital || {};
+
+    if (userDetails.id) {
+        try {
+            const response = await fetch("/api/routing-history/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${store.getters.getAuthToken}`
+                },
+                body: JSON.stringify({
+                    to: to.path,
+                    from: from.path,
+                    user_id: userDetails.id
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to create routing history");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     if (
         (to.name === "requests" && !userDetails.can_approve_requests) ||

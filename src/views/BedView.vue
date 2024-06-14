@@ -90,7 +90,7 @@ export default {
             return this.$route.params.bedId;
         },
         currentRoute() {
-            return "http://localhost:8080" + this.$route.path;
+            return window.location.origin + this.$route.path;
         }
     },
     methods: {
@@ -102,13 +102,19 @@ export default {
         },
         async enabledBed() {
             await fetch(`/api/beds/enable/${this.bedId}`, {
-                method: "PATCH"
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                }
             });
             this.$router.go();
         },
         async disabledBed() {
             await fetch(`/api/beds/disable/${this.bedId}`, {
-                method: "PATCH"
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                }
             });
             this.$router.go();
         },
@@ -130,7 +136,11 @@ export default {
         },
         async getBedInfo() {
             try {
-                const response = await fetch(`/api/beds/find/${this.bedId}`);
+                const response = await fetch(`/api/beds/find/${this.bedId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const bedInfo = await response.json();
                 this.bedInfo = bedInfo;
                 this.isDisabled = await this.getBedStatus(
@@ -143,7 +153,11 @@ export default {
         },
         async getBedStatus(wardId, bedId) {
             try {
-                const response = await fetch(`/api/beds/status/${wardId}`);
+                const response = await fetch(`/api/beds/status/${wardId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const bedsDetails = await response.json();
                 const bedDetails = bedsDetails.find((bed) => bed.id === bedId);
                 return bedDetails.disabled;
@@ -153,12 +167,21 @@ export default {
         },
         async findPatient() {
             try {
-                let response = await fetch(`/api/beds/active/${this.bedId}`);
+                let response = await fetch(`/api/beds/active/${this.bedId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const bedActiveResponse = await response.json();
                 const patientId = bedActiveResponse[0]?.patient_id;
                 if (patientId) {
                     response = await fetch(
-                        `/api/patients/find?id=${patientId}`
+                        `/api/patients/find?id=${patientId}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                            }
+                        }
                     );
                     this.patientInfo = await response.json();
                     this.patientInfo.timeBooked = new Date(
@@ -176,7 +199,8 @@ export default {
                     {
                         method: "POST",
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                         },
                         body: JSON.stringify({
                             checkout_time: new Date().toISOString()

@@ -67,7 +67,12 @@ export default {
         async fetchWardBeds() {
             try {
                 const response = await fetch(
-                    `/api/wards/all?hospital_id=${this.selectedHospital.id}`
+                    `/api/wards/all?hospital_id=${this.selectedHospital.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
                 );
                 const wards = await response.json();
                 const bedsDataPromises = wards.map((ward) =>
@@ -81,7 +86,11 @@ export default {
         },
         async fetchBedStatus(wardId) {
             try {
-                const response = await fetch(`/api/beds/status/${wardId}`);
+                const response = await fetch(`/api/beds/status/${wardId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const beds = await response.json();
                 let counts = [0, 0, 0];
                 beds.forEach((bed) => {
