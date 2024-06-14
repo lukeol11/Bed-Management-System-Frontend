@@ -19,10 +19,14 @@
                     :key="index"
                 >
                     <cv-data-table-cell>
-                        <a :href="result.from">{{ result.from }}</a>
+                        <router-link :to="result.from">{{
+                            result.from
+                        }}</router-link>
                     </cv-data-table-cell>
                     <cv-data-table-cell
-                        ><a :href="result.to">{{ result.to }}</a>
+                        ><router-link :to="result.to">{{
+                            result.to
+                        }}</router-link>
                     </cv-data-table-cell>
                     <cv-data-table-cell
                         >{{ formatTimestamp(result.timestamp) }}
