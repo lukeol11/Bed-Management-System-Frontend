@@ -89,10 +89,15 @@ export default {
             this.userDetails = await userDetails.json();
         },
         async getRoutingHistory(userId, from, to) {
+            const toDate = this.stringToDate(to);
+            toDate.setHours(23);
+            toDate.setMinutes(59);
+            toDate.setSeconds(59);
+
             const result = await fetch(
                 `/api/routing-history/find?startDate=${this.stringToDate(
                     from
-                )}&endDate=${this.stringToDate(to)}&userId=${userId}`,
+                )}&endDate=${toDate}&userId=${userId}`,
                 {
                     headers: {
                         Authorization: `Bearer ${this.$store.getters.getAuthToken}`
