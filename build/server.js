@@ -45,9 +45,9 @@ app.use(
     "/api",
     firebaseAuthMiddleware,
     createProxyMiddleware({
-        target: `http://${process.env.API_HOST || "localhost"}:${
-            process.env.API_PORT || "3000"
-        }/api`,
+        target: `${process.env.API_PROTOCOL || "http"}://${
+            process.env.API_HOST || "localhost"
+        }:${process.env.API_PORT || "3000"}/api`,
         changeOrigin: true,
         logLevel: "debug"
     })
