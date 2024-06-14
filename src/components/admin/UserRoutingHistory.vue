@@ -10,6 +10,7 @@
             :title="`${userDetails.first_name} ${userDetails.last_name}'s Browsing History`"
             :columns="columns"
             :zebra="true"
+            @sort="sortTable"
         >
             <template slot="data">
                 <cv-data-table-row
@@ -39,7 +40,20 @@ export default {
     data() {
         return {
             userDetails: {},
-            columns: ["From", "To", "Timestamp"],
+            columns: [
+                {
+                    label: "From",
+                    sortable: false
+                },
+                {
+                    label: "To",
+                    sortable: false
+                },
+                {
+                    label: "Timestamp",
+                    sortable: true
+                }
+            ],
             selectedDates: {},
             dateFormat: { dateFormat: "d/m/Y" },
             userHistory: []
@@ -113,6 +127,18 @@ export default {
         },
         open(route) {
             this.$router.push(route);
+        },
+        sortTable(sortOrder) {
+            const { index, order } = sortOrder;
+            const key = this.columns[index].label.toLowerCase();
+
+            this.userHistory.sort((a, b) => {
+                if (order === "ascending") {
+                    return a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0;
+                } else {
+                    return a[key] > b[key] ? -1 : a[key] < b[key] ? 1 : 0;
+                }
+            });
         }
     },
     async mounted() {
