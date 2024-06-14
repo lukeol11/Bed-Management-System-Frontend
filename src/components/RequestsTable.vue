@@ -60,11 +60,14 @@
                 </cv-data-table-row>
             </template>
         </cv-data-table>
-        <router-view></router-view>
+        <ApprovedRequestsTable :requests="approvedRequests" />
     </div>
 </template>
 
 <script>
+const { formatInTimeZone } = require("date-fns-tz");
+import ApprovedRequestsTable from "./ApprovedRequestsTable.vue";
+
 export default {
     name: "RequestsTable",
     data() {
@@ -81,10 +84,21 @@ export default {
                 "Request Made At",
                 "Action"
             ],
-            results: []
+            results: [],
+            approvedRequests: []
         };
     },
+    components: {
+        ApprovedRequestsTable
+    },
     methods: {
+        formatTimestamp(timestamp) {
+            return formatInTimeZone(
+                timestamp,
+                "Europe/London",
+                "HH:mm:ss dd/MM/yyyy"
+            );
+        },
         async getRequests() {
             try {
                 const response = await fetch(
@@ -170,20 +184,14 @@ export default {
             const requests = await this.getRequests();
             const results = [];
             requests.forEach(async (request) => {
+                const patient = await this.findPatient(request.patientId);
+                const user = await this.findUser(request.createdBy);
+                const hospital = await this.findHospital(request.hospitalId);
+                const bedRequested = await this.findBed(request.bedRequested);
+                const wardRequested = await this.findWard(bedRequested.ward_id);
+                const currentBed = await this.findBed(request.currentBed);
+                const currentWard = await this.findWard(currentBed.ward_id);
                 if (!request.bedApproved) {
-                    const patient = await this.findPatient(request.patientId);
-                    const user = await this.findUser(request.createdBy);
-                    const hospital = await this.findHospital(
-                        request.hospitalId
-                    );
-                    const bedRequested = await this.findBed(
-                        request.bedRequested
-                    );
-                    const wardRequested = await this.findWard(
-                        bedRequested.ward_id
-                    );
-                    const currentBed = await this.findBed(request.currentBed);
-                    const currentWard = await this.findWard(currentBed.ward_id);
                     results.push({
                         id: request.id,
                         patientName: `${patient.first_name} ${patient.last_name}`,
@@ -199,6 +207,29 @@ export default {
                         requestTime: new Date(
                             request.createdAt
                         ).toLocaleString()
+                    });
+                } else {
+                    const approvedBy = await this.findUser(request.approvedBy);
+
+                    this.approvedRequests.push({
+                        id: request.id,
+                        patientName: `${patient.first_name} ${patient.last_name}`,
+                        patientId: patient.id,
+                        hospital: hospital.description,
+                        currentWard: currentWard.description,
+                        currentBed: currentBed.description,
+                        currentBedId: currentBed.id,
+                        requestedWard: wardRequested.description,
+                        requestedBed: bedRequested.description,
+                        requestedBedId: bedRequested.id,
+                        requestBy: `${user.first_name} ${user.last_name}`,
+                        requestTime: this.formatTimestamp(
+                            new Date(request.createdAt)
+                        ),
+                        approvedBy: `${approvedBy.first_name} ${approvedBy.last_name}`,
+                        approvedTime: this.formatTimestamp(
+                            new Date(request.approvedAt)
+                        )
                     });
                 }
             });
