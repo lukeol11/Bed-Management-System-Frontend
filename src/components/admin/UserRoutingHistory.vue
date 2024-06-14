@@ -86,7 +86,7 @@ export default {
             return formatInTimeZone(
                 timestamp,
                 "Europe/London",
-                "HH:mm:ss dd/mm/yyyy"
+                "HH:mm:ss dd/MM/yyyy"
             );
         },
         async getUserDetails(id) {
