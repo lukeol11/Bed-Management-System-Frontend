@@ -28,6 +28,7 @@
 - [Deployment](#deployment)
 - [Run Docker Compose](#run-docker-compose)
 - [Testing](#testing)
+- [Compatibility](#compatibility)
 - [Contributors](#contributors)
 - [License](#license)
 
@@ -267,6 +268,10 @@ npm start
 ```bash
 npm run test:unit
 ```
+
+## Compatibility
+
+View [compatibility.md](compatibility.md) for compatibility information.
 
 ## Contributors
 
