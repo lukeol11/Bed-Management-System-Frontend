@@ -1,6 +1,6 @@
 <template>
     <div class="Layout">
-        <top-bar v-if="usersHospitalId" />
+        <top-bar />
         <side-bar />
 
         <div class="content">
@@ -18,11 +18,6 @@ export default {
     components: {
         SideBar,
         TopBar
-    },
-    computed: {
-        usersHospitalId() {
-            return this.$store.getters.getUserDetails.hospital_id;
-        }
     },
     created() {
         this.$store.dispatch("fetchUserDetails");

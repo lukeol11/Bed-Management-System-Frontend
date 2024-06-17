@@ -1,9 +1,20 @@
 <template>
     <div class="dashboard">
         <div class="charts">
-            <WardAvailability />
-            <HospitalAvailability />
-            <BusyTimes />
+            <WardAvailability v-if="typeof selectedHospital.id === 'number'" />
+            <cv-tile id="wardAvailability" v-else>
+                <cv-inline-loading state="loading" />
+            </cv-tile>
+            <HospitalAvailability
+                v-if="typeof selectedHospital.id === 'number'"
+            />
+            <cv-tile id="hospitalAvailability" v-else>
+                <cv-inline-loading state="loading" />
+            </cv-tile>
+            <BusyTimes v-if="typeof selectedHospital.id === 'number'" />
+            <cv-tile id="busyTimes" v-else>
+                <cv-inline-loading state="loading" />
+            </cv-tile>
         </div>
         <div class="navigation">
             <cv-tile @click="open('search')" kind="clickable" id="search"
@@ -17,7 +28,10 @@
             >
         </div>
         <div class="wardCharts">
-            <WardsTile><LineChart /></WardsTile>
+            <WardsTile
+                ><LineChart v-if="typeof selectedHospital.id === 'number'" />
+                <cv-inline-loading v-else state="loading" />
+            </WardsTile>
         </div>
     </div>
 </template>
@@ -47,6 +61,11 @@ export default {
     methods: {
         open(route) {
             this.$router.push({ name: route });
+        }
+    },
+    computed: {
+        selectedHospital() {
+            return this.$store.getters.getSelectedHospital;
         }
     }
 };
