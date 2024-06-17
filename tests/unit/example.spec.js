@@ -39,6 +39,6 @@ describe("TopBar.vue", () => {
             localVue,
             store
         });
-        expect(wrapper.html()).toContain("cv-select");
+        expect(wrapper.html()).toContain("cv-inline-loading-stub");
     });
 });
