@@ -132,7 +132,7 @@ router.beforeEach(async (to, from, next) => {
 
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
     if (requiresAuth && !currentUser) {
-        next("login");
+        next({ name: "login" });
     } else {
         next();
     }
@@ -167,14 +167,14 @@ router.beforeEach(async (to, from, next) => {
         (to.name === "requests" && !userDetails.can_approve_requests) ||
         userDetails.hospital_id !== selectedHospital.id
     ) {
-        next("dashboard");
+        next({ name: "dashboard" });
     }
 
     if (
         (to.name === "admin" && !userDetails.can_administrate) ||
         userDetails.hospital_id !== selectedHospital.id
     ) {
-        next("dashboard");
+        next({ name: "dashboard" });
     }
 });
 
