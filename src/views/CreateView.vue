@@ -54,7 +54,8 @@ export default {
                 return await fetch("/api/patients/create", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     },
                     body: JSON.stringify({
                         first_name: this.patientDetails.firstName,
