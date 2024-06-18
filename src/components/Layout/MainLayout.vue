@@ -5,6 +5,18 @@
 
         <div class="content">
             <slot />
+            <div class="notifications">
+                <cv-toast-notification
+                    style="z-index: 1000"
+                    v-for="(notification, index) in notifications"
+                    :key="index"
+                    :title="notification.title"
+                    :sub-title="notification.subTitle"
+                    :caption="notification.caption"
+                    :kind="notification.kind"
+                    @close="closeNotification(index)"
+                />
+            </div>
         </div>
     </div>
 </template>
@@ -18,6 +30,16 @@ export default {
     components: {
         SideBar,
         TopBar
+    },
+    computed: {
+        notifications() {
+            return this.$store.getters.getNotifications;
+        }
+    },
+    methods: {
+        closeNotification(index) {
+            this.$store.commit("REMOVE_NOTIFICATION", index);
+        }
     },
     created() {
         this.$store.dispatch("fetchUserDetails");
@@ -43,5 +65,18 @@ export default {
     header.topBar {
         display: none;
     }
+}
+
+.notifications {
+    position: fixed;
+    overflow-y: auto;
+    right: 1em;
+    bottom: 1em;
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 3rem);
+    overflow-x: hidden;
+
+    width: auto;
 }
 </style>
