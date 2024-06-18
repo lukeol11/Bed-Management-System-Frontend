@@ -10,7 +10,8 @@ export default new Vuex.Store({
         email: "",
         userDetails: {},
         selectedHospital: {},
-        authToken: ""
+        authToken: "",
+        notifications: []
     },
     getters: {
         allHospitals: (state) => state.hospitals,
@@ -20,7 +21,8 @@ export default new Vuex.Store({
         getHospitalById: (state) => (id) => {
             return state.hospitals.find((hospital) => hospital.id === id);
         },
-        getAuthToken: (state) => state.authToken
+        getAuthToken: (state) => state.authToken,
+        getNotifications: (state) => state.notifications
     },
     mutations: {
         SET_HOSPITALS(state, hospitals) {
@@ -37,6 +39,12 @@ export default new Vuex.Store({
         },
         SET_AUTH_TOKEN(state, token) {
             state.authToken = token;
+        },
+        ADD_NOTIFICATION(state, notification) {
+            state.notifications.push(notification);
+        },
+        REMOVE_NOTIFICATION(state, index) {
+            state.notifications.splice(index, 1);
         }
     },
     actions: {
