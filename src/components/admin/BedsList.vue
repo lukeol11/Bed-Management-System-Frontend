@@ -98,8 +98,19 @@ export default {
                     body: JSON.stringify(bedData)
                 });
 
-                if (!response.ok) {
-                    throw new Error("Failed to create ward");
+                if (response.ok) {
+                    this.$store.commit("ADD_NOTIFICATION", {
+                        kind: "success",
+                        title: "Bed created successfully",
+                        caption: `Bed "${bedData.description}" has been created successfully`
+                    });
+                } else {
+                    this.$store.commit("ADD_NOTIFICATION", {
+                        kind: "error",
+                        title: "Failed to create bed",
+                        caption: `Failed to create bed "${bedData.description}"`
+                    });
+                    throw new Error("Failed to create bed");
                 }
                 this.newbed = {
                     description: ""

@@ -115,7 +115,7 @@ export default {
                 description: "",
                 min_patient_age: 0,
                 max_patient_age: 0,
-                treatment_level: 0,
+                treatment_level: "0",
                 location: "",
                 gender: ""
             }
@@ -196,14 +196,25 @@ export default {
                     body: JSON.stringify(wardData)
                 });
 
-                if (!response.ok) {
+                if (response.ok) {
+                    this.$store.commit("ADD_NOTIFICATION", {
+                        kind: "success",
+                        title: "Ward created successfully",
+                        caption: `Ward "${wardData.description}" has been created successfully</br>Ward Details:</br>Min Patient Age: ${wardData.min_patient_age}</br>Max Patient Age: ${wardData.max_patient_age}</br>Treatment Level: ${wardData.treatment_level}</br>Location: ${wardData.location}</br>Gender: ${wardData.gender}`
+                    });
+                } else {
+                    this.$store.commit("ADD_NOTIFICATION", {
+                        kind: "error",
+                        title: "Failed to create ward",
+                        caption: `Failed to create ward "${wardData.description}"`
+                    });
                     throw new Error("Failed to create ward");
                 }
                 this.newWard = {
                     description: "",
                     min_patient_age: 0,
                     max_patient_age: 0,
-                    treatment_level: 0,
+                    treatment_level: "0",
                     location: "",
                     gender: ""
                 };
