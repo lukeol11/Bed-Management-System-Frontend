@@ -29,10 +29,14 @@
                         {{ result.gender }}</cv-data-table-cell
                     >
                     <cv-data-table-cell>
-                        <cv-button @click="open(result.id)">Open</cv-button>
-                        <cv-button kind="danger" @click="deleteWard(result.id)"
-                            >Delete</cv-button
-                        >
+                        <cv-button-set>
+                            <cv-button @click="open(result.id)">Open</cv-button>
+                            <cv-button
+                                kind="danger"
+                                @click="deleteWard(result.id)"
+                                >Delete</cv-button
+                            >
+                        </cv-button-set>
                     </cv-data-table-cell>
                 </cv-data-table-row>
                 <cv-data-table-row>
@@ -257,3 +261,9 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.bx--btn-set .bx--btn {
+    width: auto;
+}
+</style>
