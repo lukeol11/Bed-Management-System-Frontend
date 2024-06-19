@@ -1,6 +1,6 @@
 <template>
     <div id="wardsList">
-        <cv-data-table :columns="columns" :zebra="true">
+        <cv-data-table :columns="columns" :zebra="true" title="Wards">
             <template slot="data">
                 <cv-data-table-row
                     v-for="(result, index) in filteredResults"
@@ -107,7 +107,7 @@ export default {
             wards: [],
             columns: [
                 "ID",
-                "Description",
+                "Ward Name",
                 "Min Patient Age",
                 "Max Patient Age",
                 "Treatment Level",

@@ -45,7 +45,7 @@ export default {
     data() {
         return {
             beds: [],
-            columns: ["ID", "Description", "Action"],
+            columns: ["ID", "Name", "Action"],
             newBed: {
                 description: ""
             }
