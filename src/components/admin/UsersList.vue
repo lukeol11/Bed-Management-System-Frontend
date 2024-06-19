@@ -199,7 +199,20 @@ export default {
                     body: JSON.stringify(userData)
                 });
 
-                if (!response.ok) {
+                if (response.ok) {
+                    this.$store.commit("ADD_NOTIFICATION", {
+                        kind: "success",
+                        title: "User created successfully",
+                        caption: `User "${userData.first_name} ${
+                            userData.last_name
+                        }" has been created successfully</br>Can Approve Requests: ${
+                            userData.can_approve_requests ? "✔" : "❌"
+                        }
+                        </br>Can Administrate: ${
+                            userData.can_administrate ? "✔" : "❌"
+                        }`
+                    });
+                } else {
                     throw new Error("Failed to create user");
                 }
                 this.newUser = {
@@ -212,6 +225,11 @@ export default {
                 };
                 this.refreshData();
             } catch (err) {
+                this.$store.commit("ADD_NOTIFICATION", {
+                    kind: "error",
+                    title: "Failed to create user",
+                    caption: "Failed to create user"
+                });
                 console.error(err);
             }
         },
