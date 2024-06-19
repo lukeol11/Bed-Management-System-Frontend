@@ -55,15 +55,19 @@
                         ></cv-number-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-dropdown v-model="newWard.treatment_level">
-                            <cv-dropdown-item
+                        <cv-select
+                            :hideLabel="true"
+                            v-model="newWard.treatment_level"
+                            label=""
+                        >
+                            <cv-select-option
                                 v-for="treatmentLevel in treatmentLevels"
                                 :key="treatmentLevel.name"
                                 :value="String(treatmentLevel.id)"
                             >
                                 {{ treatmentLevel.name }}
-                            </cv-dropdown-item>
-                        </cv-dropdown>
+                            </cv-select-option>
+                        </cv-select>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-text-input
@@ -71,15 +75,19 @@
                         ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-dropdown v-model="newWard.gender">
-                            <cv-dropdown-item
+                        <cv-select
+                            :hideLabel="true"
+                            v-model="newWard.gender"
+                            label=""
+                        >
+                            <cv-select-option
                                 v-for="gender in genders"
                                 :key="gender"
                                 :value="gender"
                             >
                                 {{ gender }}
-                            </cv-dropdown-item>
-                        </cv-dropdown>
+                            </cv-select-option>
+                        </cv-select>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-button @click="createWard">Create</cv-button>
