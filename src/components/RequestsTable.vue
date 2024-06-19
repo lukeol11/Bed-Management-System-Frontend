@@ -186,17 +186,19 @@ export default {
             requests.forEach(async (request) => {
                 const patient = await this.findPatient(request.patientId);
                 const user = await this.findUser(request.createdBy);
-                const hospital = await this.findHospital(request.hospitalId);
                 const bedRequested = await this.findBed(request.bedRequested);
                 const wardRequested = await this.findWard(bedRequested.ward_id);
                 const currentBed = await this.findBed(request.currentBed);
                 const currentWard = await this.findWard(currentBed.ward_id);
+                const currentHospital = await this.findHospital(
+                    currentWard.hospital_id
+                );
                 if (!request.bedApproved) {
                     results.push({
                         id: request.id,
                         patientName: `${patient.first_name} ${patient.last_name}`,
                         patientId: patient.id,
-                        hospital: hospital.description,
+                        hospital: currentHospital.description,
                         currentWard: currentWard.description,
                         currentBed: currentBed.description,
                         currentBedId: currentBed.id,
@@ -215,7 +217,7 @@ export default {
                         id: request.id,
                         patientName: `${patient.first_name} ${patient.last_name}`,
                         patientId: patient.id,
-                        hospital: hospital.description,
+                        hospital: currentHospital.description,
                         currentWard: currentWard.description,
                         currentBed: currentBed.description,
                         currentBedId: currentBed.id,
