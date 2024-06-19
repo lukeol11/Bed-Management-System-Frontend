@@ -136,17 +136,9 @@ export default {
             }
         },
         async getAllMatchingBeds(age, treatmentLevel, gender) {
-            console.log(
-                "Checking for beds with the following criteria",
-                "age:",
-                age,
-                "gender:",
-                gender
-            );
             const wards = await this.getWards();
             const filteredWards = wards.filter(
                 (ward) =>
-                    // ward.treatment_level === treatmentLevel &&
                     ward.min_patient_age <= age &&
                     ward.max_patient_age >= age &&
                     (gender === ward.gender || ward.gender == "All")
