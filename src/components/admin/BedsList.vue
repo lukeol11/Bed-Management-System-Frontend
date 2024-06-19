@@ -136,6 +136,9 @@ export default {
         wardId() {
             this.getBeds();
         }
+    },
+    mounted() {
+        this.getBeds();
     }
 };
 </script>

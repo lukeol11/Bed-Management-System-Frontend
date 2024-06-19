@@ -243,9 +243,17 @@ export default {
             return this.$route.params.wardId;
         }
     },
+    watch: {
+        selectedHospital() {
+            this.getTreatmentLevels();
+            this.getWards();
+        }
+    },
     mounted() {
-        this.getTreatmentLevels();
-        this.getWards();
+        if (this.selectedHospital.id) {
+            this.getTreatmentLevels();
+            this.getWards();
+        }
     }
 };
 </script>
