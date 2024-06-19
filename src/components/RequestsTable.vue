@@ -183,6 +183,7 @@ export default {
         async getResults() {
             const requests = await this.getRequests();
             const results = [];
+            const approvedRequests = [];
             requests.forEach(async (request) => {
                 const patient = await this.findPatient(request.patientId);
                 const user = await this.findUser(request.createdBy);
@@ -213,7 +214,7 @@ export default {
                 } else {
                     const approvedBy = await this.findUser(request.approvedBy);
 
-                    this.approvedRequests.push({
+                    approvedRequests.push({
                         id: request.id,
                         patientName: `${patient.first_name} ${patient.last_name}`,
                         patientId: patient.id,
@@ -236,6 +237,7 @@ export default {
                 }
             });
             this.results = results;
+            this.approvedRequests = approvedRequests;
         },
         async deleteRequest(id) {
             try {
@@ -337,12 +339,21 @@ export default {
         },
         userDetails() {
             return this.$store.getters.getUserDetails;
+        },
+        transferRequests() {
+            return this.$store.getters.getTransferRequests;
         }
     },
     mounted() {
         this.getResults();
     },
-    watch: {}
+    watch: {
+        transferRequests(newVal, oldVal) {
+            if (newVal.length > oldVal.length && oldVal.length > 0) {
+                this.getResults();
+            }
+        }
+    }
 };
 </script>
 
