@@ -247,7 +247,11 @@ export default {
             }
         }
     },
-    watch: {},
+    watch: {
+        selectedHospital() {
+            this.getUsers();
+        }
+    },
     computed: {
         selectedHospital() {
             return this.$store.getters.getSelectedHospital;
