@@ -12,7 +12,8 @@ export default new Vuex.Store({
         userDetails: {},
         selectedHospital: {},
         authToken: "",
-        notifications: []
+        notifications: [],
+        transferRequests: []
     },
     getters: {
         allHospitals: (state) => state.hospitals,
@@ -23,7 +24,8 @@ export default new Vuex.Store({
             return state.hospitals.find((hospital) => hospital.id === id);
         },
         getAuthToken: (state) => state.authToken,
-        getNotifications: (state) => state.notifications
+        getNotifications: (state) => state.notifications,
+        getTransferRequests: (state) => state.transferRequests
     },
     mutations: {
         SET_HOSPITALS(state, hospitals) {
@@ -51,6 +53,9 @@ export default new Vuex.Store({
         },
         REMOVE_NOTIFICATION(state, index) {
             state.notifications.splice(index, 1);
+        },
+        SET_TRANSFER_REQUESTS(state, requests) {
+            state.transferRequests = requests;
         }
     },
     actions: {
@@ -81,6 +86,22 @@ export default new Vuex.Store({
                 })
                 .then((response) => {
                     commit("SET_USER_DETAILS", response.data);
+                })
+                .catch((error) => console.error(error));
+        },
+        fetchTransferRequests({ commit, state }) {
+            axios
+                .get(
+                    `/api/transfers/all?hospital_id=${state.userDetails.hospital_id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${state.authToken}`,
+                            "Content-Type": "application/json"
+                        }
+                    }
+                )
+                .then((response) => {
+                    commit("SET_TRANSFER_REQUESTS", response.data);
                 })
                 .catch((error) => console.error(error));
         }
