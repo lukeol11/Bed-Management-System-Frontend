@@ -98,7 +98,9 @@
                         ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button @click="askPassword = true"
+                        <cv-button
+                            @click="askPassword = true"
+                            :disabled="!readyToCreate()"
                             >Create</cv-button
                         >
                     </cv-data-table-cell>
@@ -164,6 +166,14 @@ export default {
             } catch (err) {
                 console.error(err);
             }
+        },
+        readyToCreate() {
+            return (
+                this.newUser.first_name &&
+                this.newUser.last_name &&
+                this.newUser.email &&
+                this.newUser.phone_number
+            );
         },
         async deleteUser(userId) {
             try {

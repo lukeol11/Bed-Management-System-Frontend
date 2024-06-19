@@ -94,7 +94,11 @@
                         </cv-select>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button @click="createWard">Create</cv-button>
+                        <cv-button
+                            @click="createWard"
+                            :disabled="!readyToCreate()"
+                            >Create</cv-button
+                        >
                     </cv-data-table-cell>
                 </cv-data-table-row>
             </template>
@@ -127,7 +131,7 @@ export default {
                 description: "",
                 min_patient_age: 0,
                 max_patient_age: 0,
-                treatment_level: "0",
+                treatment_level: "",
                 location: "",
                 gender: ""
             }
@@ -190,6 +194,16 @@ export default {
         refreshData() {
             this.getWards();
         },
+        readyToCreate() {
+            return (
+                this.newWard.description &&
+                this.newWard.max_patient_age &&
+                this.newWard.min_patient_age <= this.newWard.max_patient_age &&
+                this.newWard.treatment_level &&
+                this.newWard.location &&
+                this.newWard.gender
+            );
+        },
         async createWard() {
             const wardData = {
                 ...this.newWard,
@@ -221,7 +235,7 @@ export default {
                     description: "",
                     min_patient_age: 0,
                     max_patient_age: 0,
-                    treatment_level: "0",
+                    treatment_level: "",
                     location: "",
                     gender: ""
                 };

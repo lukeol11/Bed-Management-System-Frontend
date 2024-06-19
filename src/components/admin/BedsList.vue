@@ -30,7 +30,11 @@
                         ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button @click="createBed">Create</cv-button>
+                        <cv-button
+                            @click="createBed"
+                            :disabled="!newBed.description"
+                            >Create</cv-button
+                        >
                     </cv-data-table-cell>
                 </cv-data-table-row>
             </template>
