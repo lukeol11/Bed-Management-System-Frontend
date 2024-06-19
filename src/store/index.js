@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
+const { formatInTimeZone } = require("date-fns-tz");
 
 Vue.use(Vuex);
 
@@ -41,6 +42,11 @@ export default new Vuex.Store({
             state.authToken = token;
         },
         ADD_NOTIFICATION(state, notification) {
+            notification.subTitle = formatInTimeZone(
+                new Date(),
+                "Europe/London",
+                "HH:mm:ss dd/MM/yyyy"
+            );
             state.notifications.push(notification);
         },
         REMOVE_NOTIFICATION(state, index) {
