@@ -211,11 +211,6 @@ export default {
                         caption: `Ward "${wardData.description}" has been created successfully</br>Ward Details:</br>Min Patient Age: ${wardData.min_patient_age}</br>Max Patient Age: ${wardData.max_patient_age}</br>Treatment Level: ${wardData.treatment_level}</br>Location: ${wardData.location}</br>Gender: ${wardData.gender}`
                     });
                 } else {
-                    this.$store.commit("ADD_NOTIFICATION", {
-                        kind: "error",
-                        title: "Failed to create ward",
-                        caption: `Failed to create ward "${wardData.description}"`
-                    });
                     throw new Error("Failed to create ward");
                 }
                 this.newWard = {
@@ -228,6 +223,11 @@ export default {
                 };
                 this.refreshData();
             } catch (err) {
+                this.$store.commit("ADD_NOTIFICATION", {
+                    kind: "error",
+                    title: "Failed to create ward",
+                    caption: `Failed to create ward "${wardData.description}"`
+                });
                 console.error(err);
             }
         }
