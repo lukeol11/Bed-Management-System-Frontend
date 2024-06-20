@@ -164,8 +164,8 @@ router.beforeEach(async (to, from, next) => {
     }
 
     if (
-        (to.path.includes("requests") && !userDetails.can_approve_requests) ||
-        (to.path.includes("requests") &&
+        to.path.includes("requests") &&
+        (!userDetails.can_administrate ||
             userDetails.hospital_id !== selectedHospital.id)
     ) {
         console.warn("User does not have permission to manage requests");
@@ -173,8 +173,8 @@ router.beforeEach(async (to, from, next) => {
     }
 
     if (
-        (to.path.includes("admin") && !userDetails.can_administrate) ||
-        (to.path.includes("admin") &&
+        to.path.includes("admin") &&
+        (!userDetails.can_administrate ||
             userDetails.hospital_id !== selectedHospital.id)
     ) {
         console.warn(
