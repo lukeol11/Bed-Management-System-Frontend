@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import { createVuePlugin as vue } from "vite-plugin-vue2";
+import vue from "@vitejs/plugin-vue2";
 
 const path = require("path");
 export default defineConfig({
@@ -9,6 +9,9 @@ export default defineConfig({
             extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json", ".vue"],
             "@": path.resolve(__dirname, "./src")
         }
+    },
+    build: {
+        outDir: "build/dist"
     },
     server: {
         port: 8080,
