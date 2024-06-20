@@ -45,10 +45,8 @@ export default {
                 this.fetchTransferRequestsInterval = setInterval(() => {
                     this.$store.dispatch("fetchTransferRequests");
                 }, 5000);
-            } else {
-                if (this.fetchTransferRequestsInterval) {
-                    clearInterval(this.fetchTransferRequestsInterval);
-                }
+            } else if (this.fetchTransferRequestsInterval) {
+                clearInterval(this.fetchTransferRequestsInterval);
             }
         }
     },
