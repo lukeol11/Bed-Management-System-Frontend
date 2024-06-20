@@ -106,7 +106,7 @@ const routes = [
 
 const router = new VueRouter({
     mode: "history",
-    base: process.env.BASE_URL,
+    base: import.meta.BASE_URL,
     routes
 });
 
@@ -164,16 +164,22 @@ router.beforeEach(async (to, from, next) => {
     }
 
     if (
-        (to.name === "requests" && !userDetails.can_approve_requests) ||
-        userDetails.hospital_id !== selectedHospital.id
+        to.path.includes("requests") &&
+        (!userDetails.can_administrate ||
+            userDetails.hospital_id !== selectedHospital.id)
     ) {
+        console.warn("User does not have permission to manage requests");
         next({ name: "dashboard" });
     }
 
     if (
-        (to.name === "admin" && !userDetails.can_administrate) ||
-        userDetails.hospital_id !== selectedHospital.id
+        to.path.includes("admin") &&
+        (!userDetails.can_administrate ||
+            userDetails.hospital_id !== selectedHospital.id)
     ) {
+        console.warn(
+            "User does not have permission to use administrator panel"
+        );
         next({ name: "dashboard" });
     }
 });

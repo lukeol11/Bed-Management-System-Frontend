@@ -2,6 +2,7 @@ import { shallowMount, createLocalVue } from "@vue/test-utils";
 import TopBar from "@/components/Layout/TopBar.vue";
 import Vuex from "vuex";
 import CarbonComponentsVue from "@carbon/vue";
+import { describe, it, expect, vi } from "vitest";
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -14,7 +15,7 @@ describe("TopBar.vue", () => {
         store = new Vuex.Store({
             state: {},
             getters: {
-                allHospitals: jest.fn(() => {
+                allHospitals: vi.fn(() => {
                     return [
                         {
                             id: 1,
@@ -22,14 +23,14 @@ describe("TopBar.vue", () => {
                         }
                     ];
                 }),
-                getUserDetails: jest.fn(() => {
+                getUserDetails: vi.fn(() => {
                     return {
                         hospital_id: 1
                     };
                 })
             },
             mutations: {
-                SET_SELECTED_HOSPITAL: jest.fn()
+                SET_SELECTED_HOSPITAL: vi.fn()
             }
         });
     });
