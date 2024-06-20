@@ -8,6 +8,7 @@ const app = express();
 const port = process.env.PORT || 8080;
 const reqAuthentication =
     process.env.REQUIRE_AUTHENTICATION === "true" || false;
+const debugMode = process.env.DEBUG_MODE === "true" || false;
 
 if (reqAuthentication) {
     admin.initializeApp({
@@ -34,6 +35,10 @@ const firebaseAuthMiddleware = async (req, res, next) => {
     try {
         const decodedToken = await admin.auth().verifyIdToken(idToken);
         req.user = decodedToken;
+        if (debugMode) {
+            console.log(decodedToken.email, "requested", req.path);
+        }
+        req.headers.email = decodedToken.email;
         next();
     } catch (error) {
         console.error("Error while verifying Firebase ID token:", error);

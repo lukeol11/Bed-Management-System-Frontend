@@ -183,20 +183,23 @@ export default {
         async getResults() {
             const requests = await this.getRequests();
             const results = [];
+            const approvedRequests = [];
             requests.forEach(async (request) => {
                 const patient = await this.findPatient(request.patientId);
                 const user = await this.findUser(request.createdBy);
-                const hospital = await this.findHospital(request.hospitalId);
                 const bedRequested = await this.findBed(request.bedRequested);
                 const wardRequested = await this.findWard(bedRequested.ward_id);
                 const currentBed = await this.findBed(request.currentBed);
                 const currentWard = await this.findWard(currentBed.ward_id);
+                const currentHospital = await this.findHospital(
+                    currentWard.hospital_id
+                );
                 if (!request.bedApproved) {
                     results.push({
                         id: request.id,
                         patientName: `${patient.first_name} ${patient.last_name}`,
                         patientId: patient.id,
-                        hospital: hospital.description,
+                        hospital: currentHospital.description,
                         currentWard: currentWard.description,
                         currentBed: currentBed.description,
                         currentBedId: currentBed.id,
@@ -211,11 +214,11 @@ export default {
                 } else {
                     const approvedBy = await this.findUser(request.approvedBy);
 
-                    this.approvedRequests.push({
+                    approvedRequests.push({
                         id: request.id,
                         patientName: `${patient.first_name} ${patient.last_name}`,
                         patientId: patient.id,
-                        hospital: hospital.description,
+                        hospital: currentHospital.description,
                         currentWard: currentWard.description,
                         currentBed: currentBed.description,
                         currentBedId: currentBed.id,
@@ -234,6 +237,7 @@ export default {
                 }
             });
             this.results = results;
+            this.approvedRequests = approvedRequests;
         },
         async deleteRequest(id) {
             try {
@@ -335,12 +339,21 @@ export default {
         },
         userDetails() {
             return this.$store.getters.getUserDetails;
+        },
+        transferRequests() {
+            return this.$store.getters.getTransferRequests;
         }
     },
     mounted() {
         this.getResults();
     },
-    watch: {}
+    watch: {
+        transferRequests(newVal, oldVal) {
+            if (newVal.length > oldVal.length && oldVal.length > 0) {
+                this.getResults();
+            }
+        }
+    }
 };
 </script>
 

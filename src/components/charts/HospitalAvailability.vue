@@ -44,6 +44,14 @@ export default {
                 ]
             },
             chartOptions: {
+                animation: false,
+                transitions: {
+                    active: {
+                        animation: {
+                            duration: 0
+                        }
+                    }
+                },
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
@@ -65,6 +73,7 @@ export default {
     },
     methods: {
         async fetchWardBeds() {
+            this.processBedData([[0, 0, 0]]);
             try {
                 const response = await fetch(
                     `/api/wards/all?hospital_id=${this.selectedHospital.id}`,
@@ -114,8 +123,17 @@ export default {
             this.chartData.datasets[0].data = totals;
         }
     },
+    props: {
+        update: {
+            type: Number,
+            required: false
+        }
+    },
     watch: {
         selectedHospital() {
+            this.fetchWardBeds();
+        },
+        update() {
             this.fetchWardBeds();
         }
     },

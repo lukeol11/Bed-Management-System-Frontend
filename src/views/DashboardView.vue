@@ -1,12 +1,16 @@
 <template>
     <div class="dashboard">
         <div class="charts">
-            <WardAvailability v-if="typeof selectedHospital.id === 'number'" />
+            <WardAvailability
+                v-if="typeof selectedHospital.id === 'number'"
+                :update="update"
+            />
             <cv-tile id="wardAvailability" v-else>
                 <cv-inline-loading state="loading" />
             </cv-tile>
             <HospitalAvailability
                 v-if="typeof selectedHospital.id === 'number'"
+                :update="update"
             />
             <cv-tile id="hospitalAvailability" v-else>
                 <cv-inline-loading state="loading" />
@@ -58,14 +62,43 @@ export default {
         RequestQuoteIcon,
         SearchIcon
     },
+    data() {
+        return {
+            update: 0
+        };
+    },
     methods: {
         open(route) {
             this.$router.push({ name: route });
+        },
+        autoFetch() {
+            if (!this.fetchInterval) {
+                console.info("Automatically fetching data every minute.");
+                this.fetchInterval = setInterval(() => {
+                    this.update++;
+                }, 60000);
+            }
         }
     },
     computed: {
         selectedHospital() {
             return this.$store.getters.getSelectedHospital;
+        },
+        userDetails() {
+            return this.$store.getters.getUserDetails;
+        }
+    },
+    watch: {
+        userDetails() {
+            this.autoFetch();
+        }
+    },
+    mounted() {
+        this.autoFetch();
+    },
+    beforeDestroy() {
+        if (this.fetchInterval) {
+            clearInterval(this.fetchInterval);
         }
     }
 };

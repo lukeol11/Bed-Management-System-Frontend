@@ -1,7 +1,7 @@
 <template>
     <div id="bedsList">
         <cv-data-table
-            :title="`Ward ${wardId}`"
+            :title="`${wardDetails.description} Beds`"
             :columns="columns"
             :zebra="true"
         >
@@ -30,7 +30,11 @@
                         ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button @click="createBed">Create</cv-button>
+                        <cv-button
+                            @click="createBed"
+                            :disabled="!newBed.description"
+                            >Create</cv-button
+                        >
                     </cv-data-table-cell>
                 </cv-data-table-row>
             </template>
@@ -45,14 +49,16 @@ export default {
     data() {
         return {
             beds: [],
-            columns: ["ID", "Description", "Action"],
+            columns: ["ID", "Name", "Action"],
             newBed: {
                 description: ""
-            }
+            },
+            wardDetails: {}
         };
     },
     methods: {
         async getBeds() {
+            this.findWard(this.wardId);
             try {
                 const response = await fetch(`/api/beds/all/${this.wardId}`, {
                     headers: {
@@ -98,14 +104,46 @@ export default {
                     body: JSON.stringify(bedData)
                 });
 
-                if (!response.ok) {
-                    throw new Error("Failed to create ward");
+                if (response.ok) {
+                    this.$store.commit("ADD_NOTIFICATION", {
+                        kind: "success",
+                        title: "Bed created successfully",
+                        caption: `Bed "${bedData.description}" has been created successfully`
+                    });
+                } else {
+                    this.$store.commit("ADD_NOTIFICATION", {
+                        kind: "error",
+                        title: "Failed to create bed",
+                        caption: `Failed to create bed "${bedData.description}"`
+                    });
+                    throw new Error("Failed to create bed");
                 }
                 this.newbed = {
                     description: ""
                 };
                 this.getBeds();
             } catch (err) {
+                console.error(err);
+            }
+        },
+        async findWard(wardId) {
+            try {
+                this.wardDetails = {};
+                const response = await fetch(`/api/wards/find?id=${wardId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to find ward");
+                }
+                this.wardDetails = await response.json();
+            } catch (err) {
+                this.$store.commit("ADD_NOTIFICATION", {
+                    kind: "error",
+                    title: "Failed to find ward",
+                    caption: `Failed to find ward id: "${wardId}"`
+                });
                 console.error(err);
             }
         }
@@ -125,6 +163,9 @@ export default {
         wardId() {
             this.getBeds();
         }
+    },
+    mounted() {
+        this.getBeds();
     }
 };
 </script>

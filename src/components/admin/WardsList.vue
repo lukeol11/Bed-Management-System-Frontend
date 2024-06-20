@@ -1,6 +1,6 @@
 <template>
     <div id="wardsList">
-        <cv-data-table :columns="columns" :zebra="true">
+        <cv-data-table :columns="columns" :zebra="true" title="Wards">
             <template slot="data">
                 <cv-data-table-row
                     v-for="(result, index) in filteredResults"
@@ -29,10 +29,14 @@
                         {{ result.gender }}</cv-data-table-cell
                     >
                     <cv-data-table-cell>
-                        <cv-button @click="open(result.id)">Open</cv-button>
-                        <cv-button kind="danger" @click="deleteWard(result.id)"
-                            >Delete</cv-button
-                        >
+                        <cv-button-set>
+                            <cv-button @click="open(result.id)">Open</cv-button>
+                            <cv-button
+                                kind="danger"
+                                @click="deleteWard(result.id)"
+                                >Delete</cv-button
+                            >
+                        </cv-button-set>
                     </cv-data-table-cell>
                 </cv-data-table-row>
                 <cv-data-table-row>
@@ -55,15 +59,19 @@
                         ></cv-number-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-dropdown v-model="newWard.treatment_level">
-                            <cv-dropdown-item
+                        <cv-select
+                            :hideLabel="true"
+                            v-model="newWard.treatment_level"
+                            label=""
+                        >
+                            <cv-select-option
                                 v-for="treatmentLevel in treatmentLevels"
                                 :key="treatmentLevel.name"
                                 :value="String(treatmentLevel.id)"
                             >
                                 {{ treatmentLevel.name }}
-                            </cv-dropdown-item>
-                        </cv-dropdown>
+                            </cv-select-option>
+                        </cv-select>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-text-input
@@ -71,18 +79,26 @@
                         ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-dropdown v-model="newWard.gender">
-                            <cv-dropdown-item
+                        <cv-select
+                            :hideLabel="true"
+                            v-model="newWard.gender"
+                            label=""
+                        >
+                            <cv-select-option
                                 v-for="gender in genders"
                                 :key="gender"
                                 :value="gender"
                             >
                                 {{ gender }}
-                            </cv-dropdown-item>
-                        </cv-dropdown>
+                            </cv-select-option>
+                        </cv-select>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button @click="createWard">Create</cv-button>
+                        <cv-button
+                            @click="createWard"
+                            :disabled="!readyToCreate()"
+                            >Create</cv-button
+                        >
                     </cv-data-table-cell>
                 </cv-data-table-row>
             </template>
@@ -99,7 +115,7 @@ export default {
             wards: [],
             columns: [
                 "ID",
-                "Description",
+                "Ward Name",
                 "Min Patient Age",
                 "Max Patient Age",
                 "Treatment Level",
@@ -115,7 +131,7 @@ export default {
                 description: "",
                 min_patient_age: 0,
                 max_patient_age: 0,
-                treatment_level: 0,
+                treatment_level: "",
                 location: "",
                 gender: ""
             }
@@ -178,6 +194,16 @@ export default {
         refreshData() {
             this.getWards();
         },
+        readyToCreate() {
+            return (
+                this.newWard.description &&
+                this.newWard.max_patient_age &&
+                this.newWard.min_patient_age <= this.newWard.max_patient_age &&
+                this.newWard.treatment_level &&
+                this.newWard.location &&
+                this.newWard.gender
+            );
+        },
         async createWard() {
             const wardData = {
                 ...this.newWard,
@@ -196,19 +222,30 @@ export default {
                     body: JSON.stringify(wardData)
                 });
 
-                if (!response.ok) {
+                if (response.ok) {
+                    this.$store.commit("ADD_NOTIFICATION", {
+                        kind: "success",
+                        title: "Ward created successfully",
+                        caption: `Ward "${wardData.description}" has been created successfully</br>Ward Details:</br>Min Patient Age: ${wardData.min_patient_age}</br>Max Patient Age: ${wardData.max_patient_age}</br>Treatment Level: ${wardData.treatment_level}</br>Location: ${wardData.location}</br>Gender: ${wardData.gender}`
+                    });
+                } else {
                     throw new Error("Failed to create ward");
                 }
                 this.newWard = {
                     description: "",
                     min_patient_age: 0,
                     max_patient_age: 0,
-                    treatment_level: 0,
+                    treatment_level: "",
                     location: "",
                     gender: ""
                 };
                 this.refreshData();
             } catch (err) {
+                this.$store.commit("ADD_NOTIFICATION", {
+                    kind: "error",
+                    title: "Failed to create ward",
+                    caption: `Failed to create ward "${wardData.description}"`
+                });
                 console.error(err);
             }
         }
@@ -224,9 +261,23 @@ export default {
             return this.$route.params.wardId;
         }
     },
+    watch: {
+        selectedHospital() {
+            this.getTreatmentLevels();
+            this.getWards();
+        }
+    },
     mounted() {
-        this.getTreatmentLevels();
-        this.getWards();
+        if (this.selectedHospital.id) {
+            this.getTreatmentLevels();
+            this.getWards();
+        }
     }
 };
 </script>
+
+<style scoped>
+.bx--btn-set .bx--btn {
+    width: auto;
+}
+</style>

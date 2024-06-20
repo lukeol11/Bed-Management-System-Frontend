@@ -36,6 +36,14 @@ export default {
     data() {
         return {
             chartOptions: {
+                animation: false,
+                transitions: {
+                    active: {
+                        animation: {
+                            duration: 0
+                        }
+                    }
+                },
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
@@ -145,8 +153,17 @@ export default {
             );
         }
     },
+    props: {
+        update: {
+            type: Number,
+            required: false
+        }
+    },
     watch: {
         selectedHospital() {
+            this.getWards();
+        },
+        update() {
             this.getWards();
         }
     },
