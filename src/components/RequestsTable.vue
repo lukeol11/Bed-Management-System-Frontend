@@ -65,7 +65,7 @@
 </template>
 
 <script>
-const { formatInTimeZone } = require("date-fns-tz");
+import { formatInTimeZone } from "date-fns-tz";
 import ApprovedRequestsTable from "./ApprovedRequestsTable.vue";
 
 export default {

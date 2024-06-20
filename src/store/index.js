@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
-const { formatInTimeZone } = require("date-fns-tz");
+import { formatInTimeZone } from "date-fns-tz";
 
 Vue.use(Vuex);
 
