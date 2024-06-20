@@ -1,0 +1,19 @@
+networks:
+  bms-network:
+    external: true
+
+services:
+  bms-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      NODE_ENV: "production"
+      API_HOST: "bms-backend"
+      API_PORT: 3000
+      PORT: 8080
+      REQUIRE_AUTHENTICATION: "false"
+    networks:
+      - bms-network

@@ -99,7 +99,8 @@ export default {
                 const response = await fetch("/api/transfers/create", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     },
                     body: JSON.stringify({
                         createdAt: new Date().toISOString(),
@@ -117,7 +118,11 @@ export default {
         },
         async getBedInfo() {
             try {
-                const response = await fetch(`/api/beds/find/${this.bedId}`);
+                const response = await fetch(`/api/beds/find/${this.bedId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 this.bedInfo = await response.json();
             } catch (error) {
                 console.error(error);
@@ -125,12 +130,21 @@ export default {
         },
         async findPatient() {
             try {
-                let response = await fetch(`/api/beds/active/${this.bedId}`);
+                let response = await fetch(`/api/beds/active/${this.bedId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const bedActiveResponse = await response.json();
                 const patientId = bedActiveResponse[0]?.patient_id;
                 if (patientId) {
                     response = await fetch(
-                        `/api/patients/find?id=${patientId}`
+                        `/api/patients/find?id=${patientId}`,
+                        {
+                            headers: {
+                                Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                            }
+                        }
                     );
                     this.patientInfo = await response.json();
                     this.patientInfo.timeBooked = new Date(

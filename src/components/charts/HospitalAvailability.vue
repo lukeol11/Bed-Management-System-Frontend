@@ -44,6 +44,14 @@ export default {
                 ]
             },
             chartOptions: {
+                animation: false,
+                transitions: {
+                    active: {
+                        animation: {
+                            duration: 0
+                        }
+                    }
+                },
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
@@ -65,9 +73,15 @@ export default {
     },
     methods: {
         async fetchWardBeds() {
+            this.processBedData([[0, 0, 0]]);
             try {
                 const response = await fetch(
-                    `/api/wards/all?hospital_id=${this.selectedHospital.id}`
+                    `/api/wards/all?hospital_id=${this.selectedHospital.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
                 );
                 const wards = await response.json();
                 const bedsDataPromises = wards.map((ward) =>
@@ -81,7 +95,11 @@ export default {
         },
         async fetchBedStatus(wardId) {
             try {
-                const response = await fetch(`/api/beds/status/${wardId}`);
+                const response = await fetch(`/api/beds/status/${wardId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const beds = await response.json();
                 let counts = [0, 0, 0];
                 beds.forEach((bed) => {
@@ -105,8 +123,17 @@ export default {
             this.chartData.datasets[0].data = totals;
         }
     },
+    props: {
+        update: {
+            type: Number,
+            required: false
+        }
+    },
     watch: {
         selectedHospital() {
+            this.fetchWardBeds();
+        },
+        update() {
             this.fetchWardBeds();
         }
     },

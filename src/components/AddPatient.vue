@@ -6,15 +6,6 @@
             dateLabel="Date of Birth"
             v-model="dateOfBirth"
         ></cv-date-picker>
-        <!-- <cv-dropdown label="Treatment" v-model="selectedTreatment">
-            <cv-dropdown-item
-                v-for="treatment in treatmentLevels"
-                :key="treatment.id"
-                :value="String(treatment.id)"
-            >
-                {{ treatment.name }}
-            </cv-dropdown-item>
-        </cv-dropdown> -->
         <cv-dropdown label="Gender" v-model="selectedGender">
             <cv-dropdown-item
                 v-for="gender in genders"
@@ -56,7 +47,11 @@ export default {
         },
         async getTreatmentLevels() {
             try {
-                const response = await fetch(`/api/wards/treatment_levels`);
+                const response = await fetch(`/api/wards/treatment_levels`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const treatmentLevels = await response.json();
                 this.treatmentLevels = treatmentLevels;
             } catch (err) {

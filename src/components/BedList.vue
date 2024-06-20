@@ -87,7 +87,11 @@ export default {
         async getBeds(wardId) {
             try {
                 let activeBeds = [];
-                const response = await fetch(`/api/beds/all/${wardId}`);
+                const response = await fetch(`/api/beds/all/${wardId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const beds = await response.json();
                 const bedsPromises = beds.map(async (bed) => {
                     if (await this.isBedActive(bed.id, wardId)) {
@@ -103,7 +107,12 @@ export default {
         async getWards() {
             try {
                 const response = await fetch(
-                    `/api/wards/all?hospital_id=${this.hospitalId}`
+                    `/api/wards/all?hospital_id=${this.hospitalId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
                 );
                 const wards = await response.json();
                 this.wards = wards;
@@ -114,7 +123,11 @@ export default {
         },
         async isBedActive(bedId, wardId) {
             try {
-                const response = await fetch(`/api/beds/status/${wardId}`);
+                const response = await fetch(`/api/beds/status/${wardId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const bedsDetails = await response.json();
                 const bedDetails = bedsDetails.find((bed) => bed.id === bedId);
                 return !(bedDetails.disabled || bedDetails.occupied);
@@ -123,17 +136,9 @@ export default {
             }
         },
         async getAllMatchingBeds(age, treatmentLevel, gender) {
-            console.log(
-                "Checking for beds with the following criteria",
-                "age:",
-                age,
-                "gender:",
-                gender
-            );
             const wards = await this.getWards();
             const filteredWards = wards.filter(
                 (ward) =>
-                    // ward.treatment_level === treatmentLevel &&
                     ward.min_patient_age <= age &&
                     ward.max_patient_age >= age &&
                     (gender === ward.gender || ward.gender == "All")

@@ -13,6 +13,7 @@ import WardManagementView from "@/views/WardManagementView.vue";
 import UserManagementView from "@/views/UserManagementView.vue";
 import BedsList from "@/components/admin/BedsList.vue";
 import BedView from "@/views/BedView.vue";
+import UserRoutingHistory from "@/components/admin/UserRoutingHistory.vue";
 
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 Vue.use(VueRouter);
@@ -66,7 +67,13 @@ const routes = [
                     {
                         path: "users",
                         name: "users",
-                        component: UserManagementView
+                        component: UserManagementView,
+                        children: [
+                            {
+                                path: ":userId",
+                                component: UserRoutingHistory
+                            }
+                        ]
                     }
                 ]
             },
@@ -99,7 +106,7 @@ const routes = [
 
 const router = new VueRouter({
     mode: "history",
-    base: process.env.BASE_URL,
+    base: import.meta.BASE_URL,
     routes
 });
 
@@ -120,30 +127,60 @@ router.beforeEach(async (to, from, next) => {
     const currentUser = await waitForAuthState();
     if (currentUser) {
         store.commit("SET_USER_EMAIL", currentUser.email);
+        store.commit("SET_AUTH_TOKEN", currentUser.accessToken);
     }
 
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
     if (requiresAuth && !currentUser) {
-        next("login");
+        next({ name: "login" });
     } else {
         next();
     }
 
-    const userDetails = store.getters.getUserDetails;
-    const selectedHospital = store.getters.getSelectedHospital;
+    const userDetails = store.getters.getUserDetails || {};
+    const selectedHospital = store.getters.getSelectedHospital || {};
 
-    if (
-        (to.name === "requests" && !userDetails.can_approve_requests) ||
-        userDetails.hospital_id !== selectedHospital.id
-    ) {
-        next("dashboard");
+    if (userDetails.id) {
+        try {
+            const response = await fetch("/api/routing-history/add", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${store.getters.getAuthToken}`
+                },
+                body: JSON.stringify({
+                    to: to.path,
+                    from: from.path,
+                    user_id: userDetails.id
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to create routing history");
+            }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     if (
-        (to.name === "admin" && !userDetails.can_administrate) ||
-        userDetails.hospital_id !== selectedHospital.id
+        to.path.includes("requests") &&
+        (!userDetails.can_administrate ||
+            userDetails.hospital_id !== selectedHospital.id)
     ) {
-        next("dashboard");
+        console.warn("User does not have permission to manage requests");
+        next({ name: "dashboard" });
+    }
+
+    if (
+        to.path.includes("admin") &&
+        (!userDetails.can_administrate ||
+            userDetails.hospital_id !== selectedHospital.id)
+    ) {
+        console.warn(
+            "User does not have permission to use administrator panel"
+        );
+        next({ name: "dashboard" });
     }
 });
 

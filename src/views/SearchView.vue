@@ -25,7 +25,11 @@ export default {
     methods: {
         async getBeds(wardId) {
             try {
-                const response = await fetch(`/api/beds/all/${wardId}`);
+                const response = await fetch(`/api/beds/all/${wardId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const beds = await response.json();
                 return beds;
             } catch (err) {
@@ -35,7 +39,12 @@ export default {
         async getWards() {
             try {
                 const response = await fetch(
-                    `/api/wards/all?hospital_id=${this.selectedHospital.id}`
+                    `/api/wards/all?hospital_id=${this.selectedHospital.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
                 );
                 const wards = await response.json();
                 return wards;
@@ -46,7 +55,11 @@ export default {
         async getPatients(bedId) {
             let activeBeds;
             try {
-                const response = await fetch(`/api/beds/active/${bedId}`);
+                const response = await fetch(`/api/beds/active/${bedId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 activeBeds = await response.json();
             } catch (err) {
                 console.error(err);
@@ -54,7 +67,11 @@ export default {
             let patients = [];
             try {
                 const patientPromises = activeBeds.map((bed) => {
-                    return fetch(`/api/patients/find?id=${bed.patient_id}`);
+                    return fetch(`/api/patients/find?id=${bed.patient_id}`, {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    });
                 });
                 const patientResponses = await Promise.all(patientPromises);
                 patients = await Promise.all(
@@ -68,7 +85,11 @@ export default {
         },
         async getTreatmentLevels() {
             try {
-                const response = await fetch(`/api/wards/treatment_levels`);
+                const response = await fetch(`/api/wards/treatment_levels`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const treatmentLevels = await response.json();
                 return treatmentLevels;
             } catch (err) {
@@ -77,7 +98,11 @@ export default {
         },
         async getBedStatuses(wardId) {
             try {
-                const response = await fetch(`/api/beds/status/${wardId}`);
+                const response = await fetch(`/api/beds/status/${wardId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const bedStatuses = await response.json();
                 return bedStatuses;
             } catch (err) {

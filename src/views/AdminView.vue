@@ -2,7 +2,7 @@
     <div class="adminView">
         <div class="tilesContainer">
             <cv-tile kind="clickable" @click="open('wards')">
-                Manage Beds</cv-tile
+                Manage Wards/Beds</cv-tile
             >
             <cv-tile kind="clickable" @click="open('users')">
                 Manage Users</cv-tile
