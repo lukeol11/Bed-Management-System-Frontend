@@ -4,7 +4,11 @@
             Skip to content
         </cv-skip-to-content>
         <cv-header-name href="javascript:void(0)">
-            <cv-select label="" @change="changeHospital">
+            <cv-select
+                label=""
+                @change="changeHospital"
+                v-if="selectedHospital"
+            >
                 <cv-select-option selected>
                     {{ selectedHospital }}
                 </cv-select-option>
@@ -15,6 +19,7 @@
                     {{ hospital.description }}
                 </cv-select-option>
             </cv-select>
+            <cv-inline-loading state="loading" v-else></cv-inline-loading>
         </cv-header-name>
         <template v-slot:left-panels> </template>
         <template v-slot:right-panels> </template>
@@ -42,20 +47,27 @@ export default {
             );
         }
     },
+    watch: {
+        userHospitalId(value) {
+            if (value !== undefined) {
+                this.getUserHospital();
+            }
+        }
+    },
     methods: {
         changeHospital(selectedHospital) {
             const chosenHospital = this.hospitals.find(
                 (hospital) => hospital.description === selectedHospital
             );
             this.$store.commit("SET_SELECTED_HOSPITAL", chosenHospital);
+        },
+        getUserHospital() {
+            const userHospital = this.hospitals.find(
+                (hospital) => hospital.id === this.userHospitalId
+            );
+            this.selectedHospital = userHospital.description;
+            this.$store.commit("SET_SELECTED_HOSPITAL", userHospital);
         }
-    },
-    mounted() {
-        const userHospital = this.hospitals.find(
-            (hospital) => hospital.id === this.userHospitalId
-        );
-        this.selectedHospital = userHospital.description;
-        this.$store.commit("SET_SELECTED_HOSPITAL", userHospital);
     }
 };
 </script>

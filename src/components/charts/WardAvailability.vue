@@ -36,6 +36,14 @@ export default {
     data() {
         return {
             chartOptions: {
+                animation: false,
+                transitions: {
+                    active: {
+                        animation: {
+                            duration: 0
+                        }
+                    }
+                },
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
@@ -83,7 +91,12 @@ export default {
             this.chartData.datasets[2].data = [];
             try {
                 const response = await fetch(
-                    `/api/wards/all?hospital_id=${this.$store.getters.getSelectedHospital.id}`
+                    `/api/wards/all?hospital_id=${this.$store.getters.getSelectedHospital.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
                 );
                 const wards = await response.json();
                 this.chartData.labels = wards.map((ward) => ward.description);
@@ -103,7 +116,11 @@ export default {
 
         async getBeds(wardId) {
             try {
-                const response = await fetch(`/api/beds/status/${wardId}`);
+                const response = await fetch(`/api/beds/status/${wardId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const beds = await response.json();
                 if (beds.length !== 0) {
                     const available = beds.filter(
@@ -136,8 +153,17 @@ export default {
             );
         }
     },
+    props: {
+        update: {
+            type: Number,
+            required: false
+        }
+    },
     watch: {
         selectedHospital() {
+            this.getWards();
+        },
+        update() {
             this.getWards();
         }
     },

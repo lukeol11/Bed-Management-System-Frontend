@@ -30,7 +30,12 @@ export default {
             this.wards = [];
             try {
                 const response = await fetch(
-                    `/api/wards/all?hospital_id=${this.$store.getters.getSelectedHospital.id}`
+                    `/api/wards/all?hospital_id=${this.$store.getters.getSelectedHospital.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
                 );
                 const wards = await response.json();
                 wards.forEach((ward) => {

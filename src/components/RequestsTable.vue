@@ -60,11 +60,14 @@
                 </cv-data-table-row>
             </template>
         </cv-data-table>
-        <router-view></router-view>
+        <ApprovedRequestsTable :requests="approvedRequests" />
     </div>
 </template>
 
 <script>
+import { formatInTimeZone } from "date-fns-tz";
+import ApprovedRequestsTable from "./ApprovedRequestsTable.vue";
+
 export default {
     name: "RequestsTable",
     data() {
@@ -81,14 +84,30 @@ export default {
                 "Request Made At",
                 "Action"
             ],
-            results: []
+            results: [],
+            approvedRequests: []
         };
     },
+    components: {
+        ApprovedRequestsTable
+    },
     methods: {
+        formatTimestamp(timestamp) {
+            return formatInTimeZone(
+                timestamp,
+                "Europe/London",
+                "HH:mm:ss dd/MM/yyyy"
+            );
+        },
         async getRequests() {
             try {
                 const response = await fetch(
-                    `/api/transfers/all?hospital_id=${this.selectedHospital.id}`
+                    `/api/transfers/all?hospital_id=${this.selectedHospital.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
                 );
                 const data = await response.json();
                 return data;
@@ -98,7 +117,11 @@ export default {
         },
         async findHospital(id) {
             try {
-                const response = await fetch(`/api/hospitals/find?id=${id}`);
+                const response = await fetch(`/api/hospitals/find?id=${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const data = await response.json();
                 return data;
             } catch (err) {
@@ -107,7 +130,11 @@ export default {
         },
         async findPatient(id) {
             try {
-                const response = await fetch(`/api/patients/find?id=${id}`);
+                const response = await fetch(`/api/patients/find?id=${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const data = await response.json();
                 return data;
             } catch (err) {
@@ -116,7 +143,11 @@ export default {
         },
         async findWard(id) {
             try {
-                const response = await fetch(`/api/wards/find?id=${id}`);
+                const response = await fetch(`/api/wards/find?id=${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const data = await response.json();
                 return data;
             } catch (err) {
@@ -125,7 +156,11 @@ export default {
         },
         async findUser(id) {
             try {
-                const response = await fetch(`/api/users/find?id=${id}`);
+                const response = await fetch(`/api/users/find?id=${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const data = await response.json();
                 return data;
             } catch (err) {
@@ -134,7 +169,11 @@ export default {
         },
         async findBed(id) {
             try {
-                const response = await fetch(`/api/beds/find/${id}`);
+                const response = await fetch(`/api/beds/find/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
                 const data = await response.json();
                 return data;
             } catch (err) {
@@ -144,26 +183,23 @@ export default {
         async getResults() {
             const requests = await this.getRequests();
             const results = [];
+            const approvedRequests = [];
             requests.forEach(async (request) => {
+                const patient = await this.findPatient(request.patientId);
+                const user = await this.findUser(request.createdBy);
+                const bedRequested = await this.findBed(request.bedRequested);
+                const wardRequested = await this.findWard(bedRequested.ward_id);
+                const currentBed = await this.findBed(request.currentBed);
+                const currentWard = await this.findWard(currentBed.ward_id);
+                const currentHospital = await this.findHospital(
+                    currentWard.hospital_id
+                );
                 if (!request.bedApproved) {
-                    const patient = await this.findPatient(request.patientId);
-                    const user = await this.findUser(request.createdBy);
-                    const hospital = await this.findHospital(
-                        request.hospitalId
-                    );
-                    const bedRequested = await this.findBed(
-                        request.bedRequested
-                    );
-                    const wardRequested = await this.findWard(
-                        bedRequested.ward_id
-                    );
-                    const currentBed = await this.findBed(request.currentBed);
-                    const currentWard = await this.findWard(currentBed.ward_id);
                     results.push({
                         id: request.id,
                         patientName: `${patient.first_name} ${patient.last_name}`,
                         patientId: patient.id,
-                        hospital: hospital.description,
+                        hospital: currentHospital.description,
                         currentWard: currentWard.description,
                         currentBed: currentBed.description,
                         currentBedId: currentBed.id,
@@ -175,14 +211,41 @@ export default {
                             request.createdAt
                         ).toLocaleString()
                     });
+                } else {
+                    const approvedBy = await this.findUser(request.approvedBy);
+
+                    approvedRequests.push({
+                        id: request.id,
+                        patientName: `${patient.first_name} ${patient.last_name}`,
+                        patientId: patient.id,
+                        hospital: currentHospital.description,
+                        currentWard: currentWard.description,
+                        currentBed: currentBed.description,
+                        currentBedId: currentBed.id,
+                        requestedWard: wardRequested.description,
+                        requestedBed: bedRequested.description,
+                        requestedBedId: bedRequested.id,
+                        requestBy: `${user.first_name} ${user.last_name}`,
+                        requestTime: this.formatTimestamp(
+                            new Date(request.createdAt)
+                        ),
+                        approvedBy: `${approvedBy.first_name} ${approvedBy.last_name}`,
+                        approvedTime: this.formatTimestamp(
+                            new Date(request.approvedAt)
+                        )
+                    });
                 }
             });
             this.results = results;
+            this.approvedRequests = approvedRequests;
         },
         async deleteRequest(id) {
             try {
                 const response = await fetch(`/api/transfers/delete/${id}`, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
                 });
                 if (response.status === 200) {
                     this.getResults();
@@ -213,7 +276,8 @@ export default {
                         bedApproved: bedId
                     }),
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     }
                 });
                 if (response.status === 201) {
@@ -230,7 +294,8 @@ export default {
                     {
                         method: "POST",
                         headers: {
-                            "Content-Type": "application/json"
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                         },
                         body: JSON.stringify({
                             checkout_time: new Date().toISOString()
@@ -238,7 +303,10 @@ export default {
                     }
                 );
                 await fetch(`/api/beds/disable/${bedId}`, {
-                    method: "PATCH"
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
                 });
             } catch (error) {
                 console.error(error);
@@ -249,7 +317,8 @@ export default {
                 fetch("/api/beds/occupancy", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     },
                     body: JSON.stringify({
                         patient_id: patientId,
@@ -270,12 +339,21 @@ export default {
         },
         userDetails() {
             return this.$store.getters.getUserDetails;
+        },
+        transferRequests() {
+            return this.$store.getters.getTransferRequests;
         }
     },
     mounted() {
         this.getResults();
     },
-    watch: {}
+    watch: {
+        transferRequests(newVal, oldVal) {
+            if (newVal.length > oldVal.length && oldVal.length > 0) {
+                this.getResults();
+            }
+        }
+    }
 };
 </script>
 

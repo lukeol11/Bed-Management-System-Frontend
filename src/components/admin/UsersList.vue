@@ -27,14 +27,14 @@
                     }}</cv-data-table-cell>
                     <cv-data-table-cell
                         ><cv-tag
-                            :label="String(result.can_approve_requests)"
+                            :label="result.can_approve_requests ? '✔' : '❌'"
                             :kind="
                                 result.can_approve_requests ? 'green' : 'red'
                             "
                     /></cv-data-table-cell>
                     <cv-data-table-cell
                         ><cv-tag
-                            :label="String(result.can_administrate)"
+                            :label="result.can_administrate ? '✔' : '❌'"
                             :kind="result.can_administrate ? 'green' : 'red'"
                     /></cv-data-table-cell>
                     <cv-data-table-cell> {{ result.email }}</cv-data-table-cell>
@@ -42,12 +42,25 @@
                         {{ result.phone_number }}</cv-data-table-cell
                     >
                     <cv-data-table-cell>
-                        <cv-button
-                            kind="danger"
-                            @click="deleteUser(result.id)"
-                            :disabled="result.id === userDetails.id"
-                            >Delete</cv-button
-                        >
+                        <cv-button-set>
+                            <cv-icon-button
+                                label="Browsing History"
+                                @click="open(result.id)"
+                            >
+                                <template slot="icon"><HistoryIcon /></template>
+                            </cv-icon-button>
+                            <cv-button
+                                kind="ghost"
+                                @click="changePassword(result.email)"
+                                >Change Password
+                            </cv-button>
+                            <cv-button
+                                kind="danger"
+                                @click="deleteUser(result.id)"
+                                :disabled="result.id === userDetails.id"
+                                >Delete</cv-button
+                            >
+                        </cv-button-set>
                     </cv-data-table-cell>
                 </cv-data-table-row>
                 <cv-data-table-row>
@@ -85,7 +98,9 @@
                         ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-button @click="askPassword = true"
+                        <cv-button
+                            @click="askPassword = true"
+                            :disabled="!readyToCreate()"
                             >Create</cv-button
                         >
                     </cv-data-table-cell>
@@ -97,13 +112,19 @@
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    sendPasswordResetEmail
+} from "firebase/auth";
+import HistoryIcon from "@carbon/icons-vue/es/recently-viewed/32";
 
 export default {
     name: "UsersList",
     data() {
         return {
             users: [],
+            lastSelected: undefined,
             password: "",
             columns: [
                 "ID",
@@ -126,11 +147,19 @@ export default {
             askPassword: false
         };
     },
+    components: {
+        HistoryIcon
+    },
     methods: {
         async getUsers() {
             try {
                 const response = await fetch(
-                    `/api/users/all?hospital_id=${this.selectedHospital.id}`
+                    `/api/users/all?hospital_id=${this.selectedHospital.id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
                 );
                 const users = await response.json();
                 this.users = users;
@@ -138,10 +167,21 @@ export default {
                 console.error(err);
             }
         },
+        readyToCreate() {
+            return (
+                this.newUser.first_name &&
+                this.newUser.last_name &&
+                this.newUser.email &&
+                this.newUser.phone_number
+            );
+        },
         async deleteUser(userId) {
             try {
                 await fetch(`/api/users/delete/${userId}`, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
                 });
                 this.refreshData();
             } catch (err) {
@@ -163,12 +203,26 @@ export default {
                 const response = await fetch("/api/users/create", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     },
                     body: JSON.stringify(userData)
                 });
 
-                if (!response.ok) {
+                if (response.ok) {
+                    this.$store.commit("ADD_NOTIFICATION", {
+                        kind: "success",
+                        title: "User created successfully",
+                        caption: `User "${userData.first_name} ${
+                            userData.last_name
+                        }" has been created successfully</br>Can Approve Requests: ${
+                            userData.can_approve_requests ? "✔" : "❌"
+                        }
+                        </br>Can Administrate: ${
+                            userData.can_administrate ? "✔" : "❌"
+                        }`
+                    });
+                } else {
                     throw new Error("Failed to create user");
                 }
                 this.newUser = {
@@ -181,6 +235,11 @@ export default {
                 };
                 this.refreshData();
             } catch (err) {
+                this.$store.commit("ADD_NOTIFICATION", {
+                    kind: "error",
+                    title: "Failed to create user",
+                    caption: "Failed to create user"
+                });
                 console.error(err);
             }
         },
@@ -199,9 +258,28 @@ export default {
                 .catch((error) => {
                     alert(error.message);
                 });
+        },
+        async changePassword(userEmail) {
+            const auth = getAuth();
+            sendPasswordResetEmail(auth, userEmail);
+            this.$store.commit("ADD_NOTIFICATION", {
+                kind: "info",
+                title: "Password Reset",
+                caption: `Password reset email sent to ${userEmail}. Please advise the user to check their email and follow the instructions to reset their password.`
+            });
+        },
+        open(route) {
+            if (this.lastSelected !== route) {
+                this.lastSelected = route;
+                this.$router.push(`/admin/users/${route}`);
+            }
         }
     },
-    watch: {},
+    watch: {
+        selectedHospital() {
+            this.getUsers();
+        }
+    },
     computed: {
         selectedHospital() {
             return this.$store.getters.getSelectedHospital;
@@ -221,3 +299,9 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.bx--btn-set .bx--btn {
+    width: auto;
+}
+</style>
