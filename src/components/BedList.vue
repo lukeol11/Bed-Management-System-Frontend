@@ -3,14 +3,22 @@
         <h2>Bed Selection</h2>
         <cv-data-table :columns="columns" :zebra="true">
             <template slot="data">
-                <cv-data-table-row v-for="bed in beds" :key="bed.bedId">
+                <cv-data-table-row
+                    v-for="bed in filteredBeds"
+                    :key="bed.bedId"
+                    :class="`gender-${bed.gender}`"
+                    :expandable="true"
+                >
                     <cv-data-table-cell>{{
-                        findWard(bed.ward_id).description
+                        bed.ward_description
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>{{ bed.id }}</cv-data-table-cell>
                     <cv-data-table-cell>{{
                         bed.description
                     }}</cv-data-table-cell>
+                    <cv-data-table-cell>
+                        <gender-tag :gender="bed.gender" :contrast="true" />
+                    </cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-button @click="assignBed(bed.id)">{{
                             action
@@ -34,6 +42,8 @@
 </template>
 
 <script>
+import GenderTag from "./Layout/GenderTag.vue";
+
 export default {
     name: "BedList",
     props: {
@@ -62,22 +72,59 @@ export default {
             required: false
         }
     },
+    components: {
+        GenderTag
+    },
     data() {
         return {
-            columns: ["Ward", "Bed Id", "Description", "Action"],
+            columns: ["Ward", "Bed Id", "Bed Name", "Bed Gender", "Action"],
             wards: [],
             beds: []
         };
     },
+    computed: {
+        filteredBeds() {
+            return this.beds
+                .map((bed) => {
+                    return {
+                        ...bed,
+                        gender:
+                            bed.room?.gender ||
+                            this.findWard(bed.ward_id).gender,
+                        ward_description: this.findWard(bed.ward_id).description
+                    };
+                })
+                .sort((a, b) => {
+                    const preferredGender = this.gender;
+
+                    // Define the sorting criteria
+                    const getGenderPriority = (gender) => {
+                        if (gender === preferredGender) return 1;
+                        if (gender === "All") return 2;
+                        return 3;
+                    };
+
+                    // Get the priority for each bed
+                    const aPriority = getGenderPriority(a.gender);
+                    const bPriority = getGenderPriority(b.gender);
+
+                    // Sort by priority
+                    if (aPriority < bPriority) return -1;
+                    if (aPriority > bPriority) return 1;
+                    return 0;
+                });
+        }
+    },
     watch: {
         treatmentLevel() {
-            this.getAllMatchingBeds(this.age, this.treatmentLevel, this.gender);
+            this.getAllMatchingBeds(this.age, this.treatmentLevel);
         },
         triggerUpdate() {
-            this.getAllMatchingBeds(this.age, this.treatmentLevel, this.gender);
+            this.getAllMatchingBeds(this.age, this.treatmentLevel);
         },
         hospitalId() {
-            this.getAllMatchingBeds(this.age, this.treatmentLevel, this.gender);
+            this.beds = [];
+            this.getAllMatchingBeds(this.age, this.treatmentLevel);
         }
     },
     methods: {
@@ -135,13 +182,11 @@ export default {
                 console.error(err);
             }
         },
-        async getAllMatchingBeds(age, treatmentLevel, gender) {
+        async getAllMatchingBeds(age, treatmentLevel) {
             const wards = await this.getWards();
             const filteredWards = wards.filter(
                 (ward) =>
-                    ward.min_patient_age <= age &&
-                    ward.max_patient_age >= age &&
-                    (gender === ward.gender || ward.gender == "All")
+                    ward.min_patient_age <= age && ward.max_patient_age >= age
             );
             if (filteredWards.length === 0) {
                 this.beds = [];
@@ -160,13 +205,14 @@ export default {
     },
     mounted() {
         if (this.treatmentLevel && this.age && this.gender && this.hospitalId) {
-            this.getAllMatchingBeds(this.age, this.treatmentLevel, this.gender);
+            this.getAllMatchingBeds(this.age, this.treatmentLevel);
         }
     }
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@use "sass:color";
 div#fill-info-notification.cv-notification.bx--toast-notification {
     height: min-content;
     button.bx--toast-notification__close-button {
@@ -175,6 +221,46 @@ div#fill-info-notification.cv-notification.bx--toast-notification {
     }
     .bx--toast-notification__details {
         height: min-content;
+    }
+}
+tr {
+    &.gender-All {
+        td {
+            background-color: #f7ff00;
+            color: #5f5116;
+        }
+    }
+    &.gender-Male {
+        td {
+            background-color: #bae6ff;
+            color: #003a6d;
+        }
+    }
+    &.gender-Female {
+        td {
+            background-color: #ff7bff;
+            color: #320028;
+        }
+    }
+}
+.bx--data-table--zebra tbody tr:not(.bx--parent-row):nth-child(2n) {
+    &.gender-All {
+        td {
+            background-color: color.scale(#f7ff00, $lightness: -5%);
+            color: color.scale(#5f5116, $lightness: 5%);
+        }
+    }
+    &.gender-Male {
+        td {
+            background-color: color.scale(#bae6ff, $lightness: -5%);
+            color: color.scale(#003a6d, $lightness: 5%);
+        }
+    }
+    &.gender-Female {
+        td {
+            background-color: color.scale(#ff7bff, $lightness: -5%);
+            color: color.scale(#320028, $lightness: 5%);
+        }
     }
 }
 </style>
