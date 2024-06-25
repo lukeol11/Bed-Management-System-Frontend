@@ -1,5 +1,9 @@
 <template>
-    <cv-tag :label="gender" :kind="getColor(gender)" class="GenderTag" />
+    <cv-tag
+        :label="gender"
+        :kind="getColor(gender)"
+        :class="`GenderTag ${contrast ? 'contrast' : ''}`"
+    />
 </template>
 
 <script>
@@ -9,6 +13,10 @@ export default {
         gender: {
             type: String,
             default: "None"
+        },
+        contrast: {
+            type: Boolean,
+            default: false
         }
     },
     methods: {
@@ -36,6 +44,19 @@ export default {
     &.bx--tag--green {
         background-color: #f7ff00;
         color: #5f5116;
+    }
+    &.contrast {
+        &.bx--tag--magenta {
+            background-color: #fff;
+            color: #320028;
+        }
+        &.bx--tag--green {
+            background-color: #fff;
+            color: #5f5116;
+        }
+        &.bx--tag--cyan {
+            background-color: #fff;
+        }
     }
 }
 </style>
