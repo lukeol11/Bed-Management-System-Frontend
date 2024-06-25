@@ -1,5 +1,6 @@
 <template>
     <div id="bedsList">
+        <create-room v-if="newBed.room_id === '999999'" @room="addRoom" />
         <cv-data-table
             :title="`${wardDetails.description} Beds`"
             :columns="columns"
@@ -73,6 +74,8 @@
 </template>
 
 <script>
+import CreateRoom from "./CreateRoom.vue";
+
 export default {
     name: "BedsList",
     data() {
@@ -86,6 +89,9 @@ export default {
             wardDetails: {},
             rooms: []
         };
+    },
+    components: {
+        CreateRoom
     },
     methods: {
         async getBeds() {
@@ -234,6 +240,16 @@ export default {
                 });
                 console.error(err);
             }
+        },
+        addRoom(room) {
+            this.rooms.push({
+                id: String(room.id),
+                description: room.description,
+                gender: room.gender,
+                ward_id: room.ward_id
+            });
+            this.newBed.room_id = String(room.id);
+            console.info("Room added:", room);
         }
     },
     computed: {
@@ -249,6 +265,14 @@ export default {
     },
     watch: {
         wardId() {
+            this.beds = [];
+            this.newBed = {
+                description: "",
+                room_id: "0"
+            };
+            this.wardDetails = {};
+            this.rooms = [];
+
             this.findWard(this.wardId);
             this.getRooms();
         }
