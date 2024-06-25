@@ -201,7 +201,7 @@ export default {
                 if (!request.bedApproved) {
                     results.push({
                         id: request.id,
-                        patientName: `${patient.first_name} ${patient.last_name}`,
+                        patientName: `${patient.first_name} ${patient.last_name} `,
                         patientId: patient.id,
                         patientGender: patient.gender,
                         hospital: currentHospital.description,
@@ -221,7 +221,7 @@ export default {
 
                     approvedRequests.push({
                         id: request.id,
-                        patientName: `${patient.first_name} ${patient.last_name}`,
+                        patientName: `${patient.first_name} ${patient.last_name} `,
                         patientId: patient.id,
                         patientGender: patient.gender,
                         hospital: currentHospital.description,
