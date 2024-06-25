@@ -11,9 +11,12 @@
                     :key="index"
                 >
                     <cv-data-table-cell>{{ result.id }}</cv-data-table-cell>
-                    <cv-data-table-cell>{{
-                        result.patientName
-                    }}</cv-data-table-cell>
+                    <cv-data-table-cell
+                        >{{ result.patientName
+                        }}<gender-tag
+                            :gender="result.patientGender"
+                            :abbreviated="true"
+                    /></cv-data-table-cell>
                     <cv-data-table-cell>{{
                         result.hospital
                     }}</cv-data-table-cell>
@@ -67,7 +70,7 @@
 <script>
 import { formatInTimeZone } from "date-fns-tz";
 import ApprovedRequestsTable from "./ApprovedRequestsTable.vue";
-
+import GenderTag from "./Layout/GenderTag.vue";
 export default {
     name: "RequestsTable",
     data() {
@@ -89,7 +92,8 @@ export default {
         };
     },
     components: {
-        ApprovedRequestsTable
+        ApprovedRequestsTable,
+        GenderTag
     },
     methods: {
         formatTimestamp(timestamp) {
@@ -199,6 +203,7 @@ export default {
                         id: request.id,
                         patientName: `${patient.first_name} ${patient.last_name}`,
                         patientId: patient.id,
+                        patientGender: patient.gender,
                         hospital: currentHospital.description,
                         currentWard: currentWard.description,
                         currentBed: currentBed.description,
@@ -218,6 +223,7 @@ export default {
                         id: request.id,
                         patientName: `${patient.first_name} ${patient.last_name}`,
                         patientId: patient.id,
+                        patientGender: patient.gender,
                         hospital: currentHospital.description,
                         currentWard: currentWard.description,
                         currentBed: currentBed.description,
