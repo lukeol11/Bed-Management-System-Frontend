@@ -30,12 +30,12 @@
                 <div v-if="patientInfo.first_name">
                     <p>First Name: {{ patientInfo.first_name }}</p>
                     <p>Last Name: {{ patientInfo.last_name }}</p>
+                    <p>Gender: <gender-tag :gender="patientInfo.gender" /></p>
                     <p>
                         DOB: {{ patientInfo.date_of_birth }} ({{
                             findPatientAge(patientInfo.date_of_birth)
                         }})
                     </p>
-                    <gender-tag :gender="patientInfo.gender" />
                     <p>Time Assigned: {{ patientInfo.timeBooked }}</p>
                     <cv-button-set>
                         <cv-button
@@ -259,6 +259,7 @@ export default {
     }
 
     .cv-button-set {
+        display: block;
         .cv-button.bx--btn--primary#green {
             background-color: green;
         }
