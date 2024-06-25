@@ -30,7 +30,9 @@
                     /></cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-button-set>
-                            <cv-button @click="open(result.id)">Open</cv-button>
+                            <cv-button @click="open(result.id)"
+                                >View Beds</cv-button
+                            >
                             <cv-button
                                 kind="danger"
                                 @click="deleteWard(result.id)"
