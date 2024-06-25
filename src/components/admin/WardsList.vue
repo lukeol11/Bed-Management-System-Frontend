@@ -26,8 +26,10 @@
                         result.location
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
-                        {{ result.gender }}</cv-data-table-cell
-                    >
+                        <cv-tag
+                            :label="result.gender"
+                            :kind="getColor(result.gender)"
+                    /></cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-button-set>
                             <cv-button @click="open(result.id)">Open</cv-button>
@@ -97,7 +99,7 @@
                         <cv-button
                             @click="createWard"
                             :disabled="!readyToCreate()"
-                            >Create</cv-button
+                            >Create Ward</cv-button
                         >
                     </cv-data-table-cell>
                 </cv-data-table-row>
@@ -152,6 +154,17 @@ export default {
                 this.wards = wards;
             } catch (err) {
                 console.error(err);
+            }
+        },
+        getColor(gender) {
+            if (gender === "Male") {
+                return "cyan";
+            } else if (gender === "Female") {
+                return "magenta";
+            } else if (gender === "All") {
+                return "green";
+            } else {
+                return "gray";
             }
         },
         async getTreatmentLevels() {
@@ -279,5 +292,18 @@ export default {
 <style scoped>
 .bx--btn-set .bx--btn {
     width: auto;
+}
+</style>
+
+<style lang="scss" scoped>
+#wardsList {
+    .bx--tag--magenta {
+        background-color: #ff5aff;
+        color: #6a0055;
+    }
+    .bx--tag--green {
+        background-color: #f7ff00;
+        color: #977800;
+    }
 }
 </style>
