@@ -14,6 +14,19 @@
                     <cv-data-table-cell>{{
                         result.description
                     }}</cv-data-table-cell>
+                    <cv-data-table-cell
+                        >{{ result.room?.description || "N/A" }}
+                    </cv-data-table-cell>
+                    <cv-data-table-cell>
+                        <cv-tag
+                            :label="getGender(result.room?.gender)"
+                            :kind="
+                                getColor(
+                                    result.room?.gender || wardDetails.gender
+                                )
+                            "
+                        />
+                    </cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-button kind="danger" @click="deleteBed(result.id)"
                             >Delete</cv-button
@@ -30,10 +43,26 @@
                         ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
+                        <cv-select
+                            v-model="newBed.room_id"
+                            :hideLabel="true"
+                            label=""
+                        >
+                            <cv-select-option
+                                v-for="room in rooms"
+                                :key="room.description"
+                                :value="String(room.id)"
+                            >
+                                {{ room.description }}
+                            </cv-select-option>
+                        </cv-select>
+                    </cv-data-table-cell>
+                    <cv-data-table-cell> </cv-data-table-cell>
+                    <cv-data-table-cell>
                         <cv-button
                             @click="createBed"
                             :disabled="!newBed.description"
-                            >Create</cv-button
+                            >Create Bed</cv-button
                         >
                     </cv-data-table-cell>
                 </cv-data-table-row>
@@ -49,16 +78,17 @@ export default {
     data() {
         return {
             beds: [],
-            columns: ["ID", "Name", "Action"],
+            columns: ["ID", "Name", "Room", "Gender", "Action"],
             newBed: {
-                description: ""
+                description: "",
+                room_id: "0"
             },
-            wardDetails: {}
+            wardDetails: {},
+            rooms: []
         };
     },
     methods: {
         async getBeds() {
-            this.findWard(this.wardId);
             try {
                 const response = await fetch(`/api/beds/all/${this.wardId}`, {
                     headers: {
@@ -69,6 +99,27 @@ export default {
                 this.beds = beds;
             } catch (err) {
                 console.error(err);
+            }
+        },
+        getColor(gender) {
+            if (gender === "Male") {
+                return "cyan";
+            } else if (gender === "Female") {
+                return "magenta";
+            } else if (gender === "All") {
+                return "green";
+            } else {
+                return "red";
+            }
+        },
+        getGender(roomGender) {
+            if (roomGender) {
+                return roomGender;
+            } else if (this.wardDetails) {
+                return this.wardDetails.gender;
+            } else {
+                console.log(this.wardDetails);
+                return "error";
             }
         },
         async deleteBed(bedId) {
@@ -84,10 +135,45 @@ export default {
                 console.error(err);
             }
         },
+        async getRooms() {
+            try {
+                const response = await fetch(
+                    `/api/rooms/all?ward_id=${this.wardId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
+                );
+                let rooms = await response.json();
+                rooms = rooms.map((room) => ({
+                    id: String(room.id),
+                    description: room.description,
+                    gender: room.gender,
+                    ward_id: room.ward_id
+                }));
+                if (response.ok) {
+                    this.rooms = [
+                        { id: 0, description: "N/A" },
+                        { id: 999999, description: "Create New Room" },
+                        ...rooms
+                    ];
+                } else {
+                    throw new Error("Failed to get rooms");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        },
         async createBed() {
             const date = new Date().toISOString();
+            let roomId = Number(this.newBed.room_id);
+            if (roomId === 0) {
+                roomId = null;
+            }
             const bedData = {
-                ...this.newBed,
+                description: this.newBed.description,
+                room_id: roomId,
                 ward_id: this.wardId,
                 disabled: false,
                 created_at: date,
@@ -119,7 +205,8 @@ export default {
                     throw new Error("Failed to create bed");
                 }
                 this.newbed = {
-                    description: ""
+                    description: "",
+                    room_id: "0"
                 };
                 this.getBeds();
             } catch (err) {
@@ -138,6 +225,7 @@ export default {
                     throw new Error("Failed to find ward");
                 }
                 this.wardDetails = await response.json();
+                this.getBeds();
             } catch (err) {
                 this.$store.commit("ADD_NOTIFICATION", {
                     kind: "error",
@@ -161,11 +249,26 @@ export default {
     },
     watch: {
         wardId() {
-            this.getBeds();
+            this.findWard(this.wardId);
+            this.getRooms();
         }
     },
     mounted() {
-        this.getBeds();
+        this.findWard(this.wardId);
+        this.getRooms();
     }
 };
 </script>
+
+<style lang="scss" scoped>
+#bedsList {
+    .bx--tag--magenta {
+        background-color: #ff7bff;
+        color: #320028;
+    }
+    .bx--tag--green {
+        background-color: #f7ff00;
+        color: #5f5116;
+    }
+}
+</style>
