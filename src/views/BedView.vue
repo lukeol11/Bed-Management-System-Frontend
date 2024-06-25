@@ -214,7 +214,6 @@ export default {
                     }
                 });
                 const ward = await response.json();
-                console.log(ward);
                 this.ward = ward;
                 return ward;
             } catch (error) {
