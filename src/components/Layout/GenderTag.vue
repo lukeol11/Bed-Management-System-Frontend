@@ -1,9 +1,11 @@
 <template>
-    <cv-tag
-        :label="getLabel(gender)"
-        :kind="getColor(gender)"
-        :class="`GenderTag ${contrast ? 'contrast' : ''}`"
-    />
+    <cv-tooltip :tip="gender">
+        <cv-tag
+            :label="getLabel(gender)"
+            :kind="getColor(gender)"
+            :class="`GenderTag ${contrast ? 'contrast' : ''}`"
+        />
+    </cv-tooltip>
 </template>
 
 <script>
