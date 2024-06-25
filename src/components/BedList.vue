@@ -96,19 +96,13 @@ export default {
                 })
                 .sort((a, b) => {
                     const preferredGender = this.gender;
-
-                    // Define the sorting criteria
                     const getGenderPriority = (gender) => {
                         if (gender === preferredGender) return 1;
                         if (gender === "All") return 2;
                         return 3;
                     };
-
-                    // Get the priority for each bed
                     const aPriority = getGenderPriority(a.gender);
                     const bPriority = getGenderPriority(b.gender);
-
-                    // Sort by priority
                     if (aPriority < bPriority) return -1;
                     if (aPriority > bPriority) return 1;
                     return 0;
