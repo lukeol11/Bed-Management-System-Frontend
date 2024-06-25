@@ -5,7 +5,8 @@
                 <hospital-bed-icon />
                 <h1>Bed Info</h1>
                 <p>Bed ID: {{ bedInfo.id }}</p>
-                <p>Description: {{ bedInfo.description }}</p>
+                <p>Name: {{ bedInfo.description }}</p>
+                <p>Room: {{ bedInfo.room?.description || "N/A" }}</p>
                 <p v-if="patientInfo.first_name">
                     Status: <cv-tag label="Occupied" kind="red"></cv-tag>
                 </p>
