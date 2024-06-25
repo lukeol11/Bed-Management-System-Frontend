@@ -5,6 +5,10 @@
                 <hospital-bed-icon />
                 <h1>Bed Info</h1>
                 <p>Bed ID: {{ bedInfo.id }}</p>
+                <p>
+                    Bed Gender:
+                    <gender-tag :gender="bedInfo.room?.gender || ward.gender" />
+                </p>
                 <p>Name: {{ bedInfo.description }}</p>
                 <p>Room: {{ bedInfo.room?.description || "N/A" }}</p>
                 <p v-if="patientInfo.first_name">
@@ -90,7 +94,8 @@ export default {
         return {
             bedInfo: {},
             patientInfo: {},
-            isDisabled: true
+            isDisabled: true,
+            ward: {}
         };
     },
     computed: {
@@ -155,6 +160,7 @@ export default {
                     bedInfo.ward_id,
                     bedInfo.id
                 );
+                this.findWard(bedInfo.ward_id);
             } catch (error) {
                 console.error(error);
             }
@@ -196,6 +202,21 @@ export default {
                         bedActiveResponse[0].time_booked
                     ).toUTCString();
                 }
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async findWard(wardId) {
+            try {
+                const response = await fetch(`/api/wards/find?id=${wardId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
+                const ward = await response.json();
+                console.log(ward);
+                this.ward = ward;
+                return ward;
             } catch (error) {
                 console.error(error);
             }
