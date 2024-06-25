@@ -1,6 +1,6 @@
 <template>
     <cv-tag
-        :label="gender"
+        :label="getLabel(gender)"
         :kind="getColor(gender)"
         :class="`GenderTag ${contrast ? 'contrast' : ''}`"
     />
@@ -17,6 +17,10 @@ export default {
         contrast: {
             type: Boolean,
             default: false
+        },
+        abbreviated: {
+            type: Boolean,
+            default: false
         }
     },
     methods: {
@@ -29,6 +33,19 @@ export default {
                 return "green";
             } else {
                 return "grey";
+            }
+        },
+        getLabel(gender) {
+            if (!this.abbreviated) {
+                return gender;
+            } else if (gender === "Male") {
+                return "M";
+            } else if (gender === "Female") {
+                return "F";
+            } else if (gender === "All") {
+                return "M/F";
+            } else {
+                return "error";
             }
         }
     }
