@@ -22,7 +22,16 @@
             <cv-inline-loading state="loading" v-else></cv-inline-loading>
         </cv-header-name>
         <template v-slot:left-panels> </template>
-        <template v-slot:right-panels> </template>
+        <template v-slot:right-panels>
+            <cv-breadcrumb :noTrailingSlash="true">
+                <cv-breadcrumb-item
+                    v-for="breadcrumb in breadcrumbs"
+                    :key="breadcrumb"
+                >
+                    {{ breadcrumb }}
+                </cv-breadcrumb-item>
+            </cv-breadcrumb>
+        </template>
     </cv-header>
 </template>
 
@@ -45,6 +54,17 @@ export default {
             return this.hospitals.filter(
                 (hospital) => hospital.id !== this.userHospitalId
             );
+        },
+        route() {
+            return this.$route.path;
+        },
+        breadcrumbs() {
+            return this.$route.path
+                .split("/")
+                .filter((route) => route !== "")
+                .map((route) => {
+                    return route.charAt(0).toUpperCase() + route.slice(1);
+                });
         }
     },
     watch: {
@@ -98,6 +118,13 @@ export default {
             font-weight: 500;
             line-height: normal;
             letter-spacing: 0.07813rem;
+        }
+    }
+    .cv-breadcrumb-item {
+        .bx--breadcrumb-item {
+            color: #000;
+            cursor: auto;
+            font-family: Roboto, sans-serif;
         }
     }
 }

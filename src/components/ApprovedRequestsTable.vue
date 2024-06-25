@@ -11,9 +11,12 @@
                     :key="index"
                 >
                     <cv-data-table-cell>{{ result.id }}</cv-data-table-cell>
-                    <cv-data-table-cell>{{
-                        result.patientName
-                    }}</cv-data-table-cell>
+                    <cv-data-table-cell
+                        >{{ result.patientName
+                        }}<gender-tag
+                            :gender="result.patientGender"
+                            :abbreviated="true"
+                    /></cv-data-table-cell>
                     <cv-data-table-cell>{{
                         result.hospital
                     }}</cv-data-table-cell>
@@ -48,8 +51,13 @@
 </template>
 
 <script>
+import GenderTag from "./Layout/GenderTag.vue";
+
 export default {
     name: "ApprovedRequestsTable",
+    components: {
+        GenderTag
+    },
     data() {
         return {
             columns: [

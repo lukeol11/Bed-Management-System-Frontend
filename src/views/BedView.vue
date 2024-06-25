@@ -5,7 +5,12 @@
                 <hospital-bed-icon />
                 <h1>Bed Info</h1>
                 <p>Bed ID: {{ bedInfo.id }}</p>
-                <p>Description: {{ bedInfo.description }}</p>
+                <p>
+                    Bed Gender:
+                    <gender-tag :gender="bedInfo.room?.gender || ward.gender" />
+                </p>
+                <p>Name: {{ bedInfo.description }}</p>
+                <p>Room: {{ bedInfo.room?.description || "N/A" }}</p>
                 <p v-if="patientInfo.first_name">
                     Status: <cv-tag label="Occupied" kind="red"></cv-tag>
                 </p>
@@ -29,33 +34,38 @@
                 <div v-if="patientInfo.first_name">
                     <p>First Name: {{ patientInfo.first_name }}</p>
                     <p>Last Name: {{ patientInfo.last_name }}</p>
+                    <p>Gender: <gender-tag :gender="patientInfo.gender" /></p>
                     <p>
                         DOB: {{ patientInfo.date_of_birth }} ({{
                             findPatientAge(patientInfo.date_of_birth)
                         }})
                     </p>
                     <p>Time Assigned: {{ patientInfo.timeBooked }}</p>
-                    <cv-button
-                        kind="danger"
-                        @click="checkoutPatient(patientInfo.id, bedInfo.id)"
-                        >Checkout</cv-button
-                    >
-                    <cv-button kind="secondary" @click="openTransfer(bedId)"
-                        >Transfer</cv-button
-                    >
+                    <cv-button-set>
+                        <cv-button
+                            kind="danger"
+                            @click="checkoutPatient(patientInfo.id, bedInfo.id)"
+                            >Checkout</cv-button
+                        >
+                        <cv-button kind="secondary" @click="openTransfer(bedId)"
+                            >Transfer</cv-button
+                        >
+                    </cv-button-set>
                 </div>
                 <div v-else>
                     <div v-if="!isDisabled">
-                        <cv-button
-                            kind="primary"
-                            @click="routerRedirect('create')"
-                            >Assign New Patient</cv-button
-                        >
-                        <cv-button
-                            kind="secondary"
-                            @click="routerRedirect('search')"
-                            >Transfer current patient</cv-button
-                        >
+                        <cv-button-set>
+                            <cv-button
+                                kind="primary"
+                                @click="routerRedirect('create')"
+                                >Assign New Patient</cv-button
+                            >
+                            <cv-button
+                                kind="secondary"
+                                @click="routerRedirect('search')"
+                                >Transfer current patient</cv-button
+                            >
+                        </cv-button-set>
                     </div>
                 </div>
             </cv-tile>
@@ -70,19 +80,22 @@
 import Qrcode from "qrcode.vue";
 import HospitalBedIcon from "@carbon/icons-vue/es/hospital-bed/32";
 import UserIcon from "@carbon/icons-vue/es/user/32";
+import GenderTag from "@/components/Layout/GenderTag.vue";
 
 export default {
     name: "BedView",
     components: {
         Qrcode,
         HospitalBedIcon,
-        UserIcon
+        UserIcon,
+        GenderTag
     },
     data() {
         return {
             bedInfo: {},
             patientInfo: {},
-            isDisabled: true
+            isDisabled: true,
+            ward: {}
         };
     },
     computed: {
@@ -147,6 +160,7 @@ export default {
                     bedInfo.ward_id,
                     bedInfo.id
                 );
+                this.findWard(bedInfo.ward_id);
             } catch (error) {
                 console.error(error);
             }
@@ -188,6 +202,20 @@ export default {
                         bedActiveResponse[0].time_booked
                     ).toUTCString();
                 }
+            } catch (error) {
+                console.error(error);
+            }
+        },
+        async findWard(wardId) {
+            try {
+                const response = await fetch(`/api/wards/find?id=${wardId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                    }
+                });
+                const ward = await response.json();
+                this.ward = ward;
+                return ward;
             } catch (error) {
                 console.error(error);
             }
@@ -251,6 +279,7 @@ export default {
     }
 
     .cv-button-set {
+        display: block;
         .cv-button.bx--btn--primary#green {
             background-color: green;
         }
