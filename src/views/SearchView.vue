@@ -136,6 +136,8 @@ export default {
                 return {
                     ward: ward.description,
                     bedId: bed.id,
+                    bedDescription: bed.description,
+                    roomDescription: bed.room?.description || "N/A",
                     patientName: patient
                         ? `${patient.first_name} ${patient.last_name}`
                         : null,

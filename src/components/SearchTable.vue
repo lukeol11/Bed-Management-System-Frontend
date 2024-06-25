@@ -9,6 +9,12 @@
                 >
                     <cv-data-table-cell>{{ result.ward }}</cv-data-table-cell>
                     <cv-data-table-cell>{{ result.bedId }}</cv-data-table-cell>
+                    <cv-data-table-cell>{{
+                        result.bedDescription
+                    }}</cv-data-table-cell>
+                    <cv-data-table-cell>{{
+                        result.roomDescription
+                    }}</cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-tag
                             v-if="result.cleaning"
@@ -57,6 +63,8 @@ export default {
             columns: [
                 "Ward",
                 "Bed ID",
+                "Bed Name",
+                "Room Name",
                 "Patient Name",
                 "Date of Birth",
                 "Treatment Level",
