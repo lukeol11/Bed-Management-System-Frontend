@@ -43,7 +43,7 @@ body {
     margin: 0px;
     #app {
         background-color: #d9d9d9;
-        height: 100vh;
+        min-height: calc(100vh - 3rem);
         .bx--modal-close {
             display: none;
         }
