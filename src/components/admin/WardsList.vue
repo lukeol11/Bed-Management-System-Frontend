@@ -26,9 +26,7 @@
                         result.location
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-tag
-                            :label="result.gender"
-                            :kind="getColor(result.gender)"
+                        <gender-tag :gender="result.gender"
                     /></cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-button-set>
@@ -110,6 +108,8 @@
 </template>
 
 <script>
+import GenderTag from "../Layout/GenderTag.vue";
+
 export default {
     name: "WardsList",
     data() {
@@ -139,6 +139,9 @@ export default {
             }
         };
     },
+    components: {
+        GenderTag
+    },
     methods: {
         async getWards() {
             try {
@@ -154,17 +157,6 @@ export default {
                 this.wards = wards;
             } catch (err) {
                 console.error(err);
-            }
-        },
-        getColor(gender) {
-            if (gender === "Male") {
-                return "cyan";
-            } else if (gender === "Female") {
-                return "magenta";
-            } else if (gender === "All") {
-                return "green";
-            } else {
-                return "gray";
             }
         },
         async getTreatmentLevels() {
@@ -292,18 +284,5 @@ export default {
 <style scoped>
 .bx--btn-set .bx--btn {
     width: auto;
-}
-</style>
-
-<style lang="scss" scoped>
-#wardsList {
-    .bx--tag--magenta {
-        background-color: #ff5aff;
-        color: #6a0055;
-    }
-    .bx--tag--green {
-        background-color: #f7ff00;
-        color: #977800;
-    }
 }
 </style>

@@ -35,28 +35,33 @@
                             findPatientAge(patientInfo.date_of_birth)
                         }})
                     </p>
+                    <gender-tag :gender="patientInfo.gender" />
                     <p>Time Assigned: {{ patientInfo.timeBooked }}</p>
-                    <cv-button
-                        kind="danger"
-                        @click="checkoutPatient(patientInfo.id, bedInfo.id)"
-                        >Checkout</cv-button
-                    >
-                    <cv-button kind="secondary" @click="openTransfer(bedId)"
-                        >Transfer</cv-button
-                    >
+                    <cv-button-set>
+                        <cv-button
+                            kind="danger"
+                            @click="checkoutPatient(patientInfo.id, bedInfo.id)"
+                            >Checkout</cv-button
+                        >
+                        <cv-button kind="secondary" @click="openTransfer(bedId)"
+                            >Transfer</cv-button
+                        >
+                    </cv-button-set>
                 </div>
                 <div v-else>
                     <div v-if="!isDisabled">
-                        <cv-button
-                            kind="primary"
-                            @click="routerRedirect('create')"
-                            >Assign New Patient</cv-button
-                        >
-                        <cv-button
-                            kind="secondary"
-                            @click="routerRedirect('search')"
-                            >Transfer current patient</cv-button
-                        >
+                        <cv-button-set>
+                            <cv-button
+                                kind="primary"
+                                @click="routerRedirect('create')"
+                                >Assign New Patient</cv-button
+                            >
+                            <cv-button
+                                kind="secondary"
+                                @click="routerRedirect('search')"
+                                >Transfer current patient</cv-button
+                            >
+                        </cv-button-set>
                     </div>
                 </div>
             </cv-tile>
@@ -71,13 +76,15 @@
 import Qrcode from "qrcode.vue";
 import HospitalBedIcon from "@carbon/icons-vue/es/hospital-bed/32";
 import UserIcon from "@carbon/icons-vue/es/user/32";
+import GenderTag from "@/components/Layout/GenderTag.vue";
 
 export default {
     name: "BedView",
     components: {
         Qrcode,
         HospitalBedIcon,
-        UserIcon
+        UserIcon,
+        GenderTag
     },
     data() {
         return {

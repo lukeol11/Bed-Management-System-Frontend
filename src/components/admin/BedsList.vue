@@ -19,13 +19,8 @@
                         >{{ result.room?.description || "N/A" }}
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-tag
-                            :label="getGender(result.room?.gender)"
-                            :kind="
-                                getColor(
-                                    result.room?.gender || wardDetails.gender
-                                )
-                            "
+                        <gender-tag
+                            :gender="result.room?.gender || wardDetails.gender"
                         />
                     </cv-data-table-cell>
                     <cv-data-table-cell>
@@ -75,6 +70,7 @@
 
 <script>
 import CreateRoom from "./CreateRoom.vue";
+import GenderTag from "../Layout/GenderTag.vue";
 
 export default {
     name: "BedsList",
@@ -91,7 +87,8 @@ export default {
         };
     },
     components: {
-        CreateRoom
+        CreateRoom,
+        GenderTag
     },
     methods: {
         async getBeds() {
@@ -105,27 +102,6 @@ export default {
                 this.beds = beds;
             } catch (err) {
                 console.error(err);
-            }
-        },
-        getColor(gender) {
-            if (gender === "Male") {
-                return "cyan";
-            } else if (gender === "Female") {
-                return "magenta";
-            } else if (gender === "All") {
-                return "green";
-            } else {
-                return "red";
-            }
-        },
-        getGender(roomGender) {
-            if (roomGender) {
-                return roomGender;
-            } else if (this.wardDetails) {
-                return this.wardDetails.gender;
-            } else {
-                console.log(this.wardDetails);
-                return "error";
             }
         },
         async deleteBed(bedId) {
@@ -283,16 +259,3 @@ export default {
     }
 };
 </script>
-
-<style lang="scss" scoped>
-#bedsList {
-    .bx--tag--magenta {
-        background-color: #ff7bff;
-        color: #320028;
-    }
-    .bx--tag--green {
-        background-color: #f7ff00;
-        color: #5f5116;
-    }
-}
-</style>
