@@ -1,6 +1,22 @@
 <template>
     <div id="bedList">
         <h2>Bed Selection</h2>
+        <p>
+            Filtered by:
+            <cv-tag
+                v-if="filterByAge"
+                :filter="true"
+                label="Age"
+                @remove="filterByAge = false"
+            />
+            <cv-tag
+                v-if="filterByGender"
+                :filter="true"
+                label="Gender"
+                @remove="filterByGender = false"
+            />
+            <cv-tag v-if="!filterByAge && !filterByGender" label="No filter" />
+        </p>
         <cv-data-table :columns="columns" :zebra="true">
             <template slot="data">
                 <cv-data-table-row
@@ -12,12 +28,32 @@
                     <cv-data-table-cell>{{
                         bed.ward_description
                     }}</cv-data-table-cell>
-                    <cv-data-table-cell>{{ bed.id }}</cv-data-table-cell>
-                    <cv-data-table-cell>{{
-                        bed.description
-                    }}</cv-data-table-cell>
+                    <cv-data-table-cell>
+                        <cv-tooltip :tip="`Bed ID: ${bed.id}`">
+                            {{ bed.description }}
+                        </cv-tooltip>
+                    </cv-data-table-cell>
                     <cv-data-table-cell>
                         <gender-tag :gender="bed.gender" :contrast="true" />
+                    </cv-data-table-cell>
+                    <cv-data-table-cell
+                        v-if="
+                            checkIfInAgeRange(
+                                bed.min_patient_age,
+                                bed.max_patient_age
+                            )
+                        "
+                    >
+                        {{ bed.min_patient_age }} - {{ bed.max_patient_age }}
+                    </cv-data-table-cell>
+                    <cv-data-table-cell v-else>
+                        <cv-tooltip
+                            style="font-weight: bold; color: red"
+                            tip="Warning: Bed may not be suitable for patients needs"
+                        >
+                            {{ bed.min_patient_age }} -
+                            {{ bed.max_patient_age }}</cv-tooltip
+                        >
                     </cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-button @click="assignBed(bed.id)">{{
@@ -77,9 +113,17 @@ export default {
     },
     data() {
         return {
-            columns: ["Ward", "Bed Id", "Bed Name", "Bed Gender", "Action"],
+            columns: [
+                "Ward",
+                "Bed Name",
+                "Bed Gender",
+                "Patient Age Range",
+                "Action"
+            ],
             wards: [],
-            beds: []
+            beds: [],
+            filterByAge: true,
+            filterByGender: true
         };
     },
     computed: {
@@ -91,6 +135,10 @@ export default {
                         gender:
                             bed.room?.gender ||
                             this.findWard(bed.ward_id).gender,
+                        min_patient_age: this.findWard(bed.ward_id)
+                            .min_patient_age,
+                        max_patient_age: this.findWard(bed.ward_id)
+                            .max_patient_age,
                         ward_description: this.findWard(bed.ward_id).description
                     };
                 })
@@ -111,17 +159,26 @@ export default {
     },
     watch: {
         treatmentLevel() {
-            this.getAllMatchingBeds(this.age, this.treatmentLevel);
+            this.getAllMatchingBeds(this.age, this.gender);
         },
         triggerUpdate() {
-            this.getAllMatchingBeds(this.age, this.treatmentLevel);
+            this.getAllMatchingBeds(this.age, this.gender);
         },
         hospitalId() {
             this.beds = [];
-            this.getAllMatchingBeds(this.age, this.treatmentLevel);
+            this.getAllMatchingBeds(this.age, this.gender);
+        },
+        filterByAge() {
+            this.getAllMatchingBeds(this.age, this.gender);
+        },
+        filterByGender() {
+            this.getAllMatchingBeds(this.age, this.gender);
         }
     },
     methods: {
+        checkIfInAgeRange(minAge, maxAge) {
+            return minAge <= this.age && this.age <= maxAge;
+        },
         assignBed(bedId) {
             this.$emit("assignBed", bedId);
         },
@@ -176,22 +233,46 @@ export default {
                 console.error(err);
             }
         },
-        async getAllMatchingBeds(age, treatmentLevel) {
+        async getAllMatchingBeds(age, gender) {
             const wards = await this.getWards();
-            const filteredWards = wards.filter(
-                (ward) =>
-                    ward.min_patient_age <= age && ward.max_patient_age >= age
-            );
+
+            let filteredWards = [];
+            if (this.filterByAge) {
+                filteredWards = wards.filter(
+                    (ward) =>
+                        ward.min_patient_age <= age &&
+                        ward.max_patient_age >= age
+                );
+            } else {
+                filteredWards = wards;
+            }
+
             if (filteredWards.length === 0) {
                 this.beds = [];
                 this.wards = [];
                 return;
             }
+
             const bedPromises = filteredWards.map((ward) =>
                 this.getBeds(ward.id)
             );
-            const beds = (await Promise.all(bedPromises)).flat();
-            this.beds = beds;
+            let beds = (await Promise.all(bedPromises)).flat();
+
+            if (this.filterByGender) {
+                this.beds = beds.filter((bed) => {
+                    if (bed.room) {
+                        return (
+                            bed.room.gender === gender ||
+                            bed.room.gender === "All"
+                        );
+                    } else {
+                        const ward = this.findWard(bed.ward_id);
+                        return ward.gender === gender || ward.gender === "All";
+                    }
+                });
+            } else {
+                this.beds = beds;
+            }
         },
         findWard(wardId) {
             return this.wards.find((ward) => ward.id === wardId);
@@ -199,7 +280,7 @@ export default {
     },
     mounted() {
         if (this.treatmentLevel && this.age && this.gender && this.hospitalId) {
-            this.getAllMatchingBeds(this.age, this.treatmentLevel);
+            this.getAllMatchingBeds(this.age, this.gender);
         }
     }
 };
@@ -256,5 +337,9 @@ tr {
             color: color.scale(#320028, $lightness: 5%);
         }
     }
+}
+
+.cv-tooltip.bx--tooltip__trigger.bx--tooltip--a11y.bx--tooltip--top.bx--tooltip--align-center {
+    text-align: left;
 }
 </style>

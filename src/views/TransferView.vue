@@ -18,7 +18,13 @@
                 <p>Description: {{ bedInfo.description }}</p>
                 <p>First Name: {{ patientInfo.first_name }}</p>
                 <p>Last Name: {{ patientInfo.last_name }}</p>
-                <p>DOB: {{ patientInfo.date_of_birth }}</p>
+                <p>
+                    DOB: {{ patientInfo.date_of_birth }} ({{
+                        patientInfo.date_of_birth
+                            ? findPatientAge(patientInfo.date_of_birth)
+                            : "N/A"
+                    }})
+                </p>
                 <p>Gender: <gender-tag :gender="patientInfo.gender" /></p>
                 <p>Time Assigned: {{ patientInfo.timeBooked }}</p>
             </cv-tile>

@@ -8,10 +8,11 @@
                     :key="index"
                 >
                     <cv-data-table-cell>{{ result.ward }}</cv-data-table-cell>
-                    <cv-data-table-cell>{{ result.bedId }}</cv-data-table-cell>
-                    <cv-data-table-cell>{{
-                        result.bedDescription
-                    }}</cv-data-table-cell>
+                    <cv-data-table-cell>
+                        <cv-tooltip :tip="`Bed ID: ${result.bedId}`">
+                            {{ result.bedDescription }}
+                        </cv-tooltip>
+                    </cv-data-table-cell>
                     <cv-data-table-cell>{{
                         result.roomDescription
                     }}</cv-data-table-cell>
@@ -62,7 +63,6 @@ export default {
             searchQuery: "",
             columns: [
                 "Ward",
-                "Bed ID",
                 "Bed Name",
                 "Room Name",
                 "Patient Name",
