@@ -1,74 +1,19 @@
 <template>
     <div class="bedView">
         <div class="tilesContainer">
-            <cv-tile>
-                <hospital-bed-icon />
-                <h1>Bed Info</h1>
-                <p>Bed ID: {{ bedInfo.id }}</p>
-                <p>
-                    Bed Gender:
-                    <gender-tag :gender="bedInfo.room?.gender || ward.gender" />
-                </p>
-                <p>Name: {{ bedInfo.description }}</p>
-                <p>Room: {{ bedInfo.room?.description || "N/A" }}</p>
-                <p v-if="patientInfo.first_name">
-                    Status: <cv-tag label="Occupied" kind="red"></cv-tag>
-                </p>
-                <p v-else-if="isDisabled">
-                    Status:
-                    <cv-tag label="Cleaning Required" kind="blue"></cv-tag>
-                </p>
-                <p v-else>
-                    Status: <cv-tag label="Available" kind="green"></cv-tag>
-                </p>
-                <cv-button @click="enabledBed" id="green" v-if="isDisabled"
-                    >Mark as Cleaned</cv-button
-                >
-
-                <qrcode id="bedQrCodeUrl" :value="currentRoute" />
-            </cv-tile>
-            <cv-tile id="patient">
-                <user-icon />
-                <h1 v-if="patientInfo.first_name">Current Patient Info</h1>
-                <h1 v-else>No Patient Currently Assigned</h1>
-                <div v-if="patientInfo.first_name">
-                    <p>First Name: {{ patientInfo.first_name }}</p>
-                    <p>Last Name: {{ patientInfo.last_name }}</p>
-                    <p>Gender: <gender-tag :gender="patientInfo.gender" /></p>
-                    <p>
-                        DOB: {{ patientInfo.date_of_birth }} ({{
-                            findPatientAge(patientInfo.date_of_birth)
-                        }})
-                    </p>
-                    <p>Time Assigned: {{ patientInfo.timeBooked }}</p>
-                    <cv-button-set>
-                        <cv-button
-                            kind="danger"
-                            @click="checkoutPatient(patientInfo.id, bedInfo.id)"
-                            >Checkout</cv-button
-                        >
-                        <cv-button kind="secondary" @click="openTransfer(bedId)"
-                            >Transfer</cv-button
-                        >
-                    </cv-button-set>
-                </div>
-                <div v-else>
-                    <div v-if="!isDisabled">
-                        <cv-button-set>
-                            <cv-button
-                                kind="primary"
-                                @click="routerRedirect('create')"
-                                >Assign New Patient</cv-button
-                            >
-                            <cv-button
-                                kind="secondary"
-                                @click="routerRedirect('search')"
-                                >Transfer current patient</cv-button
-                            >
-                        </cv-button-set>
-                    </div>
-                </div>
-            </cv-tile>
+            <bed-tile
+                :bedInfo="bedInfo"
+                :patientInfo="patientInfo"
+                :isDisabled="isDisabled"
+                :ward="ward"
+                :currentRoute="currentRoute"
+            />
+            <patient-tile
+                :bedInfo="bedInfo"
+                :patientInfo="patientInfo"
+                :isDisabled="isDisabled"
+                :ward="ward"
+            />
         </div>
         <cv-button id="qrDownloadButton" @click="downloadQrCode"
             >Download QR Code</cv-button
@@ -77,18 +22,14 @@
 </template>
 
 <script>
-import Qrcode from "qrcode.vue";
-import HospitalBedIcon from "@carbon/icons-vue/es/hospital-bed/32";
-import UserIcon from "@carbon/icons-vue/es/user/32";
-import GenderTag from "@/components/Layout/GenderTag.vue";
+import PatientTile from "@/components/info/PatientTile.vue";
+import BedTile from "@/components/info/BedTile.vue";
 
 export default {
     name: "BedView",
     components: {
-        Qrcode,
-        HospitalBedIcon,
-        UserIcon,
-        GenderTag
+        PatientTile,
+        BedTile
     },
     data() {
         return {
@@ -107,36 +48,6 @@ export default {
         }
     },
     methods: {
-        findPatientAge(dateOfBirth) {
-            const dob = new Date(dateOfBirth.split("/").reverse().join("-"));
-            const diff_ms = Date.now() - dob.getTime();
-            const age_dt = new Date(diff_ms);
-            return Math.abs(age_dt.getUTCFullYear() - 1970);
-        },
-        async enabledBed() {
-            await fetch(`/api/beds/enable/${this.bedId}`, {
-                method: "PATCH",
-                headers: {
-                    Authorization: `Bearer ${this.$store.getters.getAuthToken}`
-                }
-            });
-            this.$router.go();
-        },
-        async disableBed() {
-            await fetch(`/api/beds/disable/${this.bedId}?reason_id=1`, {
-                method: "PATCH",
-                headers: {
-                    Authorization: `Bearer ${this.$store.getters.getAuthToken}`
-                }
-            });
-            this.$router.go();
-        },
-        openTransfer(bedId) {
-            this.$router.push(`/transfer/${bedId}`);
-        },
-        routerRedirect(route) {
-            this.$router.push(`/${route}/`);
-        },
         downloadQrCode() {
             const canvas = document.querySelector("canvas");
             const image = canvas
@@ -156,16 +67,13 @@ export default {
                 });
                 const bedInfo = await response.json();
                 this.bedInfo = bedInfo;
-                this.isDisabled = await this.getBedStatus(
-                    bedInfo.ward_id,
-                    bedInfo.id
-                );
+                this.isDisabled = await this.getBedStatus(bedInfo.id);
                 this.findWard(bedInfo.ward_id);
             } catch (error) {
                 console.error(error);
             }
         },
-        async getBedStatus(wardId, bedId) {
+        async getBedStatus(bedId) {
             try {
                 const response = await fetch(`/api/beds/status/${bedId}`, {
                     headers: {
@@ -218,26 +126,6 @@ export default {
             } catch (error) {
                 console.error(error);
             }
-        },
-        async checkoutPatient(patientId, bedId) {
-            try {
-                await fetch(
-                    `/api/beds/checkout?patient_id=${patientId}&bed_id=${bedId}`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
-                        },
-                        body: JSON.stringify({
-                            checkout_time: new Date().toISOString()
-                        })
-                    }
-                );
-                await this.disableBed();
-            } catch (error) {
-                console.error(error);
-            }
         }
     },
     mounted() {
@@ -254,18 +142,6 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    .cv-tile {
-        h1 {
-            margin-bottom: 1em;
-        }
-        width: 40%;
-        height: 90%;
-        font-size: 2rem;
-        font-weight: 500;
-        font-family: Roboto, sans-serif;
-        text-align: center;
-        margin: 2rem;
-    }
     .tilesContainer {
         width: 100%;
         height: 60vh;
@@ -274,16 +150,6 @@ export default {
         svg {
             width: 2em;
             height: 2em;
-        }
-    }
-
-    .cv-button-set {
-        display: block;
-        .cv-button.bx--btn--primary#green {
-            background-color: green;
-        }
-        .cv-button.bx--btn--primary#yellow {
-            background-color: rgb(122, 122, 0);
         }
     }
 }
