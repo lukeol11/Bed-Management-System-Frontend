@@ -1,13 +1,16 @@
 <template>
-    <div>
+    <div id="searchTable">
         <cv-search @input="handleSearch"></cv-search>
-        <cv-data-table :columns="columns" :zebra="true">
+        <cv-data-table
+            class="wardTable"
+            :columns="columns"
+            :zebra="true"
+            v-for="beds in filteredResults"
+            :key="beds[0].ward_id"
+            :title="`${beds[0].ward} Ward Beds`"
+        >
             <template slot="data">
-                <cv-data-table-row
-                    v-for="(result, index) in filteredResults"
-                    :key="index"
-                >
-                    <cv-data-table-cell>{{ result.ward }}</cv-data-table-cell>
+                <cv-data-table-row v-for="result in beds" :key="result.id">
                     <cv-data-table-cell>
                         <cv-tooltip :tip="`Bed ID: ${result.bedId}`">
                             {{ result.bedDescription }}
@@ -34,9 +37,12 @@
                     <cv-data-table-cell>{{
                         result.dateOfBirth
                     }}</cv-data-table-cell>
-                    <cv-data-table-cell>{{
-                        result.treatmentLevel
-                    }}</cv-data-table-cell>
+                    <cv-data-table-cell>
+                        <gender-tag
+                            v-if="result.patientGender"
+                            :gender="result.patientGender"
+                        />
+                    </cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-button @click="openBed(result.bedId)"
                             >View Bed</cv-button
@@ -55,6 +61,8 @@
 </template>
 
 <script>
+import GenderTag from "./Layout/GenderTag.vue";
+
 export default {
     name: "SearchTable",
     data() {
@@ -62,12 +70,11 @@ export default {
             fullResults: this.data,
             searchQuery: "",
             columns: [
-                "Ward",
                 "Bed Name",
                 "Room Name",
                 "Patient Name",
                 "Date of Birth",
-                "Treatment Level",
+                "Gender",
                 "Actions"
             ]
         };
@@ -78,22 +85,48 @@ export default {
             required: true
         }
     },
+    components: {
+        GenderTag
+    },
     computed: {
         filteredResults() {
-            if (!this.searchQuery) {
-                return this.fullResults;
-            }
-            return this.fullResults.filter((result) => {
-                return Object.values(result).some((value) => {
-                    if (value === null || value === undefined) {
-                        return false;
-                    }
-                    return value
-                        .toString()
-                        .toLowerCase()
-                        .includes(this.searchQuery.toLowerCase());
+            let fullResults = this.fullResults;
+            if (this.searchQuery) {
+                fullResults = fullResults.filter((result) => {
+                    return Object.values(result).some((value) => {
+                        if (value === null || value === undefined) {
+                            return false;
+                        }
+                        return value
+                            .toString()
+                            .toLowerCase()
+                            .includes(this.searchQuery.toLowerCase());
+                    });
                 });
+            }
+
+            fullResults = fullResults.sort((a, b) => {
+                if (a.occupied && !b.occupied) {
+                    return -1;
+                } else if (!a.occupied && b.occupied) {
+                    return 1;
+                } else {
+                    return 0;
+                }
             });
+
+            let wardsArray = [];
+            fullResults.forEach((result) => {
+                let wardIndex = wardsArray.findIndex(
+                    (ward) => ward[0].wardId === result.wardId
+                );
+                if (wardIndex === -1) {
+                    wardsArray.push([result]);
+                } else {
+                    wardsArray[wardIndex].push(result);
+                }
+            });
+            return wardsArray;
         }
     },
     methods: {
@@ -109,3 +142,11 @@ export default {
     }
 };
 </script>
+
+<style lang="scss">
+#searchTable {
+    .cv-data-table.wardTable .bx--data-table-container .bx--data-table-header {
+        padding: 0.3rem 0 0.4rem 1rem;
+    }
+}
+</style>
