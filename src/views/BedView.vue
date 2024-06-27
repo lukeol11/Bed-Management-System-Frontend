@@ -122,8 +122,8 @@ export default {
             });
             this.$router.go();
         },
-        async disabledBed() {
-            await fetch(`/api/beds/disable/${this.bedId}`, {
+        async disableBed() {
+            await fetch(`/api/beds/disable/${this.bedId}?reason_id=1`, {
                 method: "PATCH",
                 headers: {
                     Authorization: `Bearer ${this.$store.getters.getAuthToken}`
@@ -167,13 +167,12 @@ export default {
         },
         async getBedStatus(wardId, bedId) {
             try {
-                const response = await fetch(`/api/beds/status/${wardId}`, {
+                const response = await fetch(`/api/beds/status/${bedId}`, {
                     headers: {
                         Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     }
                 });
-                const bedsDetails = await response.json();
-                const bedDetails = bedsDetails.find((bed) => bed.id === bedId);
+                const bedDetails = await response.json();
                 return bedDetails.disabled;
             } catch (error) {
                 console.error(error);
@@ -235,7 +234,7 @@ export default {
                         })
                     }
                 );
-                await this.disabledBed();
+                await this.disableBed();
             } catch (error) {
                 console.error(error);
             }

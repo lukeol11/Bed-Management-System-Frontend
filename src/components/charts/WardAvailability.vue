@@ -116,11 +116,14 @@ export default {
 
         async getBeds(wardId) {
             try {
-                const response = await fetch(`/api/beds/status/${wardId}`, {
-                    headers: {
-                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                const response = await fetch(
+                    `/api/beds/statuses?ward_id=${wardId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
                     }
-                });
+                );
                 const beds = await response.json();
                 if (beds.length !== 0) {
                     const available = beds.filter(

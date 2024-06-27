@@ -98,11 +98,14 @@ export default {
         },
         async getBedStatuses(wardId) {
             try {
-                const response = await fetch(`/api/beds/status/${wardId}`, {
-                    headers: {
-                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                const response = await fetch(
+                    `/api/beds/statuses?ward_id=${wardId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
                     }
-                });
+                );
                 const bedStatuses = await response.json();
                 return bedStatuses;
             } catch (err) {

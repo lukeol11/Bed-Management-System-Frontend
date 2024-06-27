@@ -221,13 +221,12 @@ export default {
         },
         async isBedActive(bedId, wardId) {
             try {
-                const response = await fetch(`/api/beds/status/${wardId}`, {
+                const response = await fetch(`/api/beds/status/${bedId}`, {
                     headers: {
                         Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     }
                 });
-                const bedsDetails = await response.json();
-                const bedDetails = bedsDetails.find((bed) => bed.id === bedId);
+                const bedDetails = await response.json();
                 return !(bedDetails.disabled || bedDetails.occupied);
             } catch (err) {
                 console.error(err);
