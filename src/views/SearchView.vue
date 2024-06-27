@@ -135,12 +135,14 @@ export default {
 
                 return {
                     ward: ward.description,
+                    wardId: ward.id,
                     bedId: bed.id,
                     bedDescription: bed.description,
                     roomDescription: bed.room?.description || "N/A",
                     patientName: patient
                         ? `${patient.first_name} ${patient.last_name}`
                         : null,
+                    patientGender: patient ? patient.gender : null,
                     dateOfBirth: patient ? patient.date_of_birth : null,
                     treatmentLevel: ward ? treatmentLevel.name : null,
                     cleaning: bedStatus.disabled,
