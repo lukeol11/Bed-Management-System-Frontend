@@ -9,14 +9,12 @@
             Bed Gender:
             <gender-tag :gender="bedInfo.room?.gender || ward.gender" />
         </p>
-        <p v-if="bedInfo.disabled_reason?.id === 2">
-            Status: <cv-tag label="Occupied" kind="red"></cv-tag>
-        </p>
-        <p v-else-if="bedInfo.disabled_reason?.id === 1">
+        <p>
             Status:
-            <cv-tag label="Cleaning Required" kind="blue"></cv-tag>
+            <bed-status-tag
+                :disabledReason="bedInfo.disabled_reason || undefined"
+            />
         </p>
-        <p v-else>Status: <cv-tag label="Available" kind="green"></cv-tag></p>
         <cv-button
             @click="enableBed"
             id="green"
@@ -31,14 +29,16 @@
 <script>
 import Qrcode from "qrcode.vue";
 import HospitalBedIcon from "@carbon/icons-vue/es/hospital-bed/32";
-import GenderTag from "@/components/Layout/GenderTag.vue";
+import GenderTag from "@/components/tags/GenderTag.vue";
+import BedStatusTag from "@/components/tags/BedStatusTag.vue";
 
 export default {
     name: "BedTile",
     components: {
         Qrcode,
         HospitalBedIcon,
-        GenderTag
+        GenderTag,
+        BedStatusTag
     },
     props: {
         bedInfo: Object,

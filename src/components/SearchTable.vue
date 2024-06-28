@@ -20,15 +20,11 @@
                         result.roomDescription
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-tag
-                            v-if="!result.disabled_reason_id"
-                            label="Available"
-                            kind="green"
-                        />
-                        <cv-tag
-                            v-else-if="result.disabled_reason_id !== 2"
-                            :label="result.disabled_reason"
-                            kind="blue"
+                        <bed-status-tag
+                            v-if="!result.patientName"
+                            :disabledReason="
+                                result.disabled_reason || undefined
+                            "
                         />
                         <div v-else>
                             {{ result.patientName }}
@@ -49,7 +45,7 @@
                         >
                         <cv-button
                             kind="secondary"
-                            :disabled="result.disabled_reason_id !== 2"
+                            :disabled="result.disabled_reason?.id !== 2"
                             @click="openTransfer(result.bedId)"
                             >Transfer</cv-button
                         >
@@ -61,7 +57,8 @@
 </template>
 
 <script>
-import GenderTag from "./Layout/GenderTag.vue";
+import GenderTag from "./tags/GenderTag.vue";
+import BedStatusTag from "./tags/BedStatusTag.vue";
 
 export default {
     name: "SearchTable",
@@ -86,7 +83,8 @@ export default {
         }
     },
     components: {
-        GenderTag
+        GenderTag,
+        BedStatusTag
     },
     computed: {
         filteredResults() {
@@ -106,9 +104,15 @@ export default {
             }
 
             fullResults = fullResults.sort((a, b) => {
-                if (a.occupied && !b.occupied) {
+                if (
+                    a.disabled_reason?.reason === "Occupied" &&
+                    b.disabled_reason?.reason !== "Occupied"
+                ) {
                     return -1;
-                } else if (!a.occupied && b.occupied) {
+                } else if (
+                    a.disabled_reason?.reason !== "Occupied" &&
+                    b.disabled_reason?.reason === "Occupied"
+                ) {
                     return 1;
                 } else {
                     return 0;

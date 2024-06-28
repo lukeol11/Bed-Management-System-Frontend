@@ -148,9 +148,7 @@ export default {
                     patientGender: patient ? patient.gender : null,
                     dateOfBirth: patient ? patient.date_of_birth : null,
                     treatmentLevel: ward ? treatmentLevel.name : null,
-                    disabled_reason_id: bedStatus.disabled_reason?.id,
-                    disabled_reason: bedStatus.disabled_reason?.reason,
-                    occupied: bedStatus.occupied
+                    disabled_reason: bedStatus.disabled_reason
                 };
             });
             this.results = results;
