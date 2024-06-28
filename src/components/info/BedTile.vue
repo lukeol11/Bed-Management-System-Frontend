@@ -21,6 +21,11 @@
             v-if="bedInfo.disabled_reason?.id === 1"
             >Mark as Cleaned</cv-button
         >
+        <disabled-reason-select
+            v-if="bedInfo.id"
+            :bedId="bedInfo.id"
+            @change="reloadPage"
+        />
 
         <qrcode id="bedQrCodeUrl" :value="currentRoute" />
     </cv-tile>
@@ -31,6 +36,7 @@ import Qrcode from "qrcode.vue";
 import HospitalBedIcon from "@carbon/icons-vue/es/hospital-bed/32";
 import GenderTag from "@/components/tags/GenderTag.vue";
 import BedStatusTag from "@/components/tags/BedStatusTag.vue";
+import DisabledReasonSelect from "@/components/form_items/DisabledReasonSelect.vue";
 
 export default {
     name: "BedTile",
@@ -38,7 +44,8 @@ export default {
         Qrcode,
         HospitalBedIcon,
         GenderTag,
-        BedStatusTag
+        BedStatusTag,
+        DisabledReasonSelect
     },
     props: {
         bedInfo: Object,
@@ -54,6 +61,9 @@ export default {
                     Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                 }
             });
+            this.reloadPage();
+        },
+        reloadPage() {
             this.$router.go();
         }
     }
