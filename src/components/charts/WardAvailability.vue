@@ -86,9 +86,14 @@ export default {
     methods: {
         async getWards() {
             this.chartData.labels = [];
-            this.chartData.datasets[0].data = [];
-            this.chartData.datasets[1].data = [];
-            this.chartData.datasets[2].data = [];
+            this.chartData.datasets = [];
+            this.disabledReasons.forEach((reason) => {
+                this.chartData.datasets.push({
+                    label: reason.name,
+                    data: [],
+                    backgroundColor: reason.color
+                });
+            });
             try {
                 const response = await fetch(
                     `/api/wards/all?hospital_id=${this.$store.getters.getSelectedHospital.id}`,
@@ -104,10 +109,10 @@ export default {
                     this.getBeds(ward.id)
                 );
                 const bedsDataResults = await Promise.all(bedsDataPromises);
-                bedsDataResults.forEach(([available, cleaning, occupied]) => {
-                    this.chartData.datasets[2].data.push(available);
-                    this.chartData.datasets[1].data.push(cleaning);
-                    this.chartData.datasets[0].data.push(occupied);
+                bedsDataResults.forEach((bedsData) => {
+                    bedsData.forEach((beds, index) => {
+                        this.chartData.datasets[index].data.push(beds);
+                    });
                 });
             } catch (err) {
                 console.error(err);
@@ -125,23 +130,27 @@ export default {
                     }
                 );
                 const beds = await response.json();
+
                 if (beds.length !== 0) {
+                    const returnArray = [];
                     const available = beds.filter(
                         (bed) => !bed.disabled
                     ).length;
-                    const cleaning = beds.filter(
-                        (bed) => bed.disabled_reason?.id === 1
-                    ).length;
-                    const occupied = beds.filter(
-                        (bed) => bed.disabled_reason?.id === 2
-                    ).length;
-                    return [available, cleaning, occupied];
+                    returnArray.push(available);
+                    this.disabledReasons.forEach((reason) => {
+                        if (reason.id === 0) return;
+                        returnArray.push(
+                            beds.filter(
+                                (bed) => bed.disabled_reason?.id === reason.id
+                            ).length
+                        );
+                    });
+                    return returnArray;
                 } else {
                     return [0, 0, 0];
                 }
             } catch (err) {
                 console.error(err);
-                return [0, 0, 0];
             }
         }
     },
@@ -157,6 +166,24 @@ export default {
                     this.chartData.labels.length &&
                 this.chartData.datasets[2].data.length ===
                     this.chartData.labels.length
+            );
+        },
+        disabledReasons() {
+            return [
+                { id: 0, name: "Available", color: "rgba(0,255,0,0.75)" }
+            ].concat(
+                this.$store.getters.getDisabledReasons.map((reason) => {
+                    let color = "rgba(0,0,0,0.75)";
+                    if (reason.id === 1) color = "rgba(255,255,0,0.75)";
+                    else if (reason.id === 2) color = "rgba(255,0,0,0.75)";
+                    else if (reason.id === 3) color = "rgba(0,255,255,0.75)";
+                    else if (reason.id === 4) color = "rgba(155,155,155,0.75)";
+                    return {
+                        id: reason.id,
+                        name: reason.reason,
+                        color: color
+                    };
+                })
             );
         }
     },
