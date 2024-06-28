@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import GenderTag from "@/components/Layout/GenderTag.vue";
+import GenderTag from "@/components/tags/GenderTag.vue";
 import UserIcon from "@carbon/icons-vue/es/user/32";
 
 export default {

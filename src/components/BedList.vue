@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import GenderTag from "./Layout/GenderTag.vue";
+import GenderTag from "./tags/GenderTag.vue";
 
 export default {
     name: "BedList",

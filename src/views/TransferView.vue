@@ -57,7 +57,7 @@
 
 <script>
 import BedList from "@/components/BedList.vue";
-import GenderTag from "@/components/Layout/GenderTag.vue";
+import GenderTag from "@/components/tags/GenderTag.vue";
 
 export default {
     name: "TransferView",
