@@ -127,10 +127,14 @@ export default {
                 const beds = await response.json();
                 if (beds.length !== 0) {
                     const available = beds.filter(
-                        (bed) => !bed.disabled && !bed.occupied
+                        (bed) => !bed.disabled
                     ).length;
-                    const cleaning = beds.filter((bed) => bed.disabled).length;
-                    const occupied = beds.filter((bed) => bed.occupied).length;
+                    const cleaning = beds.filter(
+                        (bed) => bed.disabled_reason?.id === 1
+                    ).length;
+                    const occupied = beds.filter(
+                        (bed) => bed.disabled_reason?.id === 2
+                    ).length;
                     return [available, cleaning, occupied];
                 } else {
                     return [0, 0, 0];

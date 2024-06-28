@@ -192,7 +192,7 @@ export default {
                 });
                 const beds = await response.json();
                 const bedsPromises = beds.map(async (bed) => {
-                    if (await this.isBedActive(bed.id, wardId)) {
+                    if (await this.isBedActive(bed.id)) {
                         activeBeds.push(bed);
                     }
                 });
@@ -219,7 +219,7 @@ export default {
                 console.error(err);
             }
         },
-        async isBedActive(bedId, wardId) {
+        async isBedActive(bedId) {
             try {
                 const response = await fetch(`/api/beds/status/${bedId}`, {
                     headers: {
@@ -227,7 +227,7 @@ export default {
                     }
                 });
                 const bedDetails = await response.json();
-                return !(bedDetails.disabled || bedDetails.occupied);
+                return !bedDetails.disabled;
             } catch (err) {
                 console.error(err);
             }

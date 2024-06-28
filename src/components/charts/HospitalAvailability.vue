@@ -107,8 +107,8 @@ export default {
                 let counts = [0, 0, 0];
                 beds.forEach((bed) => {
                     if (!bed.disabled && !bed.occupied) counts[0]++;
-                    else if (bed.disabled) counts[1]++;
-                    else if (bed.occupied) counts[2]++;
+                    else if (bed.disabled_reason?.id !== 2) counts[1]++;
+                    else if (bed.disabled_reason?.id === 2) counts[2]++;
                 });
                 return counts;
             } catch (err) {

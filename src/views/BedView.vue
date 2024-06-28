@@ -4,14 +4,14 @@
             <bed-tile
                 :bedInfo="bedInfo"
                 :patientInfo="patientInfo"
-                :isDisabled="isDisabled"
+                :bedStatus="bedStatus"
                 :ward="ward"
                 :currentRoute="currentRoute"
             />
             <patient-tile
                 :bedInfo="bedInfo"
                 :patientInfo="patientInfo"
-                :isDisabled="isDisabled"
+                :bedStatus="bedStatus"
                 :ward="ward"
             />
         </div>
@@ -35,7 +35,7 @@ export default {
         return {
             bedInfo: {},
             patientInfo: {},
-            isDisabled: true,
+            bedStatus: true,
             ward: {}
         };
     },
@@ -67,7 +67,7 @@ export default {
                 });
                 const bedInfo = await response.json();
                 this.bedInfo = bedInfo;
-                this.isDisabled = await this.getBedStatus(bedInfo.id);
+                this.bedStatus = await this.getBedStatus(bedInfo.id);
                 this.findWard(bedInfo.ward_id);
             } catch (error) {
                 console.error(error);
@@ -81,7 +81,7 @@ export default {
                     }
                 });
                 const bedDetails = await response.json();
-                return bedDetails.disabled;
+                return bedDetails.disabled_reason;
             } catch (error) {
                 console.error(error);
             }

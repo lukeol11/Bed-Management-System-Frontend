@@ -25,7 +25,7 @@
             </cv-button-set>
         </div>
         <div v-else>
-            <div v-if="!isDisabled">
+            <div v-if="!bedInfo.disabled_reason">
                 <cv-button-set>
                     <cv-button kind="primary" @click="routerRedirect('create')"
                         >Assign New Patient</cv-button
@@ -50,7 +50,6 @@ export default {
     props: {
         patientInfo: Object,
         bedInfo: Object,
-        isDisabled: Boolean,
         ward: Object
     },
     components: {

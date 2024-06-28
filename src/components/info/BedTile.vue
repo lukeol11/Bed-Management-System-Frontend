@@ -9,15 +9,18 @@
             Bed Gender:
             <gender-tag :gender="bedInfo.room?.gender || ward.gender" />
         </p>
-        <p v-if="patientInfo.first_name">
+        <p v-if="bedInfo.disabled_reason?.id === 2">
             Status: <cv-tag label="Occupied" kind="red"></cv-tag>
         </p>
-        <p v-else-if="isDisabled">
+        <p v-else-if="bedInfo.disabled_reason?.id === 1">
             Status:
             <cv-tag label="Cleaning Required" kind="blue"></cv-tag>
         </p>
         <p v-else>Status: <cv-tag label="Available" kind="green"></cv-tag></p>
-        <cv-button @click="enableBed" id="green" v-if="isDisabled"
+        <cv-button
+            @click="enableBed"
+            id="green"
+            v-if="bedInfo.disabled_reason?.id === 1"
             >Mark as Cleaned</cv-button
         >
 
@@ -40,7 +43,6 @@ export default {
     props: {
         bedInfo: Object,
         patientInfo: Object,
-        isDisabled: Boolean,
         ward: Object,
         currentRoute: String
     },
