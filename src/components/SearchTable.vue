@@ -21,12 +21,13 @@
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
                         <bed-status-tag
-                            v-if="!result.patientName"
                             :disabledReason="
                                 result.disabled_reason || undefined
                             "
                         />
-                        <div v-else>
+                    </cv-data-table-cell>
+                    <cv-data-table-cell>
+                        <div>
                             {{ result.patientName }}
                         </div>
                     </cv-data-table-cell>
@@ -69,6 +70,7 @@ export default {
             columns: [
                 "Bed Name",
                 "Room Name",
+                "Bed Status",
                 "Patient Name",
                 "Date of Birth",
                 "Gender",
