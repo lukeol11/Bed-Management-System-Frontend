@@ -31,14 +31,11 @@ export default {
     methods: {
         async getBedStatus(bedId) {
             try {
-                const response = await fetch(
-                    `/api/beds/status?bed_id=${bedId}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
-                        }
+                const response = await fetch(`/api/beds/status/${bedId}`, {
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     }
-                );
+                });
                 const bedStatus = await response.json();
                 this.disabledReasonObject = bedStatus.disabledReason || {
                     id: 0,
