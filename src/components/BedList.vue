@@ -221,7 +221,7 @@ export default {
         },
         async isBedActive(bedId) {
             try {
-                const response = await fetch(`/api/beds/status/${bedId}`, {
+                const response = await fetch(`/api/beds/find/${bedId}/status`, {
                     headers: {
                         Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     }

@@ -55,7 +55,7 @@ export default {
         async getPatients(bedId) {
             let activeBeds;
             try {
-                const response = await fetch(`/api/beds/active/${bedId}`, {
+                const response = await fetch(`/api/beds/find/${bedId}/active`, {
                     headers: {
                         Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     }
