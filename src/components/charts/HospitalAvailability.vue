@@ -95,20 +95,8 @@ export default {
         async fetchWardBeds() {
             this.chartData.datasets[0].data = [[0, 0, 0]];
             try {
-                const response = await fetch(
-                    `/api/wards/all?hospital_id=${this.selectedHospital.id}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
-                        }
-                    }
-                );
-                const wards = await response.json();
-                const wardIds = wards.map((ward) => {
-                    return `${ward.id}&ward_ids=`;
-                });
                 const bedsDataResults = await this.fetchBedStatuses(
-                    wardIds.join("")
+                    this.selectedHospital.id
                 );
 
                 this.chartData.datasets[0].data = bedsDataResults;
@@ -116,10 +104,10 @@ export default {
                 console.error(err);
             }
         },
-        async fetchBedStatuses(wardIds) {
+        async fetchBedStatuses(hospitalId) {
             try {
                 const response = await fetch(
-                    `/api/beds/statuses?ward_ids=${wardIds}`,
+                    `/api/beds/statuses?hospital_id=${hospitalId}`,
                     {
                         headers: {
                             Authorization: `Bearer ${this.$store.getters.getAuthToken}`
