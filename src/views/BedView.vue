@@ -15,9 +15,6 @@
                 :ward="ward"
             />
         </div>
-        <cv-button id="qrDownloadButton" @click="downloadQrCode"
-            >Download QR Code</cv-button
-        >
     </div>
 </template>
 
@@ -48,16 +45,6 @@ export default {
         }
     },
     methods: {
-        downloadQrCode() {
-            const canvas = document.querySelector("canvas");
-            const image = canvas
-                .toDataURL("image/png")
-                .replace("image/png", "image/octet-stream");
-            const link = document.createElement("a");
-            link.href = image;
-            link.download = `bed-${this.bedId}-qr-code.png`;
-            link.click();
-        },
         async getBedInfo() {
             try {
                 const response = await fetch(`/api/beds/find/${this.bedId}`, {
@@ -75,7 +62,7 @@ export default {
         },
         async getBedStatus(bedId) {
             try {
-                const response = await fetch(`/api/beds/status/${bedId}`, {
+                const response = await fetch(`/api/beds/find/${bedId}/status`, {
                     headers: {
                         Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     }
@@ -88,11 +75,14 @@ export default {
         },
         async findPatient() {
             try {
-                let response = await fetch(`/api/beds/active/${this.bedId}`, {
-                    headers: {
-                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                let response = await fetch(
+                    `/api/beds/find/${this.bedId}/active`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
                     }
-                });
+                );
                 const bedActiveResponse = await response.json();
                 const patientId = bedActiveResponse[0]?.patient_id;
                 if (patientId) {
@@ -144,7 +134,7 @@ export default {
     align-items: center;
     .tilesContainer {
         width: 100%;
-        height: 60vh;
+        min-height: 80vh;
         display: flex;
         justify-content: center;
         svg {
