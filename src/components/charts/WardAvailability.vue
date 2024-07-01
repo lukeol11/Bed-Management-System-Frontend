@@ -85,15 +85,6 @@ export default {
     },
     methods: {
         async getWards() {
-            this.chartData.labels = [];
-            this.chartData.datasets = [];
-            this.disabledReasons.forEach((reason) => {
-                this.chartData.datasets.push({
-                    label: reason.name,
-                    data: [],
-                    backgroundColor: reason.color
-                });
-            });
             try {
                 const response = await fetch(
                     `/api/wards/all?hospital_id=${this.$store.getters.getSelectedHospital.id}`,
@@ -104,6 +95,13 @@ export default {
                     }
                 );
                 const wards = await response.json();
+                this.chartData.datasets = this.disabledReasons.map((reason) => {
+                    return {
+                        label: reason.name,
+                        data: [],
+                        backgroundColor: reason.color
+                    };
+                });
                 this.chartData.labels = wards.map((ward) => ward.description);
                 const bedsDataPromises = wards.map((ward) =>
                     this.getBeds(ward.id)
