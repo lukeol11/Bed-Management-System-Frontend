@@ -64,7 +64,7 @@
             </template>
         </cv-data-table>
         <cv-toast-notification
-            v-if="!treatmentLevel || !age || !gender || !hospitalId"
+            v-if="!treatmentLevel || !gender || !hospitalId"
             id="fill-info-notification"
             title="Fill available fields for list of beds"
         ></cv-toast-notification>
