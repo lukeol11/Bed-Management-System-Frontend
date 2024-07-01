@@ -1,5 +1,5 @@
 <template>
-    <cv-select v-if="bedStatus?.reason" @change="setStatus" label="Status">
+    <cv-select v-if="bedStatus?.reason" @change="setStatus" :label="label">
         <cv-select-option selected>
             {{ bedStatus.reason }}
         </cv-select-option>
@@ -22,6 +22,10 @@ export default {
         bedId: {
             type: Number,
             required: true
+        },
+        label: {
+            type: String,
+            default: "Status"
         }
     },
     data() {
@@ -65,49 +69,39 @@ export default {
             }
         },
         async enableBed(bedId) {
-            try {
-                const response = await fetch(`/api/beds/enable/${bedId}`, {
-                    method: "PATCH",
-                    headers: {
-                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
-                    }
-                });
-                if (response.ok) {
-                    console.info("Bed enabled successfully id: " + bedId);
-                    this.getBedStatus(bedId);
-                } else {
-                    throw new Error("Failed to enable bed");
+            const response = await fetch(`/api/beds/enable/${bedId}`, {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                 }
-            } catch (err) {
-                console.error(err);
+            });
+            if (response.ok) {
+                console.info("Bed enabled successfully id: " + bedId);
+                this.getBedStatus(bedId);
+            } else {
                 throw new Error("Failed to enable bed");
             }
         },
         async disabledBed(bedId, reasonId) {
-            try {
-                const response = await fetch(
-                    `/api/beds/disable/${bedId}?reason_id=${reasonId}`,
-                    {
-                        method: "PATCH",
-                        headers: {
-                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
-                        }
+            const response = await fetch(
+                `/api/beds/disable/${bedId}?reason_id=${reasonId}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     }
-                );
-                if (response.ok) {
-                    console.info("Bed disabled successfully id: " + bedId);
-                    this.getBedStatus(bedId);
-                } else {
-                    throw new Error("Failed to enable bed");
                 }
-            } catch (err) {
-                console.error(err);
+            );
+            if (response.ok) {
+                console.info("Bed disabled successfully id: " + bedId);
+                this.getBedStatus(bedId);
+            } else {
                 throw new Error("Failed to enable bed");
             }
         },
         async getBedStatus(bedId) {
             try {
-                const response = await fetch(`/api/beds/status/${bedId}`, {
+                const response = await fetch(`/api/beds/find/${bedId}/status`, {
                     headers: {
                         Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     }
