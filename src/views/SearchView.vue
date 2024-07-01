@@ -55,7 +55,7 @@ export default {
         async getPatients(bedId) {
             let activeBeds;
             try {
-                const response = await fetch(`/api/beds/active/${bedId}`, {
+                const response = await fetch(`/api/beds/find/${bedId}/active`, {
                     headers: {
                         Authorization: `Bearer ${this.$store.getters.getAuthToken}`
                     }
@@ -98,11 +98,14 @@ export default {
         },
         async getBedStatuses(wardId) {
             try {
-                const response = await fetch(`/api/beds/status/${wardId}`, {
-                    headers: {
-                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                const response = await fetch(
+                    `/api/beds/statuses?ward_id=${wardId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
                     }
-                });
+                );
                 const bedStatuses = await response.json();
                 return bedStatuses;
             } catch (err) {
@@ -145,8 +148,7 @@ export default {
                     patientGender: patient ? patient.gender : null,
                     dateOfBirth: patient ? patient.date_of_birth : null,
                     treatmentLevel: ward ? treatmentLevel.name : null,
-                    cleaning: bedStatus.disabled,
-                    occupied: bedStatus.occupied
+                    disabled_reason: bedStatus.disabled_reason
                 };
             });
             this.results = results;

@@ -70,7 +70,7 @@
 
 <script>
 import CreateRoom from "./CreateRoom.vue";
-import GenderTag from "../Layout/GenderTag.vue";
+import GenderTag from "../tags/GenderTag.vue";
 
 export default {
     name: "BedsList",

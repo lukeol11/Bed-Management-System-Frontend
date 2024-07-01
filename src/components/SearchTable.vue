@@ -20,17 +20,14 @@
                         result.roomDescription
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
-                        <cv-tag
-                            v-if="result.cleaning"
-                            label="Cleaning Required"
-                            kind="blue"
+                        <bed-status-tag
+                            :disabledReason="
+                                result.disabled_reason || undefined
+                            "
                         />
-                        <cv-tag
-                            v-else-if="!result.occupied"
-                            label="Available"
-                            kind="green"
-                        />
-                        <div v-else>
+                    </cv-data-table-cell>
+                    <cv-data-table-cell>
+                        <div>
                             {{ result.patientName }}
                         </div>
                     </cv-data-table-cell>
@@ -49,7 +46,7 @@
                         >
                         <cv-button
                             kind="secondary"
-                            :disabled="!result.occupied || result.cleaning"
+                            :disabled="result.disabled_reason?.id !== 2"
                             @click="openTransfer(result.bedId)"
                             >Transfer</cv-button
                         >
@@ -61,7 +58,8 @@
 </template>
 
 <script>
-import GenderTag from "./Layout/GenderTag.vue";
+import GenderTag from "./tags/GenderTag.vue";
+import BedStatusTag from "./tags/BedStatusTag.vue";
 
 export default {
     name: "SearchTable",
@@ -72,6 +70,7 @@ export default {
             columns: [
                 "Bed Name",
                 "Room Name",
+                "Bed Status",
                 "Patient Name",
                 "Date of Birth",
                 "Gender",
@@ -86,7 +85,8 @@ export default {
         }
     },
     components: {
-        GenderTag
+        GenderTag,
+        BedStatusTag
     },
     computed: {
         filteredResults() {
@@ -106,9 +106,15 @@ export default {
             }
 
             fullResults = fullResults.sort((a, b) => {
-                if (a.occupied && !b.occupied) {
+                if (
+                    a.disabled_reason?.reason === "Occupied" &&
+                    b.disabled_reason?.reason !== "Occupied"
+                ) {
                     return -1;
-                } else if (!a.occupied && b.occupied) {
+                } else if (
+                    a.disabled_reason?.reason !== "Occupied" &&
+                    b.disabled_reason?.reason === "Occupied"
+                ) {
                     return 1;
                 } else {
                     return 0;

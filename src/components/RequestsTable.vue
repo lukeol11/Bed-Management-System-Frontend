@@ -29,9 +29,13 @@
                     <cv-data-table-cell>{{
                         result.requestedWard
                     }}</cv-data-table-cell>
-                    <cv-data-table-cell>{{
-                        result.requestedBed
-                    }}</cv-data-table-cell>
+                    <cv-data-table-cell
+                        >{{ result.requestedBed
+                        }}<bed-status-tag
+                            :disabledReason="
+                                result.requestedBedDisabledReason || undefined
+                            "
+                    /></cv-data-table-cell>
                     <cv-data-table-cell>{{
                         result.requestBy
                     }}</cv-data-table-cell>
@@ -42,6 +46,7 @@
                         <cv-button-set>
                             <cv-button
                                 kind="primary"
+                                :disabled="result.requestedBedDisabledReason"
                                 @click="
                                     approveRequest(
                                         result.requestedBedId,
@@ -70,7 +75,9 @@
 <script>
 import { formatInTimeZone } from "date-fns-tz";
 import ApprovedRequestsTable from "./ApprovedRequestsTable.vue";
-import GenderTag from "./Layout/GenderTag.vue";
+import GenderTag from "./tags/GenderTag.vue";
+import BedStatusTag from "./tags/BedStatusTag.vue";
+
 export default {
     name: "RequestsTable",
     data() {
@@ -93,7 +100,8 @@ export default {
     },
     components: {
         ApprovedRequestsTable,
-        GenderTag
+        GenderTag,
+        BedStatusTag
     },
     methods: {
         formatTimestamp(timestamp) {
@@ -210,6 +218,8 @@ export default {
                         currentBedId: currentBed.id,
                         requestedWard: wardRequested.description,
                         requestedBed: bedRequested.description,
+                        requestedBedDisabledReason:
+                            bedRequested.disabled_reason,
                         requestedBedId: bedRequested.id,
                         requestBy: `${user.first_name} ${user.last_name}`,
                         requestTime: new Date(
