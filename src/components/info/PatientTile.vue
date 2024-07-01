@@ -13,31 +13,39 @@
                 }})
             </p>
             <p>Time Assigned: {{ patientInfo.timeBooked }}</p>
-            <cv-button-set>
-                <cv-button
-                    kind="danger"
-                    @click="checkoutPatient(patientInfo.id, bedInfo.id)"
-                    >Checkout</cv-button
-                >
-                <cv-button kind="secondary" @click="openTransfer(bedInfo.id)"
-                    >Transfer</cv-button
-                >
-            </cv-button-set>
         </div>
-        <div v-else>
-            <div v-if="!bedInfo.disabled_reason">
-                <cv-button-set>
-                    <cv-button kind="primary" @click="routerRedirect('create')"
-                        >Assign New Patient</cv-button
-                    >
-                    <cv-button
-                        kind="secondary"
-                        @click="routerRedirect('search')"
-                        >Transfer current patient</cv-button
-                    >
-                </cv-button-set>
-            </div>
-        </div>
+
+        <cv-accordion>
+            <cv-accordion-item :open="true">
+                <template slot="title">Actions</template>
+                <template slot="content">
+                    <cv-button-set v-if="patientInfo.first_name">
+                        <cv-button
+                            kind="danger"
+                            @click="checkoutPatient(patientInfo.id, bedInfo.id)"
+                            >Checkout</cv-button
+                        >
+                        <cv-button
+                            kind="secondary"
+                            @click="openTransfer(bedInfo.id)"
+                            >Transfer</cv-button
+                        >
+                    </cv-button-set>
+                    <cv-button-set v-else-if="!bedInfo.disabled_reason">
+                        <cv-button
+                            kind="primary"
+                            @click="routerRedirect('create')"
+                            >Assign New Patient</cv-button
+                        >
+                        <cv-button
+                            kind="secondary"
+                            @click="routerRedirect('search')"
+                            >Transfer current patient</cv-button
+                        >
+                    </cv-button-set></template
+                >
+            </cv-accordion-item>
+        </cv-accordion>
     </cv-tile>
 </template>
 
@@ -120,6 +128,13 @@ export default {
         .cv-button.bx--btn--primary#yellow {
             background-color: rgb(122, 122, 0);
         }
+    }
+
+    .cv-accordion-item.bx--accordion__item.bx--accordion__item--active
+        .bx--accordion__content {
+        padding-left: 0px;
+        padding-right: 0px;
+        margin-left: 0px;
     }
 }
 </style>
