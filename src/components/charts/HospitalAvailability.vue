@@ -93,13 +93,18 @@ export default {
     },
     methods: {
         async fetchWardBeds() {
-            this.chartData.datasets[0].data = [[0, 0, 0]];
             try {
                 const bedsDataResults = await this.fetchBedStatuses(
                     this.selectedHospital.id
                 );
-
-                this.chartData.datasets[0].data = bedsDataResults;
+                if (
+                    this.chartData.datasets[0].data.join("") !==
+                    bedsDataResults.join("")
+                ) {
+                    this.chartData.datasets[0].data = [[]];
+                    await new Promise((resolve) => setTimeout(resolve, 1));
+                    this.chartData.datasets[0].data = bedsDataResults;
+                }
             } catch (err) {
                 console.error(err);
             }
@@ -116,13 +121,13 @@ export default {
                 );
                 const beds = await response.json();
                 let counts = [0];
-                beds.forEach((bed) => {
+                beds.map((bed) => {
                     if (!bed.disabled) {
                         counts[0]++;
+                    } else if (counts[bed.disabled_reason.id]) {
+                        counts[bed.disabled_reason.id]++;
                     } else {
-                        counts[bed.disabled_reason.id]
-                            ? counts[bed.disabled_reason.id]++
-                            : (counts[bed.disabled_reason.id] = 1);
+                        counts[bed.disabled_reason.id] = 1;
                     }
                 });
                 return counts;
