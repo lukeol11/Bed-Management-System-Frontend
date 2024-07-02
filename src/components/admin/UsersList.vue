@@ -196,7 +196,7 @@ export default {
                 ...this.newUser,
                 hospital_id: this.selectedHospital.id,
                 created_at: new Date().toISOString(),
-                created_by: this.userHospitalId
+                created_by: this.userId
             };
             console.info("Creating user:", userData);
             try {
@@ -286,6 +286,9 @@ export default {
         },
         filteredResults() {
             return this.users;
+        },
+        userId() {
+            return this.$store.getters.getUserDetails.id;
         },
         userHospitalId() {
             return this.$store.getters.getUserDetails.hospital_id;
