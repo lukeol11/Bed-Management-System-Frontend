@@ -11,9 +11,12 @@
                     :key="index"
                 >
                     <cv-data-table-cell>{{ result.id }}</cv-data-table-cell>
-                    <cv-data-table-cell
-                        >{{ result.patientName
-                        }}<gender-tag
+                    <cv-data-table-cell>
+                        <cv-tooltip :tip="`Patient ID: ${result.patientId}`">
+                            {{ result.patientName }}
+                        </cv-tooltip>
+
+                        <gender-tag
                             :gender="result.patientGender"
                             :abbreviated="true"
                     /></cv-data-table-cell>
@@ -23,15 +26,19 @@
                     <cv-data-table-cell>{{
                         result.currentWard
                     }}</cv-data-table-cell>
-                    <cv-data-table-cell>{{
-                        result.currentBed
-                    }}</cv-data-table-cell>
+                    <cv-data-table-cell>
+                        <cv-tooltip :tip="`Bed ID: ${result.currentBedId}`">
+                            {{ result.currentBed }}
+                        </cv-tooltip>
+                    </cv-data-table-cell>
                     <cv-data-table-cell>{{
                         result.requestedWard
                     }}</cv-data-table-cell>
-                    <cv-data-table-cell>{{
-                        result.requestedBed
-                    }}</cv-data-table-cell>
+                    <cv-data-table-cell>
+                        <cv-tooltip :tip="`Bed ID: ${result.requestedBedId}`">
+                            {{ result.requestedBed }}
+                        </cv-tooltip></cv-data-table-cell
+                    >
                     <cv-data-table-cell>{{
                         result.requestBy
                     }}</cv-data-table-cell>
@@ -51,7 +58,7 @@
 </template>
 
 <script>
-import GenderTag from "./tags/GenderTag.vue";
+import GenderTag from "../tags/GenderTag.vue";
 
 export default {
     name: "ApprovedRequestsTable",
@@ -63,9 +70,9 @@ export default {
             columns: [
                 "ID",
                 "Patient Name",
-                "Current Hospital",
-                "Current Ward",
-                "Current Bed",
+                "Previous Hospital",
+                "Previous Ward",
+                "Previous Bed",
                 "Requested Ward",
                 "Requested Bed",
                 "Request by",
