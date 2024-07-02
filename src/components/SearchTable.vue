@@ -27,9 +27,9 @@
                         />
                     </cv-data-table-cell>
                     <cv-data-table-cell>
-                        <div>
+                        <cv-tooltip :tip="`Patient ID: ${result.patientId}`">
                             {{ result.patientName }}
-                        </div>
+                        </cv-tooltip>
                     </cv-data-table-cell>
                     <cv-data-table-cell>{{
                         result.dateOfBirth
