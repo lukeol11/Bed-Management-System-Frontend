@@ -1,7 +1,7 @@
 <template>
     <div id="approvedRequestsTable">
         <cv-data-table
-            :title="`Approved Requests`"
+            :title="`Approved Transfer Requests`"
             :columns="columns"
             :zebra="true"
         >
@@ -39,7 +39,7 @@
                             {{ result.requestedBed }}
                         </cv-tooltip></cv-data-table-cell
                     >
-                    <cv-data-table-cell>{{
+                    <cv-data-table-cell v-if="showRequestedBy">{{
                         result.requestBy
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>{{
@@ -67,7 +67,7 @@ export default {
     },
     data() {
         return {
-            columns: [
+            allColumns: [
                 "ID",
                 "Patient Name",
                 "Previous Hospital",
@@ -86,6 +86,17 @@ export default {
         requests: {
             type: Array,
             required: true
+        },
+        showRequestedBy: {
+            type: Boolean,
+            default: true
+        }
+    },
+    computed: {
+        columns() {
+            return this.allColumns.filter(
+                (column) => column !== "Request by" || this.showRequestedBy
+            );
         }
     }
 };
