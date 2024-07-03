@@ -259,7 +259,7 @@ export default {
                     this.askPassword = false;
                     this.$store.commit("ADD_NOTIFICATION", {
                         kind: "error",
-                        title: "Creating User",
+                        title: "Error Creating User",
                         caption: error.message
                     });
                 });
