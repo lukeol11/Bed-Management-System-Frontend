@@ -65,7 +65,6 @@ export default {
     name: "SearchTable",
     data() {
         return {
-            fullResults: this.data,
             searchQuery: "",
             columns: [
                 "Bed Name",
@@ -90,9 +89,9 @@ export default {
     },
     computed: {
         filteredResults() {
-            let fullResults = this.fullResults;
+            let data = this.data;
             if (this.searchQuery) {
-                fullResults = fullResults.filter((result) => {
+                data = data.filter((result) => {
                     return Object.values(result).some((value) => {
                         if (value === null || value === undefined) {
                             return false;
@@ -105,7 +104,7 @@ export default {
                 });
             }
 
-            fullResults = fullResults.sort((a, b) => {
+            data = data.sort((a, b) => {
                 if (
                     a.disabled_reason?.reason === "Occupied" &&
                     b.disabled_reason?.reason !== "Occupied"
@@ -122,7 +121,7 @@ export default {
             });
 
             let wardsArray = [];
-            fullResults.forEach((result) => {
+            data.forEach((result) => {
                 let wardIndex = wardsArray.findIndex(
                     (ward) => ward[0].wardId === result.wardId
                 );
