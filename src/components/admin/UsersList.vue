@@ -256,7 +256,12 @@ export default {
                     this.createUser();
                 })
                 .catch((error) => {
-                    alert(error.message);
+                    this.askPassword = false;
+                    this.$store.commit("ADD_NOTIFICATION", {
+                        kind: "error",
+                        title: "Creating User",
+                        caption: error.message
+                    });
                 });
         },
         async changePassword(userEmail) {
