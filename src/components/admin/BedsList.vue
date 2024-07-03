@@ -1,6 +1,6 @@
 <template>
     <div id="bedsList">
-        <create-room v-if="newBed.room_id === '999999'" @room="addRoom" />
+        <create-room :roomId="newBed.room_id" @room="addRoom" />
         <cv-data-table
             :title="`${wardDetails.description} Beds`"
             :columns="columns"
