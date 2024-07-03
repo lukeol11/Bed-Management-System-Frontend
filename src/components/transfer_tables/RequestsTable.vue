@@ -1,6 +1,6 @@
 <template>
     <cv-data-table
-        :title="`Transfer Requests`"
+        title="Pending Transfer Requests"
         :columns="columns"
         :zebra="true"
     >
@@ -15,7 +15,9 @@
                         :abbreviated="true"
                     />
                 </cv-data-table-cell>
-                <cv-data-table-cell>{{ result.hospital }}</cv-data-table-cell>
+                <cv-data-table-cell v-if="showCurrentHospital">{{
+                    result.hospital
+                }}</cv-data-table-cell>
                 <cv-data-table-cell>{{
                     result.currentWard
                 }}</cv-data-table-cell>
@@ -24,6 +26,9 @@
                         {{ result.currentBed }}
                     </cv-tooltip></cv-data-table-cell
                 >
+                <cv-data-table-cell v-if="showRequestedHospital">{{
+                    result.requestedHospital
+                }}</cv-data-table-cell>
                 <cv-data-table-cell>{{
                     result.requestedWard
                 }}</cv-data-table-cell>
@@ -37,13 +42,16 @@
                             result.requestedBedDisabledReason || undefined
                         "
                 /></cv-data-table-cell>
-                <cv-data-table-cell>{{ result.requestBy }}</cv-data-table-cell>
+                <cv-data-table-cell v-if="showRequestedBy">{{
+                    result.requestBy
+                }}</cv-data-table-cell>
                 <cv-data-table-cell>{{
                     result.requestTime
                 }}</cv-data-table-cell>
                 <cv-data-table-cell>
                     <cv-button-set>
                         <cv-button
+                            v-if="allowApprove"
                             kind="primary"
                             :disabled="result.requestedBedDisabledReason"
                             @click="
@@ -71,12 +79,13 @@ export default {
     name: "RequestsTable",
     data() {
         return {
-            columns: [
+            allColumns: [
                 "ID",
                 "Patient Name",
                 "Current Hospital",
                 "Current Ward",
                 "Current Bed",
+                "Requested Hospital",
                 "Requested Ward",
                 "Requested Bed",
                 "Request by",
@@ -93,6 +102,22 @@ export default {
         requests: {
             type: Array,
             required: true
+        },
+        allowApprove: {
+            type: Boolean,
+            default: true
+        },
+        showRequestedBy: {
+            type: Boolean,
+            default: true
+        },
+        showCurrentHospital: {
+            type: Boolean,
+            default: true
+        },
+        showRequestedHospital: {
+            type: Boolean,
+            default: false
         }
     },
     methods: {
@@ -106,6 +131,12 @@ export default {
                 });
                 if (response.status === 200) {
                     this.getResults();
+                } else {
+                    this.$store.commit("ADD_NOTIFICATION", {
+                        kind: "error",
+                        title: "Error Deleting Request",
+                        caption: `Request ID: ${requestId} could not be deleted. Please try again later or contact support.`
+                    });
                 }
             } catch (err) {
                 console.error(err);
@@ -128,6 +159,12 @@ export default {
                 });
                 if (response.status === 201) {
                     this.getResults();
+                } else {
+                    this.$store.commit("ADD_NOTIFICATION", {
+                        kind: "error",
+                        title: "Error Approving Request",
+                        caption: `Request ID: ${requestId} could not be approved. Please try again later or contact support.`
+                    });
                 }
             } catch (err) {
                 console.error(err);
@@ -140,6 +177,21 @@ export default {
     computed: {
         userDetails() {
             return this.$store.getters.getUserDetails;
+        },
+        columns() {
+            return this.allColumns.filter((column) => {
+                if (column === "Current Hospital") {
+                    return this.showCurrentHospital;
+                }
+                if (column === "Requested Hospital") {
+                    return this.showRequestedHospital;
+                }
+                if (column === "Request by") {
+                    return this.showRequestedBy;
+                }
+
+                return true;
+            });
         }
     }
 };

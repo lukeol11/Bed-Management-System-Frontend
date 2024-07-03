@@ -1,7 +1,7 @@
 <template>
     <div id="approvedRequestsTable">
         <cv-data-table
-            :title="`Approved Requests`"
+            :title="`Approved Transfer Requests`"
             :columns="columns"
             :zebra="true"
         >
@@ -20,7 +20,7 @@
                             :gender="result.patientGender"
                             :abbreviated="true"
                     /></cv-data-table-cell>
-                    <cv-data-table-cell>{{
+                    <cv-data-table-cell v-if="showPreviousHospital">{{
                         result.hospital
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>{{
@@ -31,6 +31,9 @@
                             {{ result.currentBed }}
                         </cv-tooltip>
                     </cv-data-table-cell>
+                    <cv-data-table-cell v-if="showApprovedHospital">{{
+                        result.requestedHospital
+                    }}</cv-data-table-cell>
                     <cv-data-table-cell>{{
                         result.requestedWard
                     }}</cv-data-table-cell>
@@ -39,7 +42,7 @@
                             {{ result.requestedBed }}
                         </cv-tooltip></cv-data-table-cell
                     >
-                    <cv-data-table-cell>{{
+                    <cv-data-table-cell v-if="showRequestedBy">{{
                         result.requestBy
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>{{
@@ -67,14 +70,15 @@ export default {
     },
     data() {
         return {
-            columns: [
+            allColumns: [
                 "ID",
                 "Patient Name",
                 "Previous Hospital",
                 "Previous Ward",
                 "Previous Bed",
-                "Requested Ward",
-                "Requested Bed",
+                "Approved Hospital",
+                "Approved Ward",
+                "Approved Bed",
                 "Request by",
                 "Request Made At",
                 "Approved By",
@@ -86,6 +90,32 @@ export default {
         requests: {
             type: Array,
             required: true
+        },
+        showRequestedBy: {
+            type: Boolean,
+            default: true
+        },
+        showApprovedHospital: {
+            type: Boolean,
+            default: false
+        },
+        showPreviousHospital: {
+            type: Boolean,
+            default: true
+        }
+    },
+    computed: {
+        columns() {
+            return this.allColumns.filter((column) => {
+                if (column === "Request by") {
+                    return this.showRequestedBy;
+                } else if (column === "Approved Hospital") {
+                    return this.showApprovedHospital;
+                } else if (column === "Previous Hospital") {
+                    return this.showPreviousHospital;
+                }
+                return true;
+            });
         }
     }
 };

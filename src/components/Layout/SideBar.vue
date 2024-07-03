@@ -9,13 +9,24 @@
                 <template v-slot:nav-icon><home-icon /></template>
                 Dashboard
             </cv-side-nav-link>
-            <cv-side-nav-link
-                to="/requests"
-                v-if="bedManager && userHospitalId === currentHospitalId"
-            >
-                <template v-slot:nav-icon><manage-requests-icon /></template>
-                Manage Requests
+            <cv-side-nav-link to="/search">
+                <template v-slot:nav-icon><search-icon /></template>
+                Search
             </cv-side-nav-link>
+            <cv-side-nav-menu title="Transfers">
+                <template slot="nav-icon"><incoming-requests-icon /></template>
+                <cv-side-nav-link to="/requests">
+                    <template v-slot:nav-icon></template>
+                    Your Transfer Requests
+                </cv-side-nav-link>
+
+                <cv-side-nav-link
+                    to="/transfers"
+                    v-if="bedManager && userHospitalId === currentHospitalId"
+                >
+                    Manage Transfer Requests
+                </cv-side-nav-link>
+            </cv-side-nav-menu>
             <cv-side-nav-link
                 to="/admin"
                 v-if="admin && userHospitalId === currentHospitalId"
@@ -35,8 +46,10 @@
 import LogoutIcon from "@carbon/icons-vue/es/logout/32";
 import HospitalBedIcon from "@carbon/icons-vue/es/hospital-bed/32";
 import HomeIcon from "@carbon/icons-vue/es/home/32";
-import ManageRequestsIcon from "@carbon/icons-vue/lib/airline--manage-gates/32";
+import ManageRequestsIcon from "@carbon/icons-vue/lib/airline--rapid-board/32";
+import IncomingRequestsIcon from "@carbon/icons-vue/lib/airline--manage-gates/32";
 import NetworkAdminControl from "@carbon/icons-vue/es/network--admin-control/32";
+import SearchIcon from "@carbon/icons-vue/es/search/32";
 
 export default {
     name: "SideBar",
@@ -44,8 +57,10 @@ export default {
         LogoutIcon,
         HospitalBedIcon,
         HomeIcon,
+        IncomingRequestsIcon,
         ManageRequestsIcon,
-        NetworkAdminControl
+        NetworkAdminControl,
+        SearchIcon
     },
     computed: {
         admin() {
@@ -74,8 +89,13 @@ export default {
     top: 0rem;
     height: 100%;
     background: #323e58;
-    .bx--side-nav__link-text {
+    .bx--side-nav__link-text,
+    .bx--side-nav__submenu-title {
+        white-space: initial;
         color: #fff;
+    }
+    .bx--side-nav__submenu {
+        height: fit-content;
     }
     .header,
     .footer {
@@ -91,7 +111,8 @@ export default {
         padding-top: 2rem;
         padding-bottom: 2rem;
         text-overflow: initial;
-        .bx--side-nav__link-text p {
+        .bx--side-nav__link-text p,
+        .bx--side-nav__submenu-title {
             color: #fff;
             text-align: center;
             font-family: Roboto, sans-serif;
@@ -106,7 +127,8 @@ export default {
         &:hover {
             background: #30384d;
         }
-        .bx--side-nav__link-text p {
+        .bx--side-nav__link-text p,
+        .bx--side-nav__submenu-title {
             color: #fff;
             text-align: center;
             font-family: Roboto, sans-serif;
@@ -133,13 +155,15 @@ export default {
             background: inherit;
             transition: none;
         }
-        .bx--side-nav__icon.bx--side-nav__icon--small svg {
+        .bx--side-nav__icon.bx--side-nav__icon--small svg,
+        .bx--side-nav__icon svg {
             fill: #fff;
         }
         &:hover {
             background: #30384d;
         }
-        .bx--side-nav__link-text {
+        .bx--side-nav__link-text,
+        .bx--side-nav__submenu-title {
             color: #fff;
             text-align: center;
             font-family: Roboto, sans-serif;
@@ -149,13 +173,21 @@ export default {
             line-height: normal;
             letter-spacing: 0.07813rem;
         }
-        a {
+        a,
+        .bx--side-nav__submenu-title {
             padding-top: 1.5rem;
             padding-bottom: 1.5rem;
         }
     }
     .cv-side-nav-item-link.bx--side-nav__link:hover {
         background-color: inherit;
+    }
+    .bx--side-nav__submenu:hover {
+        background-color: #30384d;
+    }
+    .bx--side-nav__item span.bx--side-nav__link-text,
+    .bx--side-nav__submenu-title {
+        text-align: left;
     }
 }
 </style>
