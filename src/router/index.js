@@ -170,11 +170,13 @@ router.beforeEach(async (to, from, next) => {
     }
 
     if (
-        to.path.includes("requests") &&
+        to.path.includes("transfers") &&
         (!userDetails.can_administrate ||
             userDetails.hospital_id !== selectedHospital.id)
     ) {
-        console.warn("User does not have permission to manage requests");
+        console.warn(
+            "User does not have permission to manage transfer requests"
+        );
         next({ name: "dashboard" });
     }
 
