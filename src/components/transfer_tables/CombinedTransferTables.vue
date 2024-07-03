@@ -214,6 +214,9 @@ export default {
             if (newVal.length > oldVal.length && oldVal.length > 0) {
                 this.getResults();
             }
+        },
+        selectedHospital() {
+            this.getResults();
         }
     },
     mounted() {
