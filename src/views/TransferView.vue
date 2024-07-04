@@ -18,7 +18,14 @@
                 <p>Description: {{ bedInfo.description }}</p>
                 <p>First Name: {{ patientInfo.first_name }}</p>
                 <p>Last Name: {{ patientInfo.last_name }}</p>
-                <p>DOB: {{ patientInfo.date_of_birth }}</p>
+                <p>
+                    DOB: {{ patientInfo.date_of_birth }} ({{
+                        patientInfo.date_of_birth
+                            ? findPatientAge(patientInfo.date_of_birth)
+                            : "N/A"
+                    }})
+                </p>
+                <p>Gender: <gender-tag :gender="patientInfo.gender" /></p>
                 <p>Time Assigned: {{ patientInfo.timeBooked }}</p>
             </cv-tile>
             <cv-tile id="bedList">
@@ -50,11 +57,13 @@
 
 <script>
 import BedList from "@/components/BedList.vue";
+import GenderTag from "@/components/tags/GenderTag.vue";
 
 export default {
     name: "TransferView",
     components: {
-        BedList
+        BedList,
+        GenderTag
     },
     data() {
         return {
@@ -130,11 +139,14 @@ export default {
         },
         async findPatient() {
             try {
-                let response = await fetch(`/api/beds/active/${this.bedId}`, {
-                    headers: {
-                        Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                let response = await fetch(
+                    `/api/beds/find/${this.bedId}/active`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
                     }
-                });
+                );
                 const bedActiveResponse = await response.json();
                 const patientId = bedActiveResponse[0]?.patient_id;
                 if (patientId) {
@@ -166,7 +178,6 @@ export default {
 <style scoped lang="scss">
 .transferView {
     width: 100%;
-    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -184,7 +195,6 @@ export default {
     }
     .tilesContainer {
         width: 100%;
-        height: 60vh;
         display: flex;
         justify-content: center;
     }

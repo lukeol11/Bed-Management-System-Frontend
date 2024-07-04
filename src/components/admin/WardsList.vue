@@ -26,11 +26,13 @@
                         result.location
                     }}</cv-data-table-cell>
                     <cv-data-table-cell>
-                        {{ result.gender }}</cv-data-table-cell
-                    >
+                        <gender-tag :gender="result.gender"
+                    /></cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-button-set>
-                            <cv-button @click="open(result.id)">Open</cv-button>
+                            <cv-button @click="open(result.id)"
+                                >View Beds</cv-button
+                            >
                             <cv-button
                                 kind="danger"
                                 @click="deleteWard(result.id)"
@@ -97,7 +99,7 @@
                         <cv-button
                             @click="createWard"
                             :disabled="!readyToCreate()"
-                            >Create</cv-button
+                            >Create Ward</cv-button
                         >
                     </cv-data-table-cell>
                 </cv-data-table-row>
@@ -108,6 +110,8 @@
 </template>
 
 <script>
+import GenderTag from "../tags/GenderTag.vue";
+
 export default {
     name: "WardsList",
     data() {
@@ -136,6 +140,9 @@ export default {
                 gender: ""
             }
         };
+    },
+    components: {
+        GenderTag
     },
     methods: {
         async getWards() {

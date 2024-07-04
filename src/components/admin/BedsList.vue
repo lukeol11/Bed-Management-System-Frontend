@@ -1,5 +1,6 @@
 <template>
     <div id="bedsList">
+        <create-room :roomId="newBed.room_id" @room="addRoom" />
         <cv-data-table
             :title="`${wardDetails.description} Beds`"
             :columns="columns"
@@ -14,6 +15,14 @@
                     <cv-data-table-cell>{{
                         result.description
                     }}</cv-data-table-cell>
+                    <cv-data-table-cell
+                        >{{ result.room?.description || "N/A" }}
+                    </cv-data-table-cell>
+                    <cv-data-table-cell>
+                        <gender-tag
+                            :gender="result.room?.gender || wardDetails.gender"
+                        />
+                    </cv-data-table-cell>
                     <cv-data-table-cell>
                         <cv-button kind="danger" @click="deleteBed(result.id)"
                             >Delete</cv-button
@@ -30,10 +39,26 @@
                         ></cv-text-input>
                     </cv-data-table-cell>
                     <cv-data-table-cell>
+                        <cv-select
+                            v-model="newBed.room_id"
+                            :hideLabel="true"
+                            label=""
+                        >
+                            <cv-select-option
+                                v-for="room in rooms"
+                                :key="room.description"
+                                :value="String(room.id)"
+                            >
+                                {{ room.description }}
+                            </cv-select-option>
+                        </cv-select>
+                    </cv-data-table-cell>
+                    <cv-data-table-cell> </cv-data-table-cell>
+                    <cv-data-table-cell>
                         <cv-button
                             @click="createBed"
                             :disabled="!newBed.description"
-                            >Create</cv-button
+                            >Create Bed</cv-button
                         >
                     </cv-data-table-cell>
                 </cv-data-table-row>
@@ -44,21 +69,29 @@
 </template>
 
 <script>
+import CreateRoom from "./CreateRoom.vue";
+import GenderTag from "../tags/GenderTag.vue";
+
 export default {
     name: "BedsList",
     data() {
         return {
             beds: [],
-            columns: ["ID", "Name", "Action"],
+            columns: ["ID", "Name", "Room", "Gender", "Action"],
             newBed: {
-                description: ""
+                description: "",
+                room_id: "0"
             },
-            wardDetails: {}
+            wardDetails: {},
+            rooms: []
         };
+    },
+    components: {
+        CreateRoom,
+        GenderTag
     },
     methods: {
         async getBeds() {
-            this.findWard(this.wardId);
             try {
                 const response = await fetch(`/api/beds/all/${this.wardId}`, {
                     headers: {
@@ -84,10 +117,45 @@ export default {
                 console.error(err);
             }
         },
+        async getRooms() {
+            try {
+                const response = await fetch(
+                    `/api/rooms/all?ward_id=${this.wardId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${this.$store.getters.getAuthToken}`
+                        }
+                    }
+                );
+                let rooms = await response.json();
+                rooms = rooms.map((room) => ({
+                    id: String(room.id),
+                    description: room.description,
+                    gender: room.gender,
+                    ward_id: room.ward_id
+                }));
+                if (response.ok) {
+                    this.rooms = [
+                        { id: 0, description: "N/A" },
+                        { id: 999999, description: "Create New Room" },
+                        ...rooms
+                    ];
+                } else {
+                    throw new Error("Failed to get rooms");
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        },
         async createBed() {
             const date = new Date().toISOString();
+            let roomId = Number(this.newBed.room_id);
+            if (roomId === 0) {
+                roomId = null;
+            }
             const bedData = {
-                ...this.newBed,
+                description: this.newBed.description,
+                room_id: roomId,
                 ward_id: this.wardId,
                 disabled: false,
                 created_at: date,
@@ -119,7 +187,8 @@ export default {
                     throw new Error("Failed to create bed");
                 }
                 this.newbed = {
-                    description: ""
+                    description: "",
+                    room_id: "0"
                 };
                 this.getBeds();
             } catch (err) {
@@ -138,6 +207,7 @@ export default {
                     throw new Error("Failed to find ward");
                 }
                 this.wardDetails = await response.json();
+                this.getBeds();
             } catch (err) {
                 this.$store.commit("ADD_NOTIFICATION", {
                     kind: "error",
@@ -146,6 +216,16 @@ export default {
                 });
                 console.error(err);
             }
+        },
+        addRoom(room) {
+            this.rooms.push({
+                id: String(room.id),
+                description: room.description,
+                gender: room.gender,
+                ward_id: room.ward_id
+            });
+            this.newBed.room_id = String(room.id);
+            console.info("Room added:", room);
         }
     },
     computed: {
@@ -161,11 +241,21 @@ export default {
     },
     watch: {
         wardId() {
-            this.getBeds();
+            this.beds = [];
+            this.newBed = {
+                description: "",
+                room_id: "0"
+            };
+            this.wardDetails = {};
+            this.rooms = [];
+
+            this.findWard(this.wardId);
+            this.getRooms();
         }
     },
     mounted() {
-        this.getBeds();
+        this.findWard(this.wardId);
+        this.getRooms();
     }
 };
 </script>
